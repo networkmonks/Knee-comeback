@@ -1,0 +1,1543 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Knee Comeback</title>
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Knee Comeback">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#EC5A2A">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<style>
+/* Layout: iPad app shell. Side rail at ≥ 960px, bottom tab bar below. Cool clinical neutrals + kinesiology-tape orange accent; left knee = cobalt, right knee = tape orange. */
+:root {
+  --bg: #EDF0F4;
+  --surface: #FFFFFF;
+  --surface-2: #F5F7FA;
+  --ink: #0F1A28;
+  --muted: #5B6A7E;
+  --faint: #8A97A8;
+  --line: #DCE2EA;
+  --accent: #EC5A2A;
+  --accent-soft: #FDE7DE;
+  --accent-ink: #FFFFFF;
+  --left: #2E66E6;
+  --left-soft: #E2EAFC;
+  --right: #EC5A2A;
+  --good: #11975F;
+  --good-soft: #DDF3E8;
+  --warn: #C98A00;
+  --warn-soft: #FBF0D4;
+  --bad: #D33F3F;
+  --bad-soft: #FADEDE;
+  --shadow: 0 1px 2px rgba(15,26,40,.06), 0 8px 24px rgba(15,26,40,.06);
+  --f-display: -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  --f-body: -apple-system, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  --f-mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --r: 18px;
+  --r-sm: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0B1119; --surface: #141C27; --surface-2: #1A2431; --ink: #E9EEF5; --muted: #98A6B9; --faint: #6D7C90; --line: #25303F;
+    --accent: #FF7547; --accent-soft: #3A2016; --accent-ink: #1A0B05;
+    --left: #6F9BFF; --left-soft: #19284A; --right: #FF7547;
+    --good: #3CCB8F; --good-soft: #12301F; --warn: #F2B93B; --warn-soft: #33290F; --bad: #FF6B6B; --bad-soft: #3A1818;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0B1119; --surface: #141C27; --surface-2: #1A2431; --ink: #E9EEF5; --muted: #98A6B9; --faint: #6D7C90; --line: #25303F;
+  --accent: #FF7547; --accent-soft: #3A2016; --accent-ink: #1A0B05;
+  --left: #6F9BFF; --left-soft: #19284A; --right: #FF7547;
+  --good: #3CCB8F; --good-soft: #12301F; --warn: #F2B93B; --warn-soft: #33290F; --bad: #FF6B6B; --bad-soft: #3A1818;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button, input, select, textarea { font-family: inherit; }
+:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 60%, transparent); outline-offset: 2px; border-radius: 8px; }
+h1, h2, h3 { font-family: var(--f-display); font-stretch: 112%; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h1 { font-size: clamp(28px, 4vw, 38px); font-weight: 760; line-height: 1.05; }
+h2 { font-size: 21px; font-weight: 700; line-height: 1.2; }
+h3 { font-size: 17px; font-weight: 680; line-height: 1.25; }
+p { margin: 0; }
+.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+.small { font-size: 14px; }
+
+/* Shell */
+.shell { display: grid; grid-template-columns: 1fr; min-height: 100%; }
+.rail { display: none; }
+.main { min-width: 0; padding-block: 28px 120px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1080px; margin: 0 auto; display: grid; gap: 20px; }
+@media (min-width: 960px) {
+  .shell { grid-template-columns: 248px 1fr; }
+  .rail { display: flex; flex-direction: column; gap: 22px; position: sticky; top: 0; height: 100vh; padding: 28px 18px; padding-left: max(18px, env(safe-area-inset-left, 0px)); background: var(--surface); border-right: 1px solid var(--line); }
+  .main { padding-block: 36px 60px; padding-left: 36px; padding-right: max(36px, env(safe-area-inset-right, 0px)); }
+  .tabbar { display: none !important; }
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-mark { width: 38px; height: 38px; border-radius: 11px; background: var(--accent); display: grid; place-items: center; color: var(--accent-ink); flex: none; }
+.brand-name { font-family: var(--f-display); font-stretch: 118%; font-weight: 800; font-size: 18px; line-height: 1; letter-spacing: -0.01em; }
+.brand-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.nav { display: grid; gap: 4px; }
+.nav button { display: flex; align-items: center; gap: 12px; border: 0; background: transparent; padding: 11px 12px; border-radius: 12px; font-weight: 600; color: var(--muted); text-align: left; }
+.nav button:hover { background: var(--surface-2); color: var(--ink); }
+.nav button[aria-current="page"] { background: var(--accent-soft); color: var(--ink); }
+.nav button[aria-current="page"] svg { color: var(--accent); }
+.nav svg, .tabbar svg { width: 22px; height: 22px; flex: none; }
+.rail-card { margin-top: auto; background: var(--surface-2); border-radius: var(--r); padding: 16px; display: grid; gap: 10px; }
+.sync { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); flex: none; }
+.dot.ok { background: var(--good); } .dot.warn { background: var(--warn); }
+
+.tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: flex; justify-content: space-around; background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid var(--line); padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); }
+.tabbar button { border: 0; background: none; display: grid; justify-items: center; gap: 2px; font-size: 11px; font-weight: 600; color: var(--muted); padding: 6px 4px; min-width: 60px; border-radius: 10px; }
+.tabbar button[aria-current="page"] { color: var(--accent); }
+
+/* Cards */
+.card { background: var(--surface); border-radius: var(--r); box-shadow: var(--shadow); padding: 22px; display: grid; gap: 16px; min-width: 0; }
+.card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.grid-2 { display: grid; gap: 20px; grid-template-columns: 1fr; }
+.grid-3 { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+@media (min-width: 760px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+.today-grid { display: grid; gap: 20px; grid-template-columns: 1fr; align-items: start; }
+@media (min-width: 1100px) { .today-grid { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); } }
+
+/* Buttons & chips */
+.btn { border: 0; border-radius: 12px; padding: 12px 18px; font-weight: 700; background: var(--accent); color: var(--accent-ink); min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.ghost { background: var(--surface-2); color: var(--ink); }
+.btn.danger { background: var(--bad-soft); color: var(--bad); }
+.btn.sm { padding: 8px 12px; min-height: 36px; font-size: 14px; }
+.icon-btn { border: 0; width: 44px; height: 44px; border-radius: 12px; background: var(--surface-2); display: grid; place-items: center; }
+.icon-btn svg { width: 20px; height: 20px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; font-size: 13px; font-weight: 600; background: var(--surface-2); color: var(--muted); white-space: nowrap; }
+.chip.accent { background: var(--accent-soft); color: var(--accent); }
+.chip.good { background: var(--good-soft); color: var(--good); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); }
+.chip.bad { background: var(--bad-soft); color: var(--bad); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.filter { border: 1px solid var(--line); background: var(--surface); padding: 8px 14px; border-radius: 999px; font-weight: 600; font-size: 14px; color: var(--muted); min-height: 40px; }
+.filter[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+
+/* Segmented */
+.seg { display: inline-flex; background: var(--surface-2); border-radius: 12px; padding: 4px; gap: 4px; flex-wrap: wrap; }
+.seg button { border: 0; background: transparent; padding: 8px 12px; border-radius: 9px; font-weight: 600; font-size: 14px; color: var(--muted); min-height: 36px; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.seg.sev button[aria-pressed="true"][data-v="mild"], .seg.sev button[aria-pressed="true"][data-v="gt30"] { color: var(--warn); }
+.seg.sev button[aria-pressed="true"][data-v="visible"], .seg.sev button[aria-pressed="true"][data-v="yes"] { color: var(--bad); }
+
+/* Header */
+.page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.date-nav { display: flex; align-items: center; gap: 8px; }
+.kpis { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 700px) { .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.kpi { background: var(--surface); border-radius: var(--r); box-shadow: var(--shadow); padding: 16px 18px; display: grid; gap: 4px; min-width: 0; }
+.kpi .v { font-family: var(--f-display); font-stretch: 110%; font-size: 30px; font-weight: 760; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.kpi .v small { font-size: 15px; color: var(--muted); font-weight: 600; }
+
+/* Check-in */
+.knees { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 560px) { .knees { grid-template-columns: 1fr 1fr; } }
+.knee { border-radius: 14px; padding: 16px; display: grid; gap: 12px; background: var(--surface-2); }
+.knee-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.knee-label { white-space: nowrap; }
+.knee .seg { display: flex; width: 100%; }
+.knee .seg button { flex: 1; }
+.stack { display: grid; gap: 6px; }
+.card-head.nowrap { flex-wrap: nowrap; }
+.card-head.nowrap > div { min-width: 0; }
+.knee-label { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+.knee-label i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.knee.L .knee-label i { background: var(--left); } .knee.R .knee-label i { background: var(--right); }
+.pain-val { font-family: var(--f-display); font-stretch: 110%; font-size: 34px; font-weight: 780; line-height: 1; font-variant-numeric: tabular-nums; }
+.pain-val small { font-size: 14px; color: var(--muted); font-weight: 600; }
+input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 34px; background: transparent; margin: 0; }
+input[type=range]::-webkit-slider-runnable-track { height: 8px; border-radius: 99px; background: linear-gradient(90deg, var(--good) 0%, var(--warn) 45%, var(--bad) 100%); }
+input[type=range]::-moz-range-track { height: 8px; border-radius: 99px; background: linear-gradient(90deg, var(--good) 0%, var(--warn) 45%, var(--bad) 100%); }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; background: var(--surface); border: 3px solid var(--ink); margin-top: -10px; box-shadow: 0 2px 6px rgba(0,0,0,.2); }
+input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--surface); border: 3px solid var(--ink); }
+.scale { display: flex; justify-content: space-between; font-size: 11px; color: var(--faint); font-family: var(--f-mono); }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.field-label { font-size: 14px; font-weight: 600; color: var(--muted); }
+.verdict { border-radius: 14px; padding: 14px 16px; display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; }
+.verdict .light { width: 14px; height: 14px; border-radius: 50%; margin-top: 4px; }
+.verdict.green { background: var(--good-soft); } .verdict.green .light { background: var(--good); }
+.verdict.amber { background: var(--warn-soft); } .verdict.amber .light { background: var(--warn); }
+.verdict.red { background: var(--bad-soft); } .verdict.red .light { background: var(--bad); }
+.verdict b { display: block; }
+textarea, input[type=text], input[type=date], input[type=number], input[type=search], select { width: 100%; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 12px; padding: 11px 13px; font-size: 16px; min-height: 44px; }
+textarea { resize: vertical; min-height: 70px; }
+
+/* Session */
+.progress-bar { height: 8px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.progress-bar span { display: block; height: 100%; background: var(--accent); border-radius: 99px; transition: width .3s ease; }
+.block-title { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); margin-top: 6px; }
+.ex-list { display: grid; gap: 8px; }
+.ex-row { display: grid; grid-template-columns: 1fr auto; gap: 10px 14px; align-items: center; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); border: 1px solid transparent; }
+.ex-row.done { background: var(--good-soft); }
+.ex-open { border: 0; background: none; text-align: left; padding: 0; display: grid; gap: 2px; min-width: 0; }
+.ex-open .t { font-weight: 700; }
+.ex-open .d { font-size: 14px; color: var(--muted); }
+.ex-open .t::after { content: " ›"; color: var(--faint); font-weight: 500; }
+.sets { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.set { width: 36px; height: 36px; border-radius: 10px; border: 2px solid var(--line); background: var(--surface); font-family: var(--f-mono); font-size: 13px; font-weight: 600; color: var(--faint); }
+.set.on { background: var(--good); border-color: var(--good); color: var(--surface); }
+.ex-row.done .set:not(.on) { border-color: color-mix(in srgb, var(--good) 40%, transparent); }
+
+/* Timer */
+.timer { position: fixed; z-index: 25; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(84px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--surface); border-radius: 999px; padding: 6px; display: flex; align-items: center; gap: 4px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+@media (min-width: 960px) { .timer { bottom: max(24px, env(safe-area-inset-bottom, 0px)); } }
+.timer button { border: 0; background: transparent; color: inherit; padding: 8px 11px; border-radius: 999px; font-weight: 700; font-size: 14px; font-family: var(--f-mono); }
+.timer button:hover { background: color-mix(in srgb, var(--surface) 15%, transparent); }
+.timer .clock { font-family: var(--f-mono); font-size: 20px; font-weight: 600; padding: 4px 12px; min-width: 76px; text-align: center; }
+.timer.running { background: var(--accent); color: var(--accent-ink); }
+.timer-ico { width: 18px; height: 18px; margin-left: 8px; }
+
+/* Library */
+.lib-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.lib-card { border: 0; text-align: left; background: var(--surface); border-radius: var(--r); box-shadow: var(--shadow); padding: 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.lib-card:hover { outline: 2px solid var(--line); }
+.lib-card p { font-size: 14px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.cat-ico { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--surface-2); color: var(--accent); }
+.cat-ico svg { width: 22px; height: 22px; }
+
+/* Sheet */
+.sheet { position: fixed; inset: 0; z-index: 50; display: grid; }
+.sheet-bg { position: absolute; inset: 0; background: rgba(8,12,18,.45); animation: fade .2s ease; }
+.sheet-panel { position: absolute; left: 0; right: 0; bottom: 0; max-height: 92%; overflow-y: auto; background: var(--surface); border-radius: 22px 22px 0 0; padding: 22px max(20px, env(safe-area-inset-right, 0px)) calc(28px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); display: grid; gap: 18px; align-content: start; animation: up .25s ease; }
+@media (min-width: 760px) { .sheet-panel { left: auto; top: 0; width: min(560px, 92vw); max-height: none; border-radius: 22px 0 0 22px; padding: calc(28px + env(safe-area-inset-top, 0px)) max(28px, env(safe-area-inset-right, 0px)) 28px 28px; animation: slide .25s ease; } }
+@keyframes fade { from { opacity: 0; } }
+@keyframes up { from { transform: translateY(30px); opacity: .5; } }
+@keyframes slide { from { transform: translateX(40px); opacity: .5; } }
+@media (prefers-reduced-motion: reduce) { .sheet-bg, .sheet-panel { animation: none; } .progress-bar span { transition: none; } }
+.sheet-panel h2 { font-size: 26px; }
+.why { background: var(--accent-soft); border-radius: 14px; padding: 14px 16px; }
+.steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 10px; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 30px 1fr; gap: 10px; }
+.steps li::before { content: counter(s); width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: var(--surface); display: grid; place-items: center; font-weight: 700; font-size: 13px; font-family: var(--f-mono); }
+.bul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.two { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 520px) { .two { grid-template-columns: 1fr 1fr; } }
+.mini { background: var(--surface-2); border-radius: 12px; padding: 12px 14px; display: grid; gap: 4px; font-size: 15px; }
+a { color: var(--left); font-weight: 600; }
+
+/* Plan */
+.phase-track { display: grid; gap: 10px; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.ph { border: 0; text-align: left; border-radius: 14px; padding: 12px; background: var(--surface-2); display: grid; gap: 2px; min-width: 0; }
+.ph .n { font-family: var(--f-mono); font-size: 12px; color: var(--faint); }
+.ph .nm { font-family: var(--f-display); font-stretch: 112%; font-weight: 750; font-size: 16px; }
+.ph .w { font-size: 12px; color: var(--muted); }
+.ph.cur { background: var(--accent); color: var(--accent-ink); }
+.ph.cur .n, .ph.cur .w { color: inherit; opacity: .85; }
+.ph.sel:not(.cur) { outline: 2px solid var(--ink); }
+@media (max-width: 600px) { .phase-track { grid-template-columns: repeat(5, 120px); overflow-x: auto; padding-bottom: 4px; } }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; }
+td.num, th.num { text-align: right; }
+.check { display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; padding: 10px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+.check:last-child { border-bottom: 0; }
+.check input { width: 22px; height: 22px; accent-color: var(--good); margin: 2px 0 0; }
+.dx { display: grid; gap: 10px; }
+.dx-item { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; }
+.sev { font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 4px 8px; border-radius: 6px; white-space: nowrap; }
+
+/* Charts */
+.chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.chart .grid line { stroke: var(--line); stroke-width: 1; }
+.chart .axis text { fill: var(--faint); font-size: 11px; font-family: var(--f-mono); }
+.legend { display: flex; gap: 14px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+.heat { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 1fr); gap: 4px; }
+.heat-wrap { overflow-x: auto; display: grid; grid-template-columns: auto 1fr; gap: 6px; }
+.heat-days { display: grid; grid-template-rows: repeat(7, 1fr); gap: 4px; font-size: 10px; color: var(--faint); font-family: var(--f-mono); }
+.heat-days span { height: 18px; line-height: 18px; }
+.heat .c { width: 18px; height: 18px; border-radius: 5px; background: var(--surface-2); border: 0; padding: 0; }
+.heat .c.l1 { background: color-mix(in srgb, var(--accent) 25%, var(--surface-2)); }
+.heat .c.l2 { background: color-mix(in srgb, var(--accent) 55%, var(--surface-2)); }
+.heat .c.l3 { background: var(--accent); }
+.heat .c.today { outline: 2px solid var(--ink); outline-offset: 1px; }
+.heat .c.future { opacity: .45; }
+.heat-legend { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
+.heat-legend .c { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.stage { display: grid; grid-template-columns: 32px 1fr; gap: 10px; align-items: center; padding: 8px 0; }
+.stage .b { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-family: var(--f-mono); font-size: 12px; font-weight: 600; background: var(--surface-2); color: var(--muted); }
+.stage.done .b { background: var(--good); color: var(--surface); }
+.stage.cur .b { background: var(--accent); color: var(--accent-ink); }
+.stage.cur .t { font-weight: 700; }
+.lsi { font-family: var(--f-mono); font-weight: 600; }
+.form-grid { display: grid; gap: 10px; grid-template-columns: 1fr 1fr 1fr; align-items: center; }
+.form-grid .lab { font-size: 14px; font-weight: 600; }
+.notice { border-radius: 14px; padding: 14px 16px; background: var(--left-soft); display: grid; gap: 6px; }
+.notice.warn { background: var(--warn-soft); }
+.notice.bad { background: var(--bad-soft); }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(96px + env(safe-area-inset-bottom, 0px)); z-index: 60; background: var(--ink); color: var(--surface); padding: 12px 18px; border-radius: 12px; font-weight: 600; font-size: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.25); max-width: calc(100% - 32px); }
+@media (min-width: 960px) { .toast { bottom: 32px; } }
+.empty { text-align: center; padding: 30px 10px; color: var(--muted); }
+.ring { width: 64px; height: 64px; flex: none; }
+.ring circle { fill: none; stroke-width: 7; }
+.ring .bgc { stroke: var(--line); }
+.ring .fg { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset .4s ease; }
+.ring text { font-family: var(--f-mono); font-size: 15px; font-weight: 600; fill: var(--ink); }
+</style>
+</head><body>
+<div class="shell">
+  <aside class="rail" aria-label="Main navigation">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.5l3.5 8.5L8 20.5"/><circle cx="12.5" cy="12" r="2.4" fill="currentColor"/></svg></div>
+      <div><div class="brand-name">Knee Comeback</div><div class="brand-sub">16-week home rehab</div></div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="rail-card" id="railCard"></div>
+  </aside>
+  <main class="main"><div class="wrap" id="view"></div></main>
+</div>
+<nav class="tabbar" id="tabbar" aria-label="Main navigation"></nav>
+<div class="timer" id="timer" aria-label="Hold and rest timer"></div>
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-bg" data-act="close-sheet"></div>
+  <div class="sheet-panel" id="sheetPanel" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div>
+</div>
+<div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
+
+<script>
+/* ---------- Exercise library ---------- */
+const EX = {
+  'cardio': {
+    name: 'Easy cardio: bike or walk', cat: 'Cardio', target: 'Heart, lungs, joint nutrition',
+    why: 'Your meniscus and cartilage have almost no blood supply. They get nutrients when joint fluid is squeezed in and out by movement, so easy, rhythmic motion is one of the best things you can do for them.',
+    setup: 'Stationary bike: set the saddle so your knee is only slightly bent (about 25–30°) when the pedal is at the bottom. A saddle that is too low forces deep bending under load. Walking: flat, even ground in supportive shoes.',
+    steps: ['Start with 3–5 minutes very easy.', 'Bike: low resistance, smooth cadence of 70–90 rpm. Walk: comfortable brisk pace.', 'You should be able to talk in full sentences the whole time.', 'Finish with 2–3 easy minutes.'],
+    cues: ['Knees track straight up and down over the pedals.', 'Push through the ball of the foot, not the toes.'],
+    avoid: ['Saddle too low (knee bends past 110° at the top).', 'Heavy resistance or standing climbs in the first 6 weeks.'],
+    easier: 'Shorter sessions (10–15 min), twice a day.', harder: 'Add 5 minutes per week up to 40 minutes.',
+    q: 'stationary bike seat height knee rehab'
+  },
+  'quad-set': {
+    name: 'Quad set', cat: 'Strength', target: 'Quadriceps, especially the inner quad (VMO)',
+    why: 'After meniscus irritation the quadriceps is the first muscle to switch off. A strong, active quad absorbs force before it reaches the meniscus and keeps the kneecap tracking well. This is the foundation for everything later.',
+    setup: 'Sit on the floor or bed with both legs straight. Put a small rolled towel under the knee you are working.',
+    steps: ['Tighten the front of your thigh to press the back of your knee down into the towel.', 'Your kneecap should slide up slightly towards your hip.', 'Hold firmly for 5 seconds while breathing normally.', 'Relax fully for 3 seconds. That is one rep.'],
+    cues: ['Toes point to the ceiling and pull slightly towards you.', 'Feel the teardrop muscle just above and inside the kneecap go hard.'],
+    avoid: ['Holding your breath.', 'Lifting the heel by using the hip instead of the thigh.'],
+    easier: 'Push less hard and hold 3 seconds.', harder: 'Hold 10 seconds, or do it standing with the knee locked.',
+    q: 'quad set exercise knee'
+  },
+  'slr': {
+    name: 'Straight leg raise', cat: 'Strength', target: 'Quadriceps, hip flexors',
+    why: 'Strengthens the quad with the knee fully straight, so there is zero load on the meniscus. It also tests whether you can lock the knee out. If the knee bends as you lift ("quad lag"), the quad is not ready for harder work yet.',
+    setup: 'Lie on your back. Bend the other knee with that foot flat on the floor, which protects your lower back.',
+    steps: ['Do a quad set first so the working knee is locked straight.', 'Keeping it locked, lift the leg to the height of your other knee (about 45 cm).', 'Pause for 2 seconds at the top.', 'Lower slowly over 3 seconds and relax on the floor.'],
+    cues: ['The knee stays perfectly straight the entire time.', 'Toes pulled up towards you.'],
+    avoid: ['Letting the knee bend as you lift.', 'Swinging the leg up quickly.', 'Arching your lower back.'],
+    easier: 'Lift lower, to 20 cm.', harder: 'Add a 1–2 kg ankle weight or a resistance band around both ankles.',
+    q: 'straight leg raise physiotherapy'
+  },
+  'tke': {
+    name: 'Terminal knee extension (band)', cat: 'Strength', target: 'Quadriceps in the last 30° of straightening',
+    why: 'Trains the final degrees of knee straightening while standing, which is how the knee "locks" for stability when you walk. Because the foot is on the floor (closed chain), it strengthens the quad without pulling the shin forward against your healing ACL.',
+    setup: 'Loop a resistance band around something solid at knee height (a table leg or door anchor). Step into the loop so the band sits behind the working knee, and face the anchor.',
+    steps: ['Stand with the working knee slightly bent (about 30°) and the band pulling it forward.', 'Straighten the knee fully against the band by squeezing your thigh.', 'Hold the locked position for 2 seconds.', 'Let the knee bend back slowly under control.'],
+    cues: ['Keep your heel on the floor.', 'Imagine pushing the back of the knee backwards into the band.'],
+    avoid: ['Snapping the knee back into hyperextension.', 'Leaning your whole body back instead of moving at the knee.'],
+    easier: 'Lighter band or stand closer to the anchor.', harder: 'Heavier band, or stand on just the working leg.',
+    q: 'terminal knee extension band'
+  },
+  'bridge': {
+    name: 'Glute bridge', cat: 'Strength', target: 'Glutes, hamstrings',
+    why: 'Strong glutes stop the knee from caving inwards (valgus). Knee collapse with twisting is the main way the ACL and the medial meniscus get injured, so this is protective for both of your diagnoses.',
+    setup: 'Lie on your back, knees bent to about 90°, feet flat and hip-width apart, arms by your sides.',
+    steps: ['Brace your stomach gently and press through your heels.', 'Lift your hips until shoulders, hips and knees form a straight line.', 'Squeeze your glutes and hold for 3 seconds.', 'Lower slowly over 3 seconds.'],
+    cues: ['Knees stay hip-width apart, as if holding a ball between them.', 'Feel it mainly in your buttocks.'],
+    avoid: ['Arching the lower back at the top.', 'Mostly feeling hamstring cramp. If so, move your feet closer to your hips.'],
+    easier: 'Smaller lift, shorter hold.', harder: 'Band above the knees, a dumbbell on the hips, or the single-leg version.',
+    q: 'glute bridge proper form'
+  },
+  'clamshell': {
+    name: 'Clamshell (band)', cat: 'Strength', target: 'Gluteus medius, hip external rotators',
+    why: 'The gluteus medius controls the hip so that the knee stays lined up over the foot. Weakness here is strongly linked to knee collapse during landing and cutting.',
+    setup: 'Lie on your side with hips bent about 45°, knees bent 90° and stacked, feet together. Put a mini band just above the knees.',
+    steps: ['Keep your feet touching.', 'Open the top knee like a clamshell, without letting your pelvis roll backwards.', 'Pause for 1 second at the top.', 'Close slowly.'],
+    cues: ['Put a hand on your top hip to feel that it does not move.', 'You should feel a burn at the side or back of the hip.'],
+    avoid: ['Rolling the top hip back to get more height.', 'Going too fast.'],
+    easier: 'No band.', harder: 'Heavier band, or lift the feet slightly off the floor first.',
+    q: 'clamshell exercise band'
+  },
+  'side-abd': {
+    name: 'Side-lying hip abduction', cat: 'Strength', target: 'Gluteus medius',
+    why: 'Builds the same hip stabiliser as the clamshell, but with a long lever, which is more demanding and closer to its job when you stand on one leg.',
+    setup: 'Lie on your side with the bottom knee bent for balance. The top leg is straight and slightly behind your body, toes pointing forward.',
+    steps: ['Lift the top leg up to about 30–40° (around 30 cm).', 'Lead with the heel, keeping toes facing forward or slightly down.', 'Pause for 1 second.', 'Lower over 3 seconds.'],
+    cues: ['Stay stacked; do not roll back.', 'The burn should be at the side of the hip.'],
+    avoid: ['Turning the toes up to the ceiling, which uses the hip flexor instead.', 'Swinging the leg forward.'],
+    easier: 'Smaller range.', harder: 'Ankle weight or a band around the ankles.',
+    q: 'side lying hip abduction'
+  },
+  'ham-iso': {
+    name: 'Hamstring isometric (heel dig)', cat: 'Strength', target: 'Hamstrings',
+    why: 'Your hamstrings pull the shin backwards, which shares the ACL’s job of stopping the shin sliding forward. With partial ACL tears in both knees, strong hamstrings are one of your main protections. Holding without movement is a gentle start.',
+    setup: 'Sit or lie with the working knee bent about 30–45° and the heel on the floor or bed.',
+    steps: ['Dig your heel down and pull it towards your buttock as if dragging the floor, without letting it actually move.', 'Build to about 70% effort.', 'Hold for 5 seconds.', 'Relax for 5 seconds.'],
+    cues: ['You should feel the back of the thigh tighten.', 'Breathe normally.'],
+    avoid: ['Going straight to maximum effort, which can cramp.'],
+    easier: 'Use 50% effort.', harder: 'Hold 10 seconds, or try it at different knee angles.',
+    q: 'isometric hamstring heel dig'
+  },
+  'calf-raise': {
+    name: 'Calf raise (both legs)', cat: 'Strength', target: 'Calves (gastrocnemius and soleus)',
+    why: 'The calves are your first shock absorbers in walking, running and landing. Strong calves take a large share of load away from the knee, and you will need them for running.',
+    setup: 'Stand with feet hip-width apart, lightly holding a wall or chair for balance.',
+    steps: ['Rise onto the balls of your feet over 2 seconds.', 'Pause at the top for 1 second.', 'Lower slowly over 3 seconds.'],
+    cues: ['Push through the big toe and second toe so your ankles do not roll out.', 'Keep your knees straight but not locked.'],
+    avoid: ['Bouncing.', 'Rolling onto the outside of the foot.'],
+    easier: 'Smaller range.', harder: 'Do it on a step edge for more range, then move on to single-leg raises.',
+    q: 'calf raise proper form'
+  },
+  'wall-sit': {
+    name: 'Wall sit', cat: 'Strength', target: 'Quadriceps, glutes (isometric)',
+    why: 'Holding a squat position builds quad strength and endurance, and isometric holds tend to reduce knee pain. Keeping the angle shallow early keeps pressure off the back of the meniscus.',
+    setup: 'Stand with your back flat against a wall and your feet about 40–50 cm in front of you, hip-width apart.',
+    steps: ['Slide down the wall to the angle in your session: 45° in Phase 1, 60° in Phase 2.', 'Check that your knees are over your ankles, not past your toes.', 'Hold for the prescribed time while breathing steadily.', 'Slide back up.'],
+    cues: ['Weight through the heels and midfoot.', 'Knees point the same way as your second toe.'],
+    avoid: ['Going to 90° or deeper too early.', 'Knees falling inwards.'],
+    easier: 'A higher position or shorter hold.', harder: 'Longer holds, or shift more weight onto one leg.',
+    q: 'wall sit exercise form'
+  },
+  'sl-balance': {
+    name: 'Single-leg balance', cat: 'Balance', target: 'Knee position sense, ankle and hip stabilisers',
+    why: 'The ACL contains nerve sensors that tell your brain where the knee is. A partial tear dulls that signal, which is why the knee can feel "not trustworthy". Balance training retrains these reflexes, so your muscles react quickly enough to protect the knee.',
+    setup: 'Stand next to a wall or counter in case you need to touch it.',
+    steps: ['Stand on one leg with the knee slightly soft (5–10° bend).', 'Keep your hips level and your trunk tall.', 'Hold for the prescribed time, then switch legs.'],
+    cues: ['Knee over the second toe.', 'Grip the floor lightly with the whole foot.'],
+    avoid: ['Locking the knee straight.', 'Letting the hip on the lifted side drop.'],
+    easier: 'Touch the wall with one finger.', harder: 'Close your eyes, turn your head side to side, or stand on a pillow.',
+    q: 'single leg balance knee'
+  },
+  'dead-bug': {
+    name: 'Dead bug', cat: 'Core', target: 'Deep abdominals',
+    why: 'A stable trunk means less wobble reaches the knee when you land, run or ride. The dead bug trains core control without straining your back.',
+    setup: 'Lie on your back with arms pointing at the ceiling, hips and knees bent to 90° (tabletop).',
+    steps: ['Flatten your lower back gently into the floor.', 'Slowly straighten one leg and lower the opposite arm overhead, stopping just above the floor.', 'Return to the start, then switch sides. Each side is one rep.'],
+    cues: ['Exhale as you extend.', 'Your lower back must not lift off the floor.'],
+    avoid: ['Moving fast.', 'Arching your back as the leg goes out.'],
+    easier: 'Move only the legs, or only tap the heel to the floor.', harder: 'Hold a light dumbbell in your hands.',
+    q: 'dead bug exercise'
+  },
+  'heel-slide': {
+    name: 'Heel slide', cat: 'Mobility', target: 'Knee bending range',
+    why: 'Keeps your full knee bend without any load on the meniscus. Gentle movement also helps nourish the joint.',
+    setup: 'Lie on your back with legs straight. A sock on a smooth floor or a towel under the heel helps it slide.',
+    steps: ['Slowly slide your heel towards your buttock as far as is comfortable.', 'Hold for 2 seconds.', 'Slide back out until the knee is fully straight.'],
+    cues: ['Smooth and slow.', 'Finish each rep with the knee completely straight.'],
+    avoid: ['Forcing the end of the bend if you feel a pinch at the back-inside of the knee, where your tears are. Stop just before that point.'],
+    easier: 'Smaller range.', harder: 'Use a strap around the foot to add a gentle stretch at the end.',
+    q: 'heel slide exercise knee'
+  },
+  'ham-stretch': {
+    name: 'Hamstring stretch', cat: 'Mobility', target: 'Hamstrings',
+    why: 'Tight hamstrings change how you squat and land, and limit your hip hinge. Keeping them supple also lets the strength work go through full range.',
+    setup: 'Lie on your back with a strap or towel around the ball of one foot.',
+    steps: ['Raise the leg with the knee almost straight until you feel a stretch behind the thigh.', 'Hold for 30 seconds, breathing slowly.', 'Lower and switch legs.'],
+    cues: ['Keep your back and the other leg flat on the floor.', 'Aim for a stretch of about 4/10, never pain.'],
+    avoid: ['Bouncing.', 'Pulling so hard that you feel it behind the knee rather than in the thigh.'],
+    easier: 'Bend the knee a little more.', harder: 'Pull your toes towards you to include the calf.',
+    q: 'lying hamstring stretch strap'
+  },
+  'calf-stretch': {
+    name: 'Calf stretch (wall)', cat: 'Mobility', target: 'Gastrocnemius, soleus',
+    why: 'Stiff calves limit how far the shin can tip forward, which pushes extra strain into the knee during squats, stairs and running.',
+    setup: 'Face a wall with your hands on it, one foot forward and one back, both toes pointing forward.',
+    steps: ['Keep the back knee straight and the heel down, and lean forward until you feel the calf stretch. Hold 30 seconds.', 'Then bend the back knee slightly, keeping the heel down, to stretch the lower calf (soleus). Hold 30 seconds.', 'Switch legs.'],
+    cues: ['The back heel stays glued to the floor.'],
+    avoid: ['Letting the back foot turn out.'],
+    easier: 'A shorter stance.', harder: 'A longer stance, or stand on a step edge and drop the heel.',
+    q: 'wall calf stretch soleus'
+  },
+  'hip-flexor': {
+    name: 'Hip flexor stretch', cat: 'Mobility', target: 'Hip flexors, front of the thigh',
+    why: 'Long hours sitting, and riding in particular, shorten the hip flexors. This tilts the pelvis and changes how the quads load the knee.',
+    setup: 'Half-kneel with the back knee on a cushion and the front foot flat, front knee at 90°.',
+    steps: ['Tuck your tailbone under and squeeze the glute of the back leg.', 'Shift your body forward slightly until you feel a stretch at the front of the back hip.', 'Hold for 30 seconds, then switch sides.'],
+    cues: ['Stay tall, without leaning back.', 'A small movement is enough.'],
+    avoid: ['Arching your lower back.', 'Kneeling without padding.'],
+    easier: 'Do it standing in a split stance.', harder: 'Reach the same-side arm overhead.',
+    q: 'half kneeling hip flexor stretch'
+  },
+  'foam-roll': {
+    name: 'Foam roll', cat: 'Mobility', target: 'Quads, outer hip, calves',
+    why: 'Reduces muscle tightness around the knee and makes the rest of the session feel smoother.',
+    setup: 'Use a foam roller or a firm rolling pin on the floor.',
+    steps: ['Front of the thighs: 60 seconds.', 'Outer hip, the area just below the hip bone (TFL): 60 seconds.', 'Calves: 60 seconds per leg.', 'Roll slowly and pause on tight spots for 10 seconds.'],
+    cues: ['Discomfort around 5/10 is fine.', 'Breathe out on tight spots.'],
+    avoid: ['Rolling directly over the knee joint or the kneecap.', 'Grinding hard on the IT band; the outer hip is more useful.'],
+    easier: 'Take more weight on your hands.', harder: 'Stack one leg on top of the other.',
+    q: 'foam rolling quads calves'
+  },
+  'box-squat': {
+    name: 'Squat to chair', cat: 'Strength', target: 'Quadriceps, glutes',
+    why: 'Your first loaded squat pattern. The chair sets a depth limit, about 60–70° of knee bend, which builds strength while keeping compression on the back of the meniscus low.',
+    setup: 'Stand in front of a sturdy chair, feet shoulder-width apart and toes turned out slightly.',
+    steps: ['Push your hips back and down as if sitting.', 'Lightly tap the chair with your buttocks without sitting or relaxing.', 'Stand up by driving through your whole foot, squeezing the glutes at the top.', 'Take 3 seconds down and 1–2 seconds up.'],
+    cues: ['Knees track over the second and third toes.', 'Chest proud, weight in the heels and midfoot.'],
+    avoid: ['Knees caving in.', 'Plopping down onto the chair.', 'Rising onto your toes.'],
+    easier: 'Use a higher seat (add a cushion).', harder: 'Hold a dumbbell at your chest, or use a lower seat.',
+    q: 'box squat to chair form'
+  },
+  'step-up': {
+    name: 'Step-up', cat: 'Strength', target: 'Quadriceps, glutes (single leg)',
+    why: 'Single-leg strength is the key to running, stairs and riding standing up. It also shows any difference between your knees that a two-leg exercise would hide.',
+    setup: 'Start with a 15–20 cm step or the bottom stair. Hold a rail or wall if needed.',
+    steps: ['Place the whole working foot on the step.', 'Lean slightly forward and push through that heel to stand up tall.', 'Do not push off with the bottom foot; it just comes along.', 'Lower slowly back down over 3 seconds.'],
+    cues: ['Knee stays over the second toe.', 'Hips level, no hip hiking.'],
+    avoid: ['Bouncing off the back foot.', 'Knee diving inwards.'],
+    easier: 'A lower step.', harder: 'A higher step, or hold dumbbells.',
+    q: 'step up exercise knee form'
+  },
+  'rdl': {
+    name: 'Romanian deadlift (dumbbells)', cat: 'Strength', target: 'Hamstrings, glutes, back',
+    why: 'This is the main hamstring and glute strengthener in your plan. The hamstrings work with the ACL to keep the shin from sliding forward, and the knee barely moves, so the meniscus is safe.',
+    setup: 'Stand tall holding dumbbells in front of your thighs, feet hip-width apart, knees softly bent.',
+    steps: ['Push your hips back as if closing a car door with your buttocks.', 'Slide the dumbbells down the front of your thighs to just below the knee, or as far as your back stays flat.', 'Feel a stretch in the hamstrings.', 'Drive your hips forward to stand up and squeeze your glutes.'],
+    cues: ['Flat back and long neck.', 'The knee bend stays the same throughout.'],
+    avoid: ['Rounding your back.', 'Turning it into a squat by bending the knees more.'],
+    easier: 'Lighter weight, or touch the dumbbells to your knees only.', harder: 'Heavier weights, or a 3-second lowering.',
+    q: 'dumbbell romanian deadlift form'
+  },
+  'sl-bridge': {
+    name: 'Single-leg bridge', cat: 'Strength', target: 'Glutes, hamstrings (each side)',
+    why: 'Loads each side on its own so the stronger leg cannot cover for the weaker one. It also builds glute strength for knee control.',
+    setup: 'Lie on your back with one knee bent and that foot flat. Hold the other leg up with the knee bent, or extend it straight.',
+    steps: ['Push through the heel on the floor and lift your hips level.', 'Hold for 2 seconds at the top.', 'Lower slowly.'],
+    cues: ['Keep your pelvis level, without dropping on the free side.', 'The working knee stays pointing straight ahead.'],
+    avoid: ['Twisting the hips.', 'Pushing through the toes.'],
+    easier: 'Lighten the load by keeping the free foot resting on the floor.', harder: 'Put your shoulders on a sofa (hip thrust), or add a weight.',
+    q: 'single leg glute bridge'
+  },
+  'band-walk': {
+    name: 'Lateral band walk and monster walk', cat: 'Strength', target: 'Gluteus medius',
+    why: 'Trains the hip muscles that stop knee collapse while you are standing and moving, which is the same job they do during cutting and landing.',
+    setup: 'Put a mini band above the knees (easier) or around the ankles (harder). Stand in a quarter squat.',
+    steps: ['Step sideways 10 steps leading with one leg, keeping tension on the band, then 10 steps back.', 'Monster walk: step diagonally forward 10 steps, then diagonally backward 10 steps.', 'Stay low the whole time.'],
+    cues: ['Toes point forward.', 'Knees stay pushed out against the band.'],
+    avoid: ['Letting the feet come together and the band go slack.', 'Rocking the trunk side to side.'],
+    easier: 'Band above the knees, standing taller.', harder: 'Band around the feet, or a stronger band.',
+    q: 'lateral band walk monster walk'
+  },
+  'sl-calf': {
+    name: 'Single-leg calf raise', cat: 'Strength', target: 'Calves (each side)',
+    why: 'Running puts 2–3 times your body weight through each leg on every stride, and the calf takes most of it. A safe running return needs 20–25 good single-leg raises on each side.',
+    setup: 'Stand on one leg holding a wall for balance. Use the edge of a step once this is easy.',
+    steps: ['Rise as high as you can on one foot over 2 seconds.', 'Pause for 1 second.', 'Lower over 3 seconds.', 'Count only full-height reps.'],
+    cues: ['Weight on the big toe.', 'Knee straight but soft.'],
+    avoid: ['Using your hands to pull yourself up.', 'Partial reps as you tire.'],
+    easier: 'Up on two legs, down on one.', harder: 'On a step edge, holding a dumbbell.',
+    q: 'single leg calf raise'
+  },
+  'side-plank': {
+    name: 'Side plank', cat: 'Core', target: 'Obliques, hip abductors',
+    why: 'Builds side core and hip strength together, the chain that keeps your pelvis level, and your knee aligned, on one leg.',
+    setup: 'Lie on your side, propped on your elbow (directly under your shoulder).',
+    steps: ['Start with your knees bent and lift your hips so you form a straight line from head to knees.', 'Hold for the prescribed time.', 'Progress to straight legs, balancing on the side of your feet.'],
+    cues: ['Push the floor away with your elbow.', 'Hips forward, not piked back.'],
+    avoid: ['Sagging hips.', 'Shoulder shrugging to your ear.'],
+    easier: 'Knees bent.', harder: 'Straight legs, or lift the top leg.',
+    q: 'side plank beginner progression'
+  },
+  'star-reach': {
+    name: 'Star excursion reach', cat: 'Balance', target: 'Dynamic single-leg control',
+    why: 'Combines balance, strength and control while the knee bends and moves. A difference in reach between your two legs is one of the best predictors of future knee injury, so it is good to train and track.',
+    setup: 'Stand on one leg in the middle of an imaginary star on the floor. Tape lines can help.',
+    steps: ['Bend the standing knee slightly.', 'Reach the other foot forward as far as you can, lightly tap the floor, and come back.', 'Repeat to the side, behind diagonally and directly behind.', 'Do the prescribed reps in each direction, then switch legs.'],
+    cues: ['Standing knee over the second toe.', 'Tap lightly; the standing leg does all the work.'],
+    avoid: ['Putting weight on the reaching foot.', 'Standing knee collapsing inwards.'],
+    easier: 'Shorter reaches.', harder: 'Reach further, or stand on a pillow.',
+    q: 'star excursion balance exercise'
+  },
+  'goblet-squat': {
+    name: 'Goblet squat', cat: 'Strength', target: 'Quadriceps, glutes, core',
+    why: 'Your main loaded squat. Holding the weight in front keeps your chest up and your squat balanced. Depth goes to 90° (thighs parallel), which strengthens the knee while keeping the posterior horn of the meniscus out of deep, compressed positions.',
+    setup: 'Hold one dumbbell vertically against your chest. Feet shoulder-width apart, toes out slightly.',
+    steps: ['Take a breath and brace.', 'Sit down between your heels for 3 seconds until your thighs are parallel to the floor.', 'Pause for 1 second.', 'Drive up through the whole foot.'],
+    cues: ['Elbows inside the knees at the bottom.', 'Knees track out over the toes.'],
+    avoid: ['Going below parallel during this program.', 'Heels lifting.', 'Knees caving in on the way up.'],
+    easier: 'Lighter dumbbell or squat to a chair.', harder: 'Heavier dumbbell in Phases 4 and 5 (sets of 6).',
+    q: 'goblet squat form'
+  },
+  'reverse-lunge': {
+    name: 'Reverse lunge', cat: 'Strength', target: 'Quadriceps, glutes (single leg)',
+    why: 'Stepping back puts much less shearing load on the front knee than a forward lunge, so it is a safe way to build lunge strength for sport.',
+    setup: 'Stand tall with feet hip-width apart. Hold dumbbells once the movement is easy.',
+    steps: ['Step one foot back about a long stride.', 'Lower until the back knee is just above the floor and the front knee is at about 90°.', 'Push through the front heel to return to standing.', 'Complete all reps on one side, then switch.'],
+    cues: ['Front shin roughly vertical.', 'Most of the weight stays on the front leg.'],
+    avoid: ['Front knee collapsing inwards.', 'Banging the back knee on the floor.'],
+    easier: 'Shorter range, holding a wall.', harder: 'Add dumbbells, or a 3-second lowering.',
+    q: 'reverse lunge form'
+  },
+  'split-squat': {
+    name: 'Bulgarian split squat', cat: 'Strength', target: 'Quadriceps, glutes (single leg)',
+    why: 'This is probably the best home exercise for single-leg strength. It builds the power you will need for jumping, cutting and standing on the pegs.',
+    setup: 'Stand about one long stride in front of a chair or sofa and rest the top of your back foot on it.',
+    steps: ['Lower straight down until the front thigh is nearly parallel to the floor.', 'Keep your trunk tall or leaning slightly forward.', 'Push through the front heel to rise.', 'Finish all reps, then switch legs.'],
+    cues: ['Front knee over the midfoot.', 'Move straight down, not forward.'],
+    avoid: ['Front foot too close, which pushes the knee far past the toes.', 'Wobbling knee. If it wobbles, shorten the range.'],
+    easier: 'A normal split squat with the back foot on the floor.', harder: 'Hold dumbbells.',
+    q: 'bulgarian split squat form'
+  },
+  'sl-rdl': {
+    name: 'Single-leg Romanian deadlift', cat: 'Strength', target: 'Hamstrings, glutes, balance',
+    why: 'Hamstring and glute strength combined with balance on one leg, which is very close to the control you need when running and changing direction.',
+    setup: 'Stand on one leg holding a dumbbell in the opposite hand. Hold a wall with the free hand at first.',
+    steps: ['With a soft standing knee, hinge forward at the hip as the free leg swings back.', 'Lower until your trunk is nearly parallel to the floor, or as far as you stay balanced.', 'Return by driving your hips forward.'],
+    cues: ['Hips stay square to the floor; the free toes point down.', 'Your body moves like a seesaw.'],
+    avoid: ['Rounding your back.', 'Opening the hip so the free leg rotates outward.'],
+    easier: 'No weight, with a wall for support.', harder: 'A heavier dumbbell, or a slow 4-second lowering.',
+    q: 'single leg romanian deadlift dumbbell'
+  },
+  'slider-curl': {
+    name: 'Hamstring slider curl', cat: 'Strength', target: 'Hamstrings (lowering strength)',
+    why: 'Trains the hamstrings while they lengthen under load, which is how they protect the knee and the ACL in sprinting and landing.',
+    setup: 'Lie on your back with heels on towels on a smooth floor (or on sliders), knees bent.',
+    steps: ['Lift your hips into a bridge.', 'Slowly slide your heels away over 3–4 seconds while keeping the hips up.', 'Pull your heels back in towards you.', 'If you cannot pull back yet, lower your hips and reset.'],
+    cues: ['Hips high and glutes squeezed.', 'Slow on the way out.'],
+    avoid: ['Hips dropping at the start.', 'Cramping. If it happens, shorten the slide.'],
+    easier: 'Slide out only, lower your hips, and restart.', harder: 'Single leg.',
+    q: 'hamstring slider curl'
+  },
+  'step-down': {
+    name: 'Lateral step-down', cat: 'Strength', target: 'Quadriceps control (lowering), hip stability',
+    why: 'This is the classic test and training exercise for knee control: slowly lowering your body weight on one leg with the knee in line. It is exactly what protects the knee when you land or step off a bike.',
+    setup: 'Stand side-on at the edge of a stair on the working leg. The other leg hangs off the side.',
+    steps: ['Slowly bend the standing knee over 3 seconds until the free heel lightly touches the floor.', 'Do not put weight on that heel.', 'Straighten back up.'],
+    cues: ['Knee stays over the second toe, as if a laser on your kneecap points straight ahead.', 'Hips level.'],
+    avoid: ['Knee diving inwards.', 'Hip dropping on the free side.', 'Bouncing off the floor.'],
+    easier: 'A lower step, holding a rail.', harder: 'A higher step, or hold a dumbbell.',
+    q: 'lateral step down knee control'
+  },
+  'copenhagen': {
+    name: 'Copenhagen plank (short lever)', cat: 'Strength', target: 'Adductors (inner thigh), core',
+    why: 'The inner thigh muscles help stabilise the inside of the knee, where both of your meniscus tears are. Putting your knee on the bench (short lever) keeps strain off the knee joint itself.',
+    setup: 'Lie on your side next to a sofa or bench. Rest the inside of your top knee on it, with the bottom leg free underneath.',
+    steps: ['Push down through the top knee and lift your hips into a side plank, propped on your elbow.', 'Bring the bottom leg up to touch the bench if you can.', 'Hold for the prescribed time, then switch sides.'],
+    cues: ['A straight line from head to knees.', 'Squeeze the top leg down into the bench.'],
+    avoid: ['Putting the foot on the bench (long lever). This strains the inside of the knee; save it for later.', 'Hips sagging.'],
+    easier: 'Keep the bottom foot on the floor for help.', harder: 'Longer holds, or slow hip dips.',
+    q: 'copenhagen plank short lever'
+  },
+  'cushion-catch': {
+    name: 'Cushion balance with catches', cat: 'Balance', target: 'Reactive knee control',
+    why: 'Adds an unstable surface and a distraction (the ball), so your knee has to stabilise automatically, without you thinking about it. This is exactly what happens on rough ground or when riding.',
+    setup: 'Stand on a folded pillow, sofa cushion or balance pad, close to a wall.',
+    steps: ['Balance on one leg with a soft knee.', 'Throw a ball against the wall and catch it, or have someone throw to you in different directions.', 'Keep going for the prescribed time, then switch legs.'],
+    cues: ['Knee stays over the toes even when you reach.', 'Look at the ball, not your knee.'],
+    avoid: ['Locking the knee.', 'Doing it while tired at the end of a hard session.'],
+    easier: 'Firm floor, or a soft ball.', harder: 'Throw to the sides, or use a heavier ball.',
+    q: 'single leg balance pad ball toss'
+  },
+  'bike-intervals': {
+    name: 'Bike intervals', cat: 'Cardio', target: 'Fitness, leg endurance',
+    why: 'Builds the fitness for sport and riding with no impact. Short harder bursts raise your fitness faster than steady riding alone.',
+    setup: 'Stationary bike with the same saddle height as for easy cardio. Warm up for 5 minutes.',
+    steps: ['Ride 30 seconds hard (effort 7–8/10), seated.', 'Ride 90 seconds very easy.', 'Repeat 8 times.', 'Cool down for 5 minutes.'],
+    cues: ['Get more effort from higher cadence rather than very heavy resistance.'],
+    avoid: ['Standing sprints before Phase 4.'],
+    easier: 'Do 5 rounds.', harder: 'Do 10–12 rounds, or 40 seconds hard and 80 seconds easy.',
+    q: 'stationary bike interval workout'
+  },
+  'nordic': {
+    name: 'Nordic hamstring curl (assisted)', cat: 'Strength', target: 'Hamstrings (eccentric)',
+    why: 'This exercise has the strongest research evidence for preventing hamstring injuries, and it is part of ACL injury prevention programs. Strong hamstrings that work while lengthening act as a backup ACL.',
+    setup: 'Kneel on a cushion with your ankles anchored under a sofa or held by someone. For assistance, loop a strong band from a high anchor behind you around your chest.',
+    steps: ['Keep your body straight from knees to head.', 'Lean forward as slowly as you can while resisting with your hamstrings.', 'When you cannot hold any longer, catch yourself with your hands in a push-up.', 'Push yourself back up to the start; do not curl up with the hamstrings yet.'],
+    cues: ['Hips stay forward and do not bend.', 'Aim for a 3–5 second lowering.'],
+    avoid: ['Bending at the hips to make it easier.', 'Doing it the day before running sessions in the first weeks, as you will be sore.'],
+    easier: 'A thicker band, or a smaller range.', harder: 'Less band, or a slower lowering.',
+    q: 'assisted nordic hamstring curl band'
+  },
+  'dyn-warmup': {
+    name: 'Dynamic warm-up', cat: 'Cardio', target: 'Whole body, before impact',
+    why: 'Jumps and runs must never be done cold. Warm muscles react faster and protect the knee better, and this is the warm-up used in ACL prevention programs.',
+    setup: 'A hallway or about 10 m of space.',
+    steps: ['3 minutes of brisk walking or easy bike.', 'Leg swings: 10 forward-back and 10 side to side per leg.', 'Walking knee hugs and walking quad pulls: 10 each.', 'High knees and butt kicks: 2 × 10 m each.', 'Small squats and calf raises: 10 each.'],
+    cues: ['Gradually go from slow to brisk.'],
+    avoid: ['Skipping it when short on time. Cut the session instead.'],
+    easier: '', harder: '',
+    q: 'dynamic warm up before running'
+  },
+  'pogo': {
+    name: 'Pogo hops', cat: 'Plyometric', target: 'Calf and Achilles stiffness, impact tolerance',
+    why: 'Your first impact exercise. The ankle springs do most of the work, so the knee gets used to impact gradually before bigger jumps and running.',
+    setup: 'Stand on a firm floor with shoes on, feet hip-width apart.',
+    steps: ['Bounce quickly on the balls of your feet, 2–3 cm off the floor.', 'Knees stay almost straight; the ankles do the work.', 'Do the prescribed number of contacts, then rest 60 seconds.'],
+    cues: ['Light and quiet, like a skipping rope.', 'Short floor contact.'],
+    avoid: ['Landing on your heels.', 'Bending the knees a lot to absorb each bounce.'],
+    easier: 'Fewer contacts, or holding a counter.', harder: 'Higher hops, forward and backward hops, then single leg.',
+    q: 'pogo hops exercise'
+  },
+  'rope': {
+    name: 'Skipping rope', cat: 'Plyometric', target: 'Rhythm, calf endurance, coordination',
+    why: 'Repeated low impact that builds the springiness and calf endurance you need for running.',
+    setup: 'Use a rope that reaches your armpits when you stand on its middle. Shoes on and firm, flat ground.',
+    steps: ['Basic two-foot bounce, small jumps.', 'Work for the prescribed time and rest for the same time.', 'Progress to alternate-foot skipping in Phase 5.'],
+    cues: ['Land softly on the balls of your feet.', 'The wrists turn the rope, not the arms.'],
+    avoid: ['Jumping high.', 'Continuing when tired or clumsy.'],
+    easier: 'Jump without the rope.', harder: 'Longer bouts, or alternate feet.',
+    q: 'jump rope basics beginner'
+  },
+  'drop-squat': {
+    name: 'Drop squat (landing drill)', cat: 'Plyometric', target: 'Landing mechanics',
+    why: 'Most ACL injuries happen in a stiff-legged landing with the knee caving in. This drill builds a safe landing position until it becomes automatic: knees bent, hips back and knees over the toes.',
+    setup: 'Stand tall on your toes with arms raised.',
+    steps: ['Quickly drop into a quarter to half squat, swinging your arms down and back.', 'Land with both feet flat and freeze.', 'Hold the landing for 2 seconds and check your position.', 'Stand back up and repeat.'],
+    cues: ['Knees over the toes, hips back, chest over the knees.', 'Quiet feet.'],
+    avoid: ['Knees touching or caving in.', 'Landing upright and stiff.'],
+    easier: 'Slow it down.', harder: 'Do it faster, then on one leg.',
+    q: 'drop squat landing drill'
+  },
+  'squat-jump': {
+    name: 'Squat jump with stick landing', cat: 'Plyometric', target: 'Power, landing control',
+    why: 'Your first real jump. The focus is on the landing, not the height.',
+    setup: 'Feet shoulder-width apart, on a firm floor.',
+    steps: ['Squat to a quarter depth and jump 10–20 cm.', 'Land softly in the drop-squat position.', 'Hold the landing for 2 seconds.', 'Reset fully between reps.'],
+    cues: ['Land toe-to-heel, quietly.', 'Knees track over the toes.'],
+    avoid: ['Chasing height.', 'Doing reps continuously before the landing is perfect.'],
+    easier: 'Smaller jumps.', harder: 'Higher jumps, then continuous jumps.',
+    q: 'squat jump soft landing technique'
+  },
+  'hop-stick': {
+    name: 'Single-leg hop and stick', cat: 'Plyometric', target: 'Single-leg landing control',
+    why: 'Landing on one leg is the moment of greatest risk for the ACL. Practising controlled single-leg landings directly prepares you for sport and for hop tests.',
+    setup: 'A clear floor with a line to hop over.',
+    steps: ['Stand on one leg.', 'Forward: hop about 30 cm forward and land on the same leg.', 'Stick it for 3 seconds with the knee bent and over the toes.', 'Lateral: hop sideways over a line and stick it the same way.', 'Do the prescribed reps per leg and per direction.'],
+    cues: ['Quiet landing.', 'Hips level and trunk stable.'],
+    avoid: ['Wobbling. If you cannot stick it, shorten the hop.', 'Knee caving in.'],
+    easier: 'Hop from two feet and land on one.', harder: 'Longer hops, or hop and then hop again.',
+    q: 'single leg hop and stick'
+  },
+  'run-program': {
+    name: 'Walk–jog program', cat: 'Running', target: 'Gradual return to running',
+    why: 'Running loads tissues that have not seen impact for months. Building up in small stages lets the meniscus, cartilage and tendons adapt. Most running setbacks come from doing too much too soon.',
+    setup: 'Flat, even ground (a track, park path or treadmill) and supportive running shoes. Do the dynamic warm-up first.',
+    steps: ['Do the stage shown in today’s session (see the Run program card on the Progress tab).', 'Run at an easy, conversational pace.', 'The next morning, check your knee: pain above 2/10, swelling or stiffness means repeat the stage.', 'If you feel good both during and the next morning, move up one stage next time.', 'Run on alternate days only, never two days in a row.'],
+    cues: ['Short, quick steps, about 165–175 steps per minute.', 'Land under your body, not out in front.'],
+    avoid: ['Hills, uneven trails and speed in this phase.', 'Skipping stages because you feel fine.'],
+    easier: 'Repeat a stage.', harder: 'Do not rush. Go one stage at a time.',
+    q: 'return to running walk jog program'
+  },
+  'box-jump': {
+    name: 'Box jump', cat: 'Plyometric', target: 'Power',
+    why: 'Builds explosive power. Landing on a box reduces impact compared with jumping on flat ground.',
+    setup: 'A stable step or box 30–40 cm high that will not slide.',
+    steps: ['Swing your arms and jump onto the box.', 'Land softly with both feet in a quarter squat.', 'Stand up tall.', 'Step down, never jump down. Reset fully.'],
+    cues: ['Land quietly, knees over the toes.'],
+    avoid: ['Jumping down off the box.', 'A box so high that you land in a deep squat.'],
+    easier: 'A lower box.', harder: 'A higher box, or single-leg take-off.',
+    q: 'box jump technique beginner'
+  },
+  'lateral-bound': {
+    name: 'Lateral bound (skater)', cat: 'Agility', target: 'Side-to-side power and control',
+    why: 'Sport and off-road riding involve sideways forces on the knee. Bounds train the knee to accept and redirect these safely.',
+    setup: 'About 2 m of clear space side to side.',
+    steps: ['Stand on your right leg.', 'Push off sideways and land on your left leg.', 'Stick the landing for 1 second.', 'Bound back. Progress to continuous bounds once landings are steady.'],
+    cues: ['Land with the knee over the toes and hips back.', 'Keep your chest up.'],
+    avoid: ['The knee collapsing on landing.', 'Bounding too far too early.'],
+    easier: 'Shorter distance.', harder: 'Longer bounds, or continuous with no pause.',
+    q: 'lateral bound skater jump'
+  },
+  'depth-drop': {
+    name: 'Depth drop and stick', cat: 'Plyometric', target: 'Landing from height',
+    why: 'Prepares you to absorb landings from height, such as jumping off things, hopping off the bike or catching air off-road, with a safe knee position.',
+    setup: 'A stable step 20–30 cm high.',
+    steps: ['Step off the box (do not jump).', 'Land on both feet in a soft half squat.', 'Freeze for 2 seconds.', 'Progress to landing on one leg in the final weeks.'],
+    cues: ['Land quietly, with even weight on both legs.'],
+    avoid: ['Stiff knees on landing.', 'Heights above 40 cm in this program.'],
+    easier: 'A lower step.', harder: 'A single-leg landing.',
+    q: 'depth drop landing exercise'
+  },
+  'cut-drill': {
+    name: '45° cutting drill', cat: 'Agility', target: 'Change of direction',
+    why: 'Planting and twisting is the classic way both the ACL and the meniscus are injured. Gradual, well-controlled cutting practice is essential before sport.',
+    setup: 'Place two markers about 5 m apart in a straight line, plus one marker 3 m off to the side at 45°.',
+    steps: ['Jog to the first marker.', 'Plant on your outside foot with your hips low.', 'Push off at 45° to the side marker.', 'Start at 50% speed, then build to 75% and then 90% over the weeks.', 'Do the prescribed reps to each side.'],
+    cues: ['Lower your hips before the plant.', 'Knee over the toes, and turn the whole body.'],
+    avoid: ['Planting with a straight knee.', 'Speeding up before it feels smooth.'],
+    easier: 'Slower speed, or a curved run.', harder: '90° cuts, or reacting to a call.',
+    q: '45 degree cutting drill technique'
+  },
+  'shuttle': {
+    name: 'Shuttle run (accelerate and stop)', cat: 'Agility', target: 'Deceleration, acceleration',
+    why: 'Stopping hard puts a very high load through the knee. This trains controlled braking so that sport movements feel safe.',
+    setup: 'Two markers 10 m apart.',
+    steps: ['Accelerate to the far marker.', 'Brake in 3–4 short steps and touch the marker.', 'Turn and run back.', 'Walk back as recovery between reps.'],
+    cues: ['Lower your hips to brake.', 'Use short, choppy steps.'],
+    avoid: ['A single-step hard stop.', 'Doing it fatigued.'],
+    easier: '70% speed.', harder: 'Full speed, or 5-10-5 m patterns.',
+    q: 'shuttle run deceleration technique'
+  },
+  'figure-8': {
+    name: 'Figure-8 runs', cat: 'Agility', target: 'Curved running',
+    why: 'Running in curves is the bridge between straight running and sharp cuts. It loads the knee in rotation in a controlled way.',
+    setup: 'Two markers 5–8 m apart.',
+    steps: ['Run a figure 8 around the markers at an easy pace.', 'Do the prescribed laps, then change direction.', 'Make the loops tighter and faster over time.'],
+    cues: ['Lean in from the ankles, not the waist.'],
+    avoid: ['Tight loops at speed too early.'],
+    easier: 'Wider loops.', harder: 'Tighter loops and faster.',
+    q: 'figure 8 running drill'
+  },
+  'attack-hold': {
+    name: 'Riding stance hold', cat: 'Strength', target: 'Quad, glute and core endurance for off-road riding',
+    why: 'Standing off-road riding means long half-squat holds while absorbing bumps. When the thighs tire, the knees start to cave in, which is when injuries happen. This exercise builds that specific endurance.',
+    setup: 'Feet shoulder-width apart as on the pegs, standing on the balls of the feet. Hold dumbbells as if gripping the handlebars.',
+    steps: ['Bend your knees to about 45–60° with hips back and chest forward over the bars.', 'Elbows up and out, head up.', 'Hold for the prescribed time.', 'Progress: stand on a cushion, add small bounces, or have someone push you gently from different directions.'],
+    cues: ['Knees grip inward lightly as if holding the tank, but stay over the toes.', 'Breathe steadily.'],
+    avoid: ['Squatting too low.', 'Locking out the knees.'],
+    easier: 'Shorter holds.', harder: 'Longer holds, a cushion, or perturbations.',
+    q: 'motocross attack position exercise'
+  }
+};
+
+/* ---------- Phases ---------- */
+const PHASES = [
+  { n: 1, name: 'Activate', weeks: 'Weeks 1–3', range: [1, 3],
+    goal: 'Switch the quads and glutes back on, keep both menisci calm and learn perfect form. Nothing here should hurt.',
+    strength: [['cardio', 1, '5 min easy warm-up'], ['quad-set', 3, '10 × 5 s hold'], ['slr', 3, '10 reps'], ['tke', 3, '15 reps'], ['bridge', 3, '12 reps, 3 s hold'], ['clamshell', 3, '12 / side'], ['side-abd', 3, '12 / side'], ['ham-iso', 2, '10 × 5 s'], ['calf-raise', 3, '15 reps'], ['wall-sit', 3, '30 s at 45°']],
+    cond: [['sl-balance', 3, '30 s / leg'], ['dead-bug', 3, '10 reps'], ['cardio', 1, '20–30 min easy']],
+    mobility: [['heel-slide', 2, '10 reps'], ['ham-stretch', 3, '30 s / leg'], ['calf-stretch', 2, '30 s each way'], ['hip-flexor', 2, '30 s / side'], ['foam-roll', 1, '5 min']],
+    criteria: ['Daily-life pain stays at 0–2/10 for a full week', 'No swelling the morning after sessions', 'Straight leg raise 3 × 10 with the knee fully locked', 'Single-leg stand for 30 s on each leg without touching down'] },
+  { n: 2, name: 'Build', weeks: 'Weeks 4–6', range: [4, 6],
+    goal: 'Build single-leg strength in a safe range (0–70° of knee bend) and start loading the hamstrings.',
+    strength: [['cardio', 1, '5 min easy warm-up'], ['box-squat', 3, '12 reps'], ['step-up', 3, '10 / leg'], ['rdl', 3, '10 reps'], ['sl-bridge', 3, '8 / leg'], ['band-walk', 3, '10 steps each way'], ['tke', 2, '15 reps'], ['wall-sit', 3, '40 s at 60°'], ['sl-calf', 3, '10 / leg'], ['side-plank', 3, '20 s / side']],
+    cond: [['star-reach', 3, '5 reaches each way / leg'], ['sl-balance', 3, '30 s / leg, eyes closed'], ['dead-bug', 3, '12 reps'], ['cardio', 1, '30 min, moderate']],
+    mobility: [['ham-stretch', 2, '30 s / leg'], ['calf-stretch', 2, '30 s each way'], ['hip-flexor', 2, '30 s / side'], ['foam-roll', 1, '5 min']],
+    criteria: ['10 slow single-leg sit-to-stands from a chair on each leg, knee in line', 'Step-ups 3 × 10 on each leg with no knee caving in', '30 min of bike or brisk walking with no pain during or after', 'No next-day soreness above 2/10'] },
+  { n: 3, name: 'Load', weeks: 'Weeks 7–10', range: [7, 10],
+    goal: 'Heavier, slower strength work to 90° of knee bend. Build the hamstring and calf capacity that running will need.',
+    strength: [['cardio', 1, '5 min easy warm-up'], ['goblet-squat', 4, '8 reps to 90°'], ['reverse-lunge', 3, '8 / leg'], ['split-squat', 3, '8 / leg'], ['sl-rdl', 3, '8 / leg'], ['slider-curl', 3, '10 reps'], ['step-down', 3, '8 / leg'], ['sl-calf', 3, '15 / leg'], ['copenhagen', 3, '20 s / side']],
+    cond: [['cushion-catch', 3, '30 s / leg'], ['star-reach', 2, '5 each way / leg'], ['side-plank', 3, '30 s / side'], ['bike-intervals', 1, '8 × 30 s hard / 90 s easy']],
+    mobility: [['ham-stretch', 2, '30 s / leg'], ['calf-stretch', 2, '30 s each way'], ['hip-flexor', 2, '30 s / side'], ['foam-roll', 1, '5 min']],
+    criteria: ['20 single-leg calf raises on each leg', '10 lateral step-downs on each leg, hips level and knee over the second toe', 'Goblet squat 3 × 8 to 90° with no pain', '30 min brisk walk with no symptoms that day or the next morning'] },
+  { n: 4, name: 'Impact', weeks: 'Weeks 11–13', range: [11, 13],
+    goal: 'Re-introduce impact: hops, landings and the walk–jog program. Strength work continues and gets heavier.',
+    strength: [['cardio', 1, '5 min easy warm-up'], ['goblet-squat', 4, '6 reps, heavier'], ['split-squat', 3, '8 / leg, with dumbbells'], ['sl-rdl', 3, '8 / leg'], ['nordic', 3, '5 reps'], ['step-down', 3, '10 / leg'], ['sl-calf', 3, '20 / leg'], ['copenhagen', 3, '25 s / side']],
+    cond: [['dyn-warmup', 1, '8 min'], ['pogo', 3, '20 contacts'], ['rope', 3, '45 s on / 45 s off'], ['drop-squat', 3, '6 reps'], ['squat-jump', 3, '6 reps'], ['hop-stick', 3, '5 / leg, forward + sideways'], ['run-program', 1, 'Current stage']],
+    mobility: [['ham-stretch', 2, '30 s / leg'], ['calf-stretch', 2, '30 s each way'], ['hip-flexor', 2, '30 s / side'], ['foam-roll', 1, '5 min']],
+    criteria: ['20 min continuous easy jog with pain at 2/10 or less', 'No swelling or extra pain the morning after running', '3 × 20 pogo hops with no pain', 'Single-leg hop and stick on each leg, quiet and controlled'] },
+  { n: 5, name: 'Return', weeks: 'Weeks 14–16+', range: [14, 99],
+    goal: 'Speed, cutting, jumping and riding-specific strength. Finish with return-to-sport testing and your orthopedist’s clearance.',
+    strength: [['cardio', 1, '5 min easy warm-up'], ['goblet-squat', 4, '6 reps, heavy, to parallel'], ['split-squat', 3, '8 / leg, heavy'], ['sl-rdl', 3, '8 / leg, heavy'], ['nordic', 3, '6 reps'], ['attack-hold', 3, '60 s'], ['sl-calf', 3, '25 / leg'], ['copenhagen', 3, '30 s / side']],
+    cond: [['dyn-warmup', 1, '8 min'], ['box-jump', 3, '5 reps'], ['lateral-bound', 3, '6 / side'], ['depth-drop', 3, '5 reps'], ['figure-8', 4, 'laps each direction'], ['cut-drill', 4, '4 / side'], ['shuttle', 6, '10 m reps'], ['run-program', 1, 'Current stage, then 20–30 min runs']],
+    mobility: [['ham-stretch', 2, '30 s / leg'], ['calf-stretch', 2, '30 s each way'], ['hip-flexor', 2, '30 s / side'], ['foam-roll', 1, '5 min']],
+    criteria: ['Single hop and triple hop symmetry of 90% or more (Progress → Tests)', '25 single-leg calf raises on each leg', 'Full-speed cutting and stopping drills without pain or hesitation', 'No swelling after 2 weeks of Phase 5 training', 'Orthopedist has cleared you, and the left-knee notch lesion has been reviewed'] }
+];
+
+const RUN = [
+  { l: 'Stage 1', d: 'Jog 1 min / walk 2 min × 8' },
+  { l: 'Stage 2', d: 'Jog 2 min / walk 2 min × 6' },
+  { l: 'Stage 3', d: 'Jog 3 min / walk 1 min × 6' },
+  { l: 'Stage 4', d: 'Jog 5 min / walk 1 min × 4' },
+  { l: 'Stage 5', d: 'Jog 10 min / walk 1 min × 2' },
+  { l: 'Stage 6', d: 'Jog 20 min continuous' },
+  { l: 'Stage 7', d: 'Run 30 min continuous, easy pace' }
+];
+
+const SCHEDULE = { 1: 'strength', 2: 'cond', 3: 'strength', 4: 'cond', 5: 'strength', 6: 'cond', 0: 'recovery' };
+const SESSION_NAMES = { strength: 'Strength', cond: 'Balance & conditioning', recovery: 'Recovery & mobility' };
+const SESSION_NAMES_P4 = { cond: 'Impact & running' };
+
+const TESTS = [
+  { k: 'calf', name: 'Single-leg calf raises', unit: 'reps', goal: '25+ each' },
+  { k: 'sts', name: 'Single-leg sit-to-stand (chair)', unit: 'reps', goal: '10+ each' },
+  { k: 'bal', name: 'Single-leg balance, eyes closed', unit: 's', goal: '30 s each' },
+  { k: 'hop', name: 'Single hop for distance', unit: 'cm', goal: '≥ 90% symmetry' },
+  { k: 'triple', name: 'Triple hop for distance', unit: 'cm', goal: '≥ 90% symmetry' }
+];
+
+</script>
+<script>
+/* ---------- Icons ---------- */
+const sv = (p, sw = 1.9) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const IC = {
+  today: sv('<rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17M9 15l2 2 4-4"/>'),
+  plan: sv('<path d="M4 6.5 9 4l6 2.5L20 4v13.5L15 20l-6-2.5L4 20z"/><path d="M9 4v13.5M15 6.5V20"/>'),
+  library: sv('<path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/>', 2.2),
+  progress: sv('<path d="M4 19.5h16"/><path d="M5 15l4-5 4 3 6-7"/>'),
+  settings: sv('<path d="M4 7h9M18 7h2M4 17h4M13 17h7"/><circle cx="15.5" cy="7" r="2.3"/><circle cx="10.5" cy="17" r="2.3"/>'),
+  left: sv('<path d="M15 5l-7 7 7 7"/>', 2.2),
+  right: sv('<path d="M9 5l7 7-7 7"/>', 2.2),
+  close: sv('<path d="M6 6l12 12M18 6 6 18"/>', 2.2),
+  timer: sv('<circle cx="12" cy="13.5" r="7"/><path d="M12 10v3.5l2 2M10 3h4"/>', 2),
+  Strength: sv('<path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/>', 2.2),
+  Mobility: sv('<path d="M3 12c3-6 6 6 9 0s6 6 9 0"/>'),
+  Balance: sv('<circle cx="12" cy="7.5" r="3.5"/><path d="M12 11v8M4 19h16"/>'),
+  Core: sv('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".8" fill="currentColor"/>'),
+  Cardio: sv('<path d="M12 20s-7.5-4.6-7.5-10.2A4.2 4.2 0 0 1 12 7.2a4.2 4.2 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z"/>'),
+  Plyometric: sv('<path d="M4 19c3 0 4-11 8-11s5 11 8 11"/><path d="M12 3v3"/>'),
+  Running: sv('<circle cx="14" cy="4.5" r="2"/><path d="M8 21l3-6 3 2v5M6 11l3-3h4l3 4 3 1M11 15l1-5"/>'),
+  Agility: sv('<path d="M4 18l5-6 4 4 7-9"/><path d="M15 7h5v5"/>')
+};
+
+/* ---------- Helpers ---------- */
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pad = n => String(n).padStart(2, '0');
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parse = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return ymd(d); };
+const diff = (a, b) => Math.round((parse(b) - parse(a)) / 86400000);
+const today = () => ymd(new Date());
+const clone = o => JSON.parse(JSON.stringify(o));
+const fmtLong = s => parse(s).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' });
+const fmtShort = s => parse(s).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+const mondayOf = s => { const d = parse(s); const wd = (d.getDay() + 6) % 7; d.setDate(d.getDate() - wd); return ymd(d); };
+
+/* ---------- State ---------- */
+const LS_KEY = 'knee-comeback-v1', UI_KEY = 'knee-comeback-ui';
+const defaults = () => ({ startDate: null, phase: 1, criteria: {}, tests: [], runStage: 0, ts: 0 });
+const normSettings = s => ({ ...defaults(), ...(s || {}), criteria: { ...((s && s.criteria) || {}) }, tests: Array.isArray(s && s.tests) ? s.tests : [] });
+let S = { settings: defaults(), days: {} };
+const ui = { view: 'today', date: today(), libPhase: 'all', libCat: 'all', q: '', planPhase: null, resetArm: false, json: null };
+
+function loadLocal() {
+  try { const raw = localStorage.getItem(LS_KEY); if (raw) { const o = JSON.parse(raw); S = { settings: normSettings(o.settings), days: o.days || {} }; } } catch (e) {}
+  try { const u = JSON.parse(localStorage.getItem(UI_KEY) || '{}'); if (u.view) ui.view = u.view; } catch (e) {}
+}
+function saveLocal() { try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) {} }
+function saveUi() { try { localStorage.setItem(UI_KEY, JSON.stringify({ view: ui.view })); } catch (e) {} }
+const hasData = () => Object.keys(S.days).length > 0 || !!S.settings.startDate;
+
+/* ---------- Cloud sync (db capability, private per viewer) ---------- */
+const cloud = { db: null, col: null, mode: 'connecting', first: false, ids: new Set() };
+const dirty = new Set(), inflight = new Set();
+let flushTimer = null;
+const monthId = date => 'm-' + date.slice(0, 7);
+function docBody(id) {
+  if (id === 'settings') return clone(S.settings);
+  const p = id.slice(2); const days = {};
+  for (const [k, v] of Object.entries(S.days)) if (k.startsWith(p)) days[k] = v;
+  return { days: clone(days) };
+}
+function markDirty(id) { dirty.add(id); clearTimeout(flushTimer); flushTimer = setTimeout(flush, 700); }
+function markAll() { markDirty('settings'); new Set(Object.keys(S.days).map(monthId)).forEach(markDirty); }
+async function flush() {
+  if (cloud.mode !== 'cloud' || !cloud.col) return;
+  for (const id of [...dirty]) {
+    if (inflight.has(id)) continue;
+    dirty.delete(id); inflight.add(id);
+    try { await cloud.col.doc(id).set(docBody(id)); cloud.ids.add(id); }
+    catch (e) {
+      dirty.add(id);
+      const c = e && e.code;
+      if (c === 'invalid_argument' || c === 'revoked' || c === 'not_granted' || c === 'capability_disabled' || c === 'quota_exceeded') { setMode('local'); toast('Sync stopped. Your data is still saved on this device.'); }
+    } finally { inflight.delete(id); }
+  }
+  if (dirty.size && cloud.mode === 'cloud') { clearTimeout(flushTimer); flushTimer = setTimeout(flush, 4000); }
+}
+function setMode(m) { cloud.mode = m; renderRail(); if (ui.view === 'settings') render(); }
+
+async function initCloud() {
+  if (!window.claude || typeof window.claude.use !== 'function') { setMode('local'); return; }
+  try {
+    const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+    const uid = user ? await user.id() : null;
+    if (!db || !uid) { setMode('local'); return; }
+    cloud.db = db; cloud.col = db.collection('data/users/' + uid);
+    cloud.col.onSnapshot(onCloud, () => setMode('local'));
+  } catch (e) { setMode('local'); }
+}
+function onCloud(snap) {
+  if (!cloud.first && snap.metadata.fromCache && snap.empty) return;
+  const docs = {};
+  snap.docs.forEach(d => { if (d.exists) { docs[d.id] = d.data(); cloud.ids.add(d.id); } });
+  const before = JSON.stringify(S);
+  if (!cloud.first) {
+    cloud.first = true;
+    // Merge: newest wins per day and for settings; anything local-only gets uploaded.
+    const cs = docs.settings ? normSettings(clone(docs.settings)) : null;
+    if (cs && (cs.ts || 0) >= (S.settings.ts || 0)) S.settings = cs; else if (S.settings.startDate || S.settings.ts) markDirty('settings');
+    const cdays = {};
+    for (const [id, b] of Object.entries(docs)) if (id.startsWith('m-')) Object.assign(cdays, clone((b && b.days) || {}));
+    for (const [k, v] of Object.entries(cdays)) if (!S.days[k] || (v.ts || 0) >= (S.days[k].ts || 0)) S.days[k] = v;
+    for (const [k, v] of Object.entries(S.days)) if (!cdays[k] || (v.ts || 0) > (cdays[k].ts || 0)) markDirty(monthId(k));
+  } else {
+    if (docs.settings && !dirty.has('settings') && !inflight.has('settings')) S.settings = normSettings(clone(docs.settings));
+    for (const [id, b] of Object.entries(docs)) {
+      if (!id.startsWith('m-') || dirty.has(id) || inflight.has(id)) continue;
+      const p = id.slice(2);
+      for (const k of Object.keys(S.days)) if (k.startsWith(p)) delete S.days[k];
+      Object.assign(S.days, clone((b && b.days) || {}));
+    }
+  }
+  setMode('cloud');
+  saveLocal();
+  flush();
+  if (JSON.stringify(S) !== before) render();
+}
+
+/* ---------- Mutations ---------- */
+function setSettings(patch) { S.settings = { ...S.settings, ...patch, ts: Date.now() }; saveLocal(); markDirty('settings'); }
+function ensureStart() { if (!S.settings.startDate) setSettings({ startDate: today() }); }
+function getDay(date) { return S.days[date] || {}; }
+function setDay(date, patch) {
+  ensureStart();
+  const cur = S.days[date] || { phase: S.settings.phase };
+  S.days[date] = { ...cur, ...patch, ts: Date.now() };
+  saveLocal(); markDirty(monthId(date));
+}
+
+/* ---------- Derived ---------- */
+const startDate = () => S.settings.startDate || today();
+const weekOf = date => Math.max(1, Math.floor(diff(startDate(), date) / 7) + 1);
+const phaseOfWeek = w => (PHASES.find(p => w >= p.range[0] && w <= p.range[1]) || PHASES[4]).n;
+const phaseFor = date => (date < today() && S.days[date] && S.days[date].phase) ? S.days[date].phase : S.settings.phase;
+function typeFor(date) { const d = getDay(date); return d.type || SCHEDULE[parse(date).getDay()]; }
+function sessionName(type, ph) { return (ph >= 4 && SESSION_NAMES_P4[type]) || SESSION_NAMES[type]; }
+const groupOf = (id, cat) => id === 'dyn-warmup' ? 'Warm-up' : ({ Balance: 'Balance & core', Core: 'Balance & core', Plyometric: 'Impact & agility', Agility: 'Impact & agility', Running: 'Running', Cardio: 'Cardio', Strength: 'Strength', Mobility: 'Mobility' })[cat];
+function blocksFor(date) {
+  const P = PHASES[phaseFor(date) - 1], type = typeFor(date);
+  const it = a => ({ id: a[0], sets: a[1], dose: a[0] === 'run-program' ? RUN[Math.min(S.settings.runStage, RUN.length - 1)].d : a[2] });
+  if (type === 'strength') return [{ t: 'Warm-up', items: [it(P.strength[0])] }, { t: 'Strength', items: P.strength.slice(1).map(it) }, { t: 'Cool-down mobility', items: P.mobility.map(it) }];
+  if (type === 'recovery') return [{ t: 'Easy movement', items: [it(['cardio', 1, '20–30 min easy walk, optional'])] }, { t: 'Mobility', items: [it(['heel-slide', 2, '10 reps']), ...P.mobility.map(it)] }];
+  const out = [];
+  P.cond.forEach(a => { const g = groupOf(a[0], EX[a[0]].cat); const last = out[out.length - 1]; if (last && last.t === g) last.items.push(it(a)); else out.push({ t: g, items: [it(a)] }); });
+  out.push({ t: 'Mobility', items: P.mobility.map(it) });
+  return out;
+}
+function dayPct(date) {
+  const d = getDay(date); const done = d.done || {}; let tot = 0, got = 0;
+  blocksFor(date).forEach(b => b.items.forEach(i => { tot += i.sets; got += Math.min(done[i.id] || 0, i.sets); }));
+  return tot ? got / tot : 0;
+}
+function verdict(d) {
+  const p = Math.max(d.painL || 0, d.painR || 0);
+  if (p >= 6 || d.giveWay === 'yes' || d.swellL === 'visible' || d.swellR === 'visible')
+    return { c: 'red', t: 'Recovery day', m: 'Skip impact and heavy strength today and do the recovery session only. If this lasts more than 2 days, or the knee locks or gives way, contact your orthopedist.' };
+  if (p >= 3 || d.swellL === 'mild' || d.swellR === 'mild' || d.stiff === 'gt30')
+    return { c: 'amber', t: 'Train, but hold', m: 'Do today’s session at last week’s level. Don’t add weight, reps or new exercises. Pain during exercise should stay at 3/10 or less and settle by tomorrow morning.' };
+  return { c: 'green', t: 'Good to go', m: 'Train as planned. If the last session felt easy and nothing flared up the next morning, you can add a little load.' };
+}
+function stats() {
+  const t = today();
+  let streak = 0, d = getDay(t).checkedIn ? t : addDays(t, -1);
+  while (getDay(d).checkedIn) { streak++; d = addDays(d, -1); }
+  const mon = mondayOf(t); let wk = 0;
+  for (let i = 0; i < 7; i++) { const x = addDays(mon, i); if (x > t) break; if (typeFor(x) !== 'recovery' && dayPct(x) >= 0.5) wk++; }
+  let sched = 0, hit = 0;
+  for (let i = 0; i < 28; i++) { const x = addDays(t, -i); if (x < startDate()) break; if (typeFor(x) === 'recovery') continue; if (x === t && dayPct(x) < 0.5) continue; sched++; if (dayPct(x) >= 0.5) hit++; }
+  const pl = [], pr = [];
+  for (let i = 0; i < 7; i++) { const x = getDay(addDays(t, -i)); if (x.checkedIn) { pl.push(x.painL || 0); pr.push(x.painR || 0); } }
+  const avg = a => a.length ? (a.reduce((s, v) => s + v, 0) / a.length) : null;
+  return { streak, wk, adh: sched ? Math.round(hit / sched * 100) : null, pl: avg(pl), pr: avg(pr) };
+}
+
+/* ---------- Shell ---------- */
+const VIEWS = [['today', 'Today'], ['plan', 'Plan'], ['library', 'Exercises'], ['progress', 'Progress'], ['settings', 'Settings']];
+function renderNav() {
+  const html = VIEWS.map(([k, l]) => `<button data-act="nav" data-view="${k}" ${ui.view === k ? 'aria-current="page"' : ''}>${IC[k]}<span>${l}</span></button>`).join('');
+  $('#nav').innerHTML = html; $('#tabbar').innerHTML = html;
+}
+function ring(pct, label, size = 64) {
+  const r = 26, c = 2 * Math.PI * r;
+  return `<svg class="ring" viewBox="0 0 64 64" style="width:${size}px;height:${size}px" role="img" aria-label="${esc(label)}"><circle class="bgc" cx="32" cy="32" r="${r}"/><circle class="fg" cx="32" cy="32" r="${r}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c * (1 - Math.min(1, pct))).toFixed(1)}" transform="rotate(-90 32 32)"/><text x="32" y="37" text-anchor="middle">${esc(label)}</text></svg>`;
+}
+function syncLine() {
+  const m = cloud.mode;
+  const [cls, txt] = m === 'cloud' ? ['ok', 'Synced to your Claude account'] : m === 'connecting' ? ['warn', 'Connecting…'] : ['', 'Offline, saved on this device'];
+  return `<div class="sync"><span class="dot ${cls}"></span>${txt}</div>`;
+}
+function renderRail() {
+  const w = weekOf(today()), P = PHASES[S.settings.phase - 1];
+  $('#railCard').innerHTML = `<div style="display:flex;gap:12px;align-items:center">${ring(Math.min(w, 16) / 16, 'W' + w)}<div><div class="eyebrow">Phase ${P.n} of 5</div><div style="font-family:var(--f-display);font-stretch:112%;font-weight:750;font-size:18px">${P.name}</div><div class="small muted">Week ${w} of 16</div></div></div>${syncLine()}`;
+}
+
+/* ---------- Today ---------- */
+function viewToday() {
+  const date = ui.date, t = today(), future = date > t;
+  const d = getDay(date), ph = phaseFor(date), P = PHASES[ph - 1], type = typeFor(date), w = weekOf(date);
+  const blocks = blocksFor(date), pct = dayPct(date), v = verdict(d), st = stats();
+  const nItems = blocks.reduce((s, b) => s + b.items.length, 0);
+  const mins = { strength: '40–50 min', cond: ph >= 4 ? '40–50 min' : '35–45 min', recovery: '15–25 min' }[type];
+  const curPhase = PHASES[S.settings.phase - 1];
+  const gateNote = (!future && date === t && w > curPhase.range[1] && S.settings.phase < 5)
+    ? `<div class="notice warn"><b>Week ${w}: time to check Phase ${curPhase.n} criteria</b><span class="small">Move up only when every criterion is met. It is fine to stay longer. <button class="btn sm ghost" data-act="nav" data-view="progress" style="margin-top:6px">Open criteria</button></span></div>` : '';
+  const redNote = (d.checkedIn && v.c === 'red' && type !== 'recovery')
+    ? `<div class="notice bad"><b>Your check-in says: recovery day</b><span class="small">Switch today to the recovery session.</span><div><button class="btn sm" data-act="type" data-type="recovery">Switch to recovery</button></div></div>` : '';
+
+  const rows = blocks.map(b => `
+    <div class="block-title">${esc(b.t)}</div>
+    <div class="ex-list">${b.items.map(i => {
+      const done = Math.min((d.done || {})[i.id] || 0, i.sets), full = done >= i.sets;
+      const dots = Array.from({ length: i.sets }, (_, k) => `<button class="set ${k < done ? 'on' : ''}" data-act="set" data-ex="${i.id}" data-i="${k}" ${future ? 'disabled' : ''} aria-label="${esc(EX[i.id].name)} set ${k + 1}${k < done ? ', done' : ''}">${i.sets === 1 ? '✓' : k + 1}</button>`).join('');
+      return `<div class="ex-row ${full ? 'done' : ''}"><button class="ex-open" data-act="open-ex" data-ex="${i.id}" data-dose="${esc(i.dose)}"><span class="t">${esc(EX[i.id].name)}</span><span class="d">${esc(i.sets > 1 ? i.sets + ' sets · ' : '')}${esc(i.dose)}</span></button><div class="sets">${dots}</div></div>`;
+    }).join('')}</div>`).join('');
+
+  const kneePanel = (side, label) => {
+    const p = d['pain' + side] || 0, sw = d['swell' + side] || 'none';
+    return `<div class="knee ${side}"><div class="knee-top"><span class="knee-label"><i></i>${label}</span><span class="pain-val" id="pv${side}">${p}<small>/10</small></span></div>
+      <input type="range" min="0" max="10" step="1" value="${p}" data-pain="${side}" aria-label="${label} pain, 0 to 10" ${future ? 'disabled' : ''}>
+      <div class="scale"><span>0 none</span><span>5</span><span>10 worst</span></div>
+      <div class="stack"><span class="field-label">Swelling</span>${seg('swell' + side, sw, [['none', 'None'], ['mild', 'Mild'], ['visible', 'Visible']], future)}</div></div>`;
+  };
+
+  return `
+  <header class="page-head">
+    <div><div class="eyebrow">Week ${w} · Phase ${ph} · ${esc(P.name)}</div><h1>${date === t ? 'Today, ' : ''}${esc(fmtLong(date))}</h1></div>
+    <div class="date-nav"><button class="icon-btn" data-act="day" data-d="-1" aria-label="Previous day">${IC.left}</button><button class="btn ghost sm" data-act="day" data-d="0">Today</button><button class="icon-btn" data-act="day" data-d="1" aria-label="Next day">${IC.right}</button></div>
+  </header>
+  <div class="chips"><span class="chip accent">${st.streak}-day check-in streak</span><span class="chip">${st.wk}/6 training days this week</span>${S.settings.startDate ? '' : '<span class="chip warn">Your plan starts today. Change the date in Settings.</span>'}</div>
+  ${gateNote}
+  <div class="today-grid">
+    <section class="card" aria-labelledby="sessT">
+      <div class="card-head nowrap"><div><div class="eyebrow">${future ? 'Coming up' : 'Session'} · ${mins}</div><h2 id="sessT">${esc(sessionName(type, ph))}</h2><p class="small muted">${nItems} exercises. Tap a name for full instructions; tap the numbered boxes as you finish each set.</p></div>${ring(pct, Math.round(pct * 100) + '%')}</div>
+      ${seg('type', type, [['strength', 'Strength'], ['cond', ph >= 4 ? 'Impact & run' : 'Conditioning'], ['recovery', 'Recovery']], future, 'type')}
+      ${redNote}
+      <div class="progress-bar"><span style="width:${Math.round(pct * 100)}%"></span></div>
+      ${rows}
+      ${future ? '' : `<div class="row"><button class="btn ghost sm" data-act="all-done">Mark everything done</button><button class="btn ghost sm" data-act="clear-done">Clear ticks</button></div>`}
+    </section>
+    <div style="display:grid;gap:20px;min-width:0">
+      <section class="card" aria-labelledby="ciT">
+        <div class="card-head"><div><div class="eyebrow">Daily check-in</div><h2 id="ciT">How do your knees feel?</h2></div>${d.checkedIn ? '<span class="chip good">✓ Logged</span>' : '<span class="chip">Not logged yet</span>'}</div>
+        ${future ? '<p class="muted">You can check in on this day when it arrives.</p>' : `
+        <div class="knees">${kneePanel('L', 'Left knee')}${kneePanel('R', 'Right knee')}</div>
+        <div class="row"><span class="field-label">Morning stiffness</span>${seg('stiff', d.stiff || 'none', [['none', 'None'], ['lt30', '< 30 min'], ['gt30', '> 30 min']])}</div>
+        <div class="row"><span class="field-label">Gave way, locked or caught?</span>${seg('giveWay', d.giveWay || 'no', [['no', 'No'], ['yes', 'Yes']])}</div>
+        <div class="verdict ${v.c}" id="verdict"><span class="light"></span><div><b>${v.t}</b><span class="small">${v.m}</span></div></div>
+        ${d.checkedIn ? '<p class="small muted">Changes save automatically.</p>' : '<button class="btn" data-act="log">Log check-in</button>'}`}
+      </section>
+      ${future ? '' : `<section class="card" aria-labelledby="nT">
+        <div><div class="eyebrow">After training</div><h2 id="nT">Effort and notes</h2></div>
+        <div class="row"><span class="field-label">Session effort (RPE)</span><span class="num" id="rpeV">${d.rpe ? d.rpe + '/10' : '–'}</span></div>
+        <input type="range" min="1" max="10" step="1" value="${d.rpe || 5}" data-rpe="1" aria-label="Session effort, 1 to 10" style="accent-color:var(--accent)">
+        <div class="scale"><span>1 very easy</span><span>5 moderate</span><span>10 max</span></div>
+        <label class="field-label" for="notes">Notes (what felt good, what didn't, which knee)</label>
+        <textarea id="notes" data-notes="1" placeholder="e.g. Left knee felt tight on step-downs, fine after warm-up">${esc(d.notes || '')}</textarea>
+      </section>`}
+    </div>
+  </div>`;
+}
+function seg(field, val, opts, disabled = false, act = 'seg') {
+  const sev = (field.startsWith('swell') || field === 'stiff' || field === 'giveWay') ? ' sev' : '';
+  return `<div class="seg${sev}" role="group">${opts.map(([v, l]) => `<button data-act="${act}" data-field="${field}" data-v="${v}" data-type="${v}" aria-pressed="${v === val}" ${disabled ? 'disabled' : ''}>${l}</button>`).join('')}</div>`;
+}
+
+/* ---------- Plan ---------- */
+function exLinks(list) {
+  return `<div class="ex-list">${list.map(a => `<div class="ex-row"><button class="ex-open" data-act="open-ex" data-ex="${a[0]}" data-dose="${esc(a[0] === 'run-program' ? RUN[Math.min(S.settings.runStage, 6)].d : a[2])}"><span class="t">${esc(EX[a[0]].name)}</span><span class="d">${a[1] > 1 ? a[1] + ' sets · ' : ''}${esc(a[2])}</span></button><span class="chip">${esc(EX[a[0]].cat)}</span></div>`).join('')}</div>`;
+}
+function viewPlan() {
+  const sel = ui.planPhase || S.settings.phase, P = PHASES[sel - 1];
+  const dx = (sev, cls, title, text) => `<div class="dx-item"><span class="sev chip ${cls}">${sev}</span><div><b>${title}</b><div class="small muted">${text}</div></div></div>`;
+  return `
+  <header class="page-head"><div><div class="eyebrow">16 weeks · 5 phases · criteria-based</div><h1>Your plan</h1></div></header>
+  <section class="card">
+    <div><div class="eyebrow">MRI, 11 Sep 2026 · Fortis Mohali</div><h2>What your scans show</h2></div>
+    <div class="grid-2">
+      <div class="dx"><div class="knee-label" style="font-weight:700"><i style="width:10px;height:10px;border-radius:50%;background:var(--left);display:inline-block"></i>Left knee</div>
+        ${dx('Grade II', 'warn', 'Medial meniscus, posterior horn', 'An internal tear that does not reach the joint surface. This usually responds well to strengthening.')}
+        ${dx('Partial', 'warn', 'ACL', 'Mild internal signal and thickening. The ligament is still continuous.')}
+        ${dx('Grade I', 'good', 'Lateral meniscus, posterior horn', 'Early wear signal only, with no tear through the meniscus.')}
+        ${dx('Review', 'bad', 'Lesion in the notch, 1.7 × 1.4 × 2.3 cm', 'Likely localised nodular synovitis. Physio does not treat this; your orthopedist should decide whether to monitor or remove it.')}
+      </div>
+      <div class="dx"><div class="knee-label" style="font-weight:700"><i style="width:10px;height:10px;border-radius:50%;background:var(--right);display:inline-block"></i>Right knee</div>
+        ${dx('Grade II', 'warn', 'Medial meniscus, posterior horn', 'The same pattern as the left: internal, not reaching the surface.')}
+        ${dx('Low grade', 'good', 'ACL', 'Mild fraying, read as a sprain or low-grade partial tear.')}
+        ${dx('Normal', 'good', 'Everything else', 'Lateral meniscus, PCL, collaterals, tendons and cartilage are all intact. No fluid.')}
+      </div>
+    </div>
+    <p class="small muted">What this means for training: the posterior horn of the medial meniscus is squeezed most in deep, loaded knee bends and in twisting on a planted foot, so the plan limits depth (to 90°) and rotation until later. The partial ACL tears mean hamstring strength, balance and landing control get extra attention.</p>
+  </section>
+  <section class="card">
+    <div class="card-head"><div><div class="eyebrow">Phases</div><h2>Five stages, one at a time</h2></div><span class="chip">Move up by criteria, not by calendar</span></div>
+    <div class="phase-track">${PHASES.map(p => `<button class="ph ${p.n === S.settings.phase ? 'cur' : ''} ${p.n === sel ? 'sel' : ''}" data-act="plan-phase" data-p="${p.n}" aria-pressed="${p.n === sel}"><span class="n">P${p.n}</span><span class="nm">${p.name}</span><span class="w">${p.weeks}</span></button>`).join('')}</div>
+    <div style="display:grid;gap:6px"><h3>Phase ${P.n}: ${P.name} <span class="muted small" style="font-weight:500">${P.weeks}${P.n === S.settings.phase ? ' · you are here' : ''}</span></h3><p>${esc(P.goal)}</p></div>
+    <div class="grid-2">
+      <div style="display:grid;gap:10px;min-width:0"><div class="block-title">Strength days · Mon, Wed, Fri</div>${exLinks(P.strength)}</div>
+      <div style="display:grid;gap:10px;min-width:0"><div class="block-title">${P.n >= 4 ? 'Impact & running' : 'Conditioning'} days · Tue, Thu, Sat</div>${exLinks(P.cond)}<div class="block-title">Mobility · after every session, and on Sunday</div>${exLinks(P.mobility)}</div>
+    </div>
+    <div class="mini"><b>Move to the next phase when you can tick all of these</b><ul class="bul small">${P.criteria.map(c => `<li>${esc(c)}</li>`).join('')}</ul></div>
+  </section>
+  <section class="card">
+    <div><div class="eyebrow">Every week</div><h2>Weekly rhythm</h2></div>
+    <div class="table-wrap"><table><thead><tr><th>Day</th><th>Session</th><th>What it does</th></tr></thead><tbody>
+      <tr><td>Mon</td><td><b>Strength</b></td><td>Builds muscle around the knee. Slow lowering, perfect alignment.</td></tr>
+      <tr><td>Tue</td><td><b>Balance & conditioning</b></td><td>Knee reflexes, core, cardio. Running and jumps from Phase 4.</td></tr>
+      <tr><td>Wed</td><td><b>Strength</b></td><td>Same as Monday. Add load if Monday felt easy and nothing flared up.</td></tr>
+      <tr><td>Thu</td><td><b>Balance & conditioning</b></td><td>Same as Tuesday.</td></tr>
+      <tr><td>Fri</td><td><b>Strength</b></td><td>Same as Monday.</td></tr>
+      <tr><td>Sat</td><td><b>Balance & conditioning</b></td><td>Your longest cardio or run of the week.</td></tr>
+      <tr><td>Sun</td><td><b>Recovery</b></td><td>Easy walk and mobility. Tissues adapt on rest days.</td></tr>
+    </tbody></table></div>
+    <p class="small muted">You can swap any day's session on the Today screen. Never run on two days in a row in Phases 4 and 5.</p>
+  </section>
+  <div class="grid-2">
+    <section class="card"><div><div class="eyebrow">The 0–10 rule</div><h2>How much pain is OK?</h2></div>
+      <div class="verdict green"><span class="light"></span><div><b>0–2: safe</b><span class="small">Carry on and progress as planned.</span></div></div>
+      <div class="verdict amber"><span class="light"></span><div><b>3–5: acceptable, hold</b><span class="small">OK during exercise if it settles within 24 h. Don't progress that week.</span></div></div>
+      <div class="verdict red"><span class="light"></span><div><b>6+, swelling, or worse next morning: back off</b><span class="small">Drop to the previous level or a recovery day for 2–3 days.</span></div></div>
+    </section>
+    <section class="card"><div><div class="eyebrow">Protect the meniscus and ACL</div><h2>Avoid for now</h2></div>
+      <ul class="bul">
+        <li><b>Until Phase 4:</b> running, jumping, sports, deep squats below 90°, loaded kneeling and twisting or pivoting on a planted foot.</li>
+        <li><b>Until Phase 5:</b> cutting at speed, jumping down from height, off-road riding.</li>
+        <li><b>Throughout:</b> heavy seated leg-extension machines (they pull the shin forward against the ACL) and sitting cross-legged or in a deep squat for long periods.</li>
+        <li><b>Never:</b> training through sharp pain, or straight after a check-in that says "recovery day".</li>
+      </ul>
+    </section>
+  </div>
+  <div class="grid-2">
+    <section class="card"><div><div class="eyebrow">Red flags</div><h2>Stop and see your orthopedist if</h2></div>
+      <ul class="bul"><li>The knee locks (gets stuck and won't straighten) or catches repeatedly.</li><li>It gives way during normal walking or stairs.</li><li>Swelling appears and doesn't settle within 48 h.</li><li>You lose the ability to fully straighten the left knee, as the notch lesion can block extension.</li><li>Pain at night or at rest that keeps getting worse.</li></ul>
+    </section>
+    <section class="card"><div><div class="eyebrow">Your goals</div><h2>Running, sport, off-road riding</h2></div>
+      <ul class="bul"><li><b>Running:</b> starts in Phase 4 with the walk–jog program. Move up one stage only after a symptom-free next morning.</li><li><b>Sport:</b> after the Phase 5 criteria, including hop tests within 90% between legs.</li><li><b>Off-road riding:</b> the riskiest of the three for a partial ACL and medial meniscus, because of sudden twisting, foot-down moments and jumps. Return last, after clearance, with motocross knee braces and easy trails first. Practise the riding stance hold until 60 s is easy.</li><li><b>High jumps (2–3 ft):</b> your caution is right. Jumping returns gradually in Phases 4–5.</li></ul>
+    </section>
+  </div>
+  <section class="card"><div><div class="eyebrow">Recovery basics</div><h2>Off the mat</h2></div>
+    <div class="grid-3">
+      <div class="mini"><b>Protein</b><span class="small muted">Include a protein source (dal, paneer, eggs, curd, chicken) in every meal so muscle can actually build.</span></div>
+      <div class="mini"><b>Collagen & calcium</b><span class="small muted">Take them as your orthopedist advised. Some research suggests collagen with vitamin C 30–60 min before training.</span></div>
+      <div class="mini"><b>Sleep</b><span class="small muted">7–9 hours. Most tissue repair happens during sleep.</span></div>
+      <div class="mini"><b>Ice or heat</b><span class="small muted">Ice for 10–15 min if a knee feels warm or sore after training. Heat before a session if it feels stiff.</span></div>
+    </div>
+    <p class="small muted">This plan is general guidance built from your MRI reports and what you told me. It is not a substitute for an in-person assessment. Share it with your orthopedist or a physiotherapist who can examine you, and follow their advice where it differs.</p>
+  </section>`;
+}
+
+/* ---------- Library ---------- */
+const exPhases = id => PHASES.filter(p => [...p.strength, ...p.cond, ...p.mobility].some(a => a[0] === id)).map(p => p.n);
+const phaseRange = a => !a.length ? '' : a.length === 1 ? 'P' + a[0] : a.every((v, i) => !i || v === a[i - 1] + 1) ? `P${a[0]}–${a[a.length - 1]}` : a.map(n => 'P' + n).join(', ');
+function libItems() {
+  const q = ui.q.trim().toLowerCase();
+  return Object.entries(EX).filter(([id, e]) => {
+    if (ui.libPhase !== 'all' && !exPhases(id).includes(+ui.libPhase)) return false;
+    if (ui.libCat !== 'all' && e.cat !== ui.libCat) return false;
+    if (q && !(e.name + ' ' + e.target + ' ' + e.cat).toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+function libGrid() {
+  const items = libItems();
+  if (!items.length) return '<div class="empty">No exercises match. Clear the search or filters.</div>';
+  return items.map(([id, e]) => `<button class="lib-card" data-act="open-ex" data-ex="${id}"><div class="row"><span class="cat-ico">${IC[e.cat] || ''}</span><span class="chip">${phaseRange(exPhases(id))}</span></div><h3>${esc(e.name)}</h3><span class="small muted">${esc(e.cat)} · ${esc(e.target)}</span><p>${esc(e.why)}</p></button>`).join('');
+}
+function viewLibrary() {
+  const cats = [...new Set(Object.values(EX).map(e => e.cat))];
+  return `
+  <header class="page-head"><div><div class="eyebrow">${Object.keys(EX).length} exercises</div><h1>Exercise library</h1></div></header>
+  <p class="muted" style="max-width:65ch">Each exercise explains why it matters for your knees, how to set up, the steps, what you should feel, common mistakes, and how to make it easier or harder.</p>
+  <input type="search" id="libQ" placeholder="Search exercises, muscles…" value="${esc(ui.q)}" aria-label="Search exercises">
+  <div class="chips">${[['all', 'All phases'], ...PHASES.map(p => [String(p.n), `P${p.n} ${p.name}`])].map(([v, l]) => `<button class="filter" data-act="lib-phase" data-v="${v}" aria-pressed="${ui.libPhase === v}">${l}</button>`).join('')}</div>
+  <div class="chips">${[['all', 'All types'], ...cats.map(c => [c, c])].map(([v, l]) => `<button class="filter" data-act="lib-cat" data-v="${v}" aria-pressed="${ui.libCat === v}">${l}</button>`).join('')}</div>
+  <div class="lib-grid" id="libGrid">${libGrid()}</div>`;
+}
+
+/* ---------- Progress ---------- */
+function painChart() {
+  const N = 30, t = today(), W = 640, H = 210, L = 30, R = 12, T = 10, B = 26;
+  const pts = [];
+  for (let i = N - 1; i >= 0; i--) { const dt = addDays(t, -i); const d = getDay(dt); pts.push({ dt, d: d.checkedIn ? d : null }); }
+  if (!pts.some(p => p.d)) return '<div class="empty">Log your first check-in on the Today screen and your pain trend will appear here.</div>';
+  const x = i => L + i * (W - L - R) / (N - 1), y = v => T + (10 - v) * (H - T - B) / 10;
+  const line = side => { let s = '', pen = false; pts.forEach((p, i) => { if (p.d) { s += (pen ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(p.d['pain' + side] || 0).toFixed(1) + ' '; pen = true; } else pen = false; }); return s; };
+  const dots = (side, col) => pts.map((p, i) => p.d ? `<circle cx="${x(i).toFixed(1)}" cy="${y(p.d['pain' + side] || 0).toFixed(1)}" r="3.5" fill="${col}"><title>${fmtShort(p.dt)} · ${side === 'L' ? 'Left' : 'Right'} ${p.d['pain' + side] || 0}/10</title></circle>` : '').join('');
+  const grid = [0, 2, 4, 6, 8, 10].map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/>`).join('');
+  const yl = [0, 2, 4, 6, 8, 10].map(v => `<text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`).join('');
+  const xl = pts.map((p, i) => (i % 7 === 2 || i === N - 1) ? `<text x="${x(i)}" y="${H - 6}" text-anchor="middle">${fmtShort(p.dt)}</text>` : '').join('');
+  const zone = `<rect x="${L}" y="${y(2)}" width="${W - L - R}" height="${y(0) - y(2)}" fill="var(--good)" opacity=".08"/><rect x="${L}" y="${y(5)}" width="${W - L - R}" height="${y(2) - y(5)}" fill="var(--warn)" opacity=".07"/>`;
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Pain over the last 30 days for both knees">${zone}<g class="grid">${grid}</g><g class="axis">${yl}${xl}</g>
+    <path d="${line('L')}" fill="none" stroke="var(--left)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="${line('R')}" fill="none" stroke="var(--right)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="6 4"/>
+    ${dots('L', 'var(--left)')}${dots('R', 'var(--right)')}</svg></div>
+    <div class="legend"><span><i style="background:var(--left)"></i>Left knee</span><span><i style="background:var(--right)"></i>Right knee (dashed)</span><span><i style="background:var(--good);opacity:.4"></i>0–2 safe zone</span></div>`;
+}
+function weekBars() {
+  const t = today(), W = 400, H = 180, L = 22, R = 6, T = 18, B = 24, n = 8;
+  const mon = mondayOf(t), data = [];
+  for (let k = n - 1; k >= 0; k--) { const m = addDays(mon, -7 * k); let c = 0; for (let i = 0; i < 7; i++) { const x = addDays(m, i); if (x > t) break; if (typeFor(x) !== 'recovery' && dayPct(x) >= 0.5) c++; } data.push({ m, c }); }
+  const bw = (W - L - R) / n, y = v => T + (6 - v) * (H - T - B) / 6;
+  const bars = data.map((d, i) => { const h = y(0) - y(d.c); const x = L + i * bw + bw * 0.2; return `<rect x="${x.toFixed(1)}" y="${y(d.c).toFixed(1)}" width="${(bw * 0.6).toFixed(1)}" height="${Math.max(h, 2).toFixed(1)}" rx="5" fill="${i === n - 1 ? 'var(--accent)' : 'color-mix(in srgb, var(--accent) 45%, var(--surface-2))'}"/><text x="${(x + bw * 0.3).toFixed(1)}" y="${(y(d.c) - 5).toFixed(1)}" text-anchor="middle" fill="var(--ink)" font-size="12" font-family="var(--f-mono)">${d.c}</text><text x="${(x + bw * 0.3).toFixed(1)}" y="${H - 6}" text-anchor="middle">${fmtShort(d.m)}</text>`; }).join('');
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Training days completed per week, last 8 weeks"><g class="grid"><line x1="${L}" x2="${W - R}" y1="${y(6)}" y2="${y(6)}" stroke-dasharray="4 4"/><line x1="${L}" x2="${W - R}" y1="${y(0)}" y2="${y(0)}"/></g><g class="axis"><text x="${L - 6}" y="${y(6) + 4}" text-anchor="end">6</text><text x="${L - 6}" y="${y(0) + 4}" text-anchor="end">0</text>${bars}</g></svg></div><p class="small muted">Weeks start Monday. Target: 6 training days (dashed line). A day counts when at least half its sets are ticked.</p>`;
+}
+function heatmap() {
+  const t = today(), s = startDate(), first = mondayOf(s);
+  const weeks = Math.max(16, Math.ceil((diff(first, t) + 1) / 7));
+  let cells = '';
+  for (let k = 0; k < weeks * 7; k++) {
+    const dt = addDays(first, k), d = getDay(dt), pct = dayPct(dt);
+    let lvl = 0; if (pct >= 0.8) lvl = 3; else if (pct > 0) lvl = 2; else if (d.checkedIn) lvl = 1;
+    const cls = ['c', lvl ? 'l' + lvl : '', dt === t ? 'today' : '', dt > t || dt < s ? 'future' : ''].join(' ');
+    cells += `<button class="${cls}" data-act="goto" data-date="${dt}" title="${fmtShort(dt)}: ${lvl === 3 ? 'session done' : lvl === 2 ? 'partly done' : lvl === 1 ? 'checked in' : 'nothing logged'}" aria-label="${fmtShort(dt)}"></button>`;
+  }
+  return `<div class="heat-wrap"><div class="heat-days">${['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(x => `<span>${x}</span>`).join('')}</div><div class="heat">${cells}</div></div>
+    <div class="heat-legend">Less <span class="c" style="background:var(--surface-2)"></span><span class="c" style="background:color-mix(in srgb, var(--accent) 25%, var(--surface-2))"></span><span class="c" style="background:color-mix(in srgb, var(--accent) 55%, var(--surface-2))"></span><span class="c" style="background:var(--accent)"></span> More · tap a day to open it</div>`;
+}
+const lsiCls = v => v >= 90 ? 'good' : v >= 80 ? 'warn' : 'bad';
+function testsCard() {
+  const rows = [...S.settings.tests].map((e, i) => ({ e, i })).sort((a, b) => b.e.date.localeCompare(a.e.date));
+  const cell = (v) => { if (!v || (v.L == null && v.R == null)) return '<td class="muted">–</td>'; const l = +v.L || 0, r = +v.R || 0; const lsi = Math.max(l, r) ? Math.round(Math.min(l, r) / Math.max(l, r) * 100) : null; return `<td><span class="num">${v.L ?? '–'} / ${v.R ?? '–'}</span>${lsi != null ? ` <span class="chip ${lsiCls(lsi)} lsi">${lsi}%</span>` : ''}</td>`; };
+  return `<section class="card" aria-labelledby="tT">
+    <div class="card-head"><div><div class="eyebrow">Every 2–3 weeks</div><h2 id="tT">Strength and hop tests</h2></div><span class="chip">Symmetry = weaker ÷ stronger leg</span></div>
+    <p class="small muted">Do the tests when fresh, after a warm-up. Hop tests only from Phase 4: hop forward on one leg and stick the landing; measure from your toe at take-off to your heel on landing. Leave a box empty if you didn't do that test.</p>
+    <div class="form-grid"><span></span><span class="field-label">Left</span><span class="field-label">Right</span>
+      ${TESTS.map(x => `<span class="lab">${x.name} <span class="muted small">(${x.unit})</span></span><input type="number" inputmode="decimal" min="0" id="t-${x.k}-L" aria-label="${x.name} left"><input type="number" inputmode="decimal" min="0" id="t-${x.k}-R" aria-label="${x.name} right">`).join('')}
+    </div>
+    <div><button class="btn" data-act="save-test">Save today's results</button></div>
+    ${rows.length ? `<div class="table-wrap"><table><thead><tr><th>Date</th>${TESTS.map(x => `<th>${x.name}<br><span style="text-transform:none;letter-spacing:0;font-weight:500">L / R · goal ${x.goal}</span></th>`).join('')}<th></th></tr></thead><tbody>
+      ${rows.map(({ e, i }) => `<tr><td class="num">${fmtShort(e.date)}</td>${TESTS.map(x => cell(e.v[x.k])).join('')}<td><button class="btn ghost sm" data-act="del-test" data-i="${i}" aria-label="Delete results from ${fmtShort(e.date)}">Delete</button></td></tr>`).join('')}
+    </tbody></table></div>` : '<div class="empty">No results yet. Your first baseline is worth doing this week, without the hop tests.</div>'}
+  </section>`;
+}
+function viewProgress() {
+  const st = stats(), P = PHASES[S.settings.phase - 1];
+  const crit = P.criteria.map((c, i) => { const k = `p${P.n}-${i}`; return `<label class="check"><input type="checkbox" data-crit="${k}" ${S.settings.criteria[k] ? 'checked' : ''}><span>${esc(c)}</span></label>`; }).join('');
+  const all = P.criteria.every((c, i) => S.settings.criteria[`p${P.n}-${i}`]);
+  const rs = S.settings.runStage;
+  const runCard = `<section class="card"><div class="card-head"><div><div class="eyebrow">Phase 4 onward</div><h2>Walk–jog program</h2></div>${S.settings.phase >= 4 ? `<span class="chip accent">${RUN[rs].l}</span>` : '<span class="chip">Unlocks in Phase 4</span>'}</div>
+    <div>${RUN.map((r, i) => `<div class="stage ${i < rs ? 'done' : ''} ${i === rs ? 'cur' : ''}"><span class="b">${i < rs ? '✓' : i + 1}</span><span class="t">${r.d}</span></div>`).join('')}</div>
+    <p class="small muted">Run every other day. Move up only if pain stayed at 2/10 or less during the run and the knee was fine the next morning. Otherwise repeat the stage.</p>
+    ${S.settings.phase >= 4 ? `<div class="row"><button class="btn ghost sm" data-act="run" data-d="-1" ${rs === 0 ? 'disabled' : ''}>Step back</button><button class="btn sm" data-act="run" data-d="1" ${rs >= RUN.length - 1 ? 'disabled' : ''}>Next morning was fine: move up</button></div>` : ''}
+  </section>`;
+  return `
+  <header class="page-head"><div><div class="eyebrow">Since ${fmtShort(startDate())}</div><h1>Progress</h1></div></header>
+  <div class="kpis">
+    <div class="kpi"><span class="eyebrow">Check-in streak</span><span class="v">${st.streak}<small> days</small></span></div>
+    <div class="kpi"><span class="eyebrow">This week</span><span class="v">${st.wk}<small> / 6 days</small></span></div>
+    <div class="kpi"><span class="eyebrow">Adherence, 28 days</span><span class="v">${st.adh == null ? '–' : st.adh + '<small>%</small>'}</span></div>
+    <div class="kpi"><span class="eyebrow">Avg pain, 7 days</span><span class="v" style="font-size:24px"><span style="color:var(--left)">L ${st.pl == null ? '–' : st.pl.toFixed(1)}</span> · <span style="color:var(--right)">R ${st.pr == null ? '–' : st.pr.toFixed(1)}</span></span></div>
+  </div>
+  <section class="card"><div><div class="eyebrow">Last 30 days</div><h2>Pain trend</h2></div>${painChart()}</section>
+  <div class="grid-2">
+    <section class="card"><div><div class="eyebrow">Consistency</div><h2>Training days per week</h2></div>${weekBars()}</section>
+    <section class="card"><div><div class="eyebrow">16-week program</div><h2>Program calendar</h2></div>${heatmap()}</section>
+  </div>
+  <div class="grid-2">
+    <section class="card"><div class="card-head"><div><div class="eyebrow">Phase ${P.n}: ${P.name}</div><h2>Ready to move up?</h2></div><span class="chip ${all ? 'good' : ''}">${P.criteria.filter((c, i) => S.settings.criteria[`p${P.n}-${i}`]).length}/${P.criteria.length}</span></div>
+      <div>${crit}</div>
+      ${P.n < 5 ? `<button class="btn" data-act="advance" ${all ? '' : 'disabled'}>Move to Phase ${P.n + 1}: ${PHASES[P.n].name}</button>${all ? '' : '<p class="small muted">Tick every criterion to unlock. Taking extra weeks here is normal and protects your knees.</p>'}` : `<p class="small muted">${all ? 'All return-to-sport criteria met. Build up sport and riding gradually over 4–6 weeks.' : 'These are your return-to-sport criteria.'}</p>`}
+    </section>
+    ${runCard}
+  </div>
+  ${testsCard()}`;
+}
+
+/* ---------- Settings ---------- */
+function viewSettings() {
+  return `
+  <header class="page-head"><div><div class="eyebrow">Program, data and reminders</div><h1>Settings</h1></div></header>
+  <section class="card"><h2>Program</h2>
+    <div class="grid-2">
+      <div style="display:grid;gap:6px"><label class="field-label" for="startDate">Start date (week 1, day 1)</label><input type="date" id="startDate" value="${startDate()}" max="${today()}"></div>
+      <div style="display:grid;gap:6px"><label class="field-label" for="phaseSel">Current phase</label><select id="phaseSel">${PHASES.map(p => `<option value="${p.n}" ${p.n === S.settings.phase ? 'selected' : ''}>Phase ${p.n}: ${p.name} (${p.weeks})</option>`).join('')}</select></div>
+    </div>
+    <p class="small muted">Normally you move phases from Progress once the criteria are met. Use this if your physiotherapist or orthopedist puts you at a different stage.</p>
+  </section>
+  <section class="card"><h2>Your data</h2>
+    ${syncLine()}
+    <p class="small muted">${cloud.mode === 'cloud' ? 'Check-ins and progress are stored privately in your Claude account, so they appear on any device where you open this page while signed in. Nobody else can see them.' : 'Progress is stored on this device and works fully offline. Export a backup now and then, because clearing Safari website data erases it.'}</p>
+    <div class="row" style="justify-content:flex-start"><button class="btn ghost" data-act="export">Export backup (.json)</button><label class="btn ghost" for="importFile" style="cursor:pointer">Import backup</label><input type="file" id="importFile" accept="application/json,.json" hidden></div>
+    ${ui.json ? `<div style="display:grid;gap:8px"><p class="small muted">Downloads aren't available here. Copy this text and keep it in Notes or Files:</p><textarea id="jsonOut" readonly rows="5">${esc(ui.json)}</textarea><div><button class="btn sm ghost" data-act="copy-json">Copy</button></div></div>` : ''}
+  </section>
+  <section class="card"><h2>Reminders and home screen</h2>
+    <p>Web pages can't send notifications on iPad, so use these instead:</p>
+    <ul class="bul">
+      <li><b>Daily reminder:</b> ask Claude in this chat to "add a daily knee rehab reminder at 7 pm" and it will be created in Apple Reminders on your device. You can also add one yourself in the Reminders app, repeating daily, with this page's link.</li>
+      <li><b>App icon:</b> in Safari, tap Share and then <b>Add to Home Screen</b>. It opens full screen like an app and works with no internet.</li>
+      <li><b>During sessions:</b> the timer at the bottom right keeps your screen awake and beeps at the end of each hold or rest.</li>
+    </ul>
+  </section>
+  <section class="card"><h2>Start over</h2>
+    <p class="small muted">Erases every check-in, test result and setting, on all your devices.</p>
+    <div class="row" style="justify-content:flex-start">${ui.resetArm ? '<button class="btn danger" data-act="reset-go">Yes, erase everything</button><button class="btn ghost" data-act="reset-cancel">Cancel</button>' : '<button class="btn danger" data-act="reset-arm">Erase all data…</button>'}</div>
+  </section>`;
+}
+
+/* ---------- Exercise sheet ---------- */
+let lastFocus = null;
+function openEx(id, dose) {
+  const e = EX[id]; if (!e) return;
+  lastFocus = document.activeElement;
+  const ph = exPhases(id);
+  $('#sheetPanel').innerHTML = `
+    <div class="row" style="align-items:flex-start"><div style="display:flex;gap:12px;align-items:center"><span class="cat-ico">${IC[e.cat] || ''}</span><div><div class="eyebrow">${esc(e.cat)} · ${phaseRange(ph)}</div><div class="small muted">${esc(e.target)}</div></div></div><button class="icon-btn" data-act="close-sheet" aria-label="Close">${IC.close}</button></div>
+    <h2 id="sheetTitle">${esc(e.name)}</h2>
+    ${dose ? `<div><span class="chip accent">Prescribed: ${esc(dose)}</span></div>` : ''}
+    <div class="why"><div class="eyebrow" style="color:var(--accent)">Why it matters for your knees</div><p>${esc(e.why)}</p></div>
+    <div style="display:grid;gap:6px"><h3>Setup</h3><p>${esc(e.setup)}</p></div>
+    <div style="display:grid;gap:10px"><h3>How to do it</h3><ol class="steps">${e.steps.map(s => `<li><span>${esc(s)}</span></li>`).join('')}</ol></div>
+    ${id === 'run-program' ? `<div style="display:grid;gap:4px"><h3>Stages</h3>${RUN.map((r, i) => `<div class="stage ${i < S.settings.runStage ? 'done' : ''} ${i === S.settings.runStage ? 'cur' : ''}"><span class="b">${i + 1}</span><span class="t">${r.d}</span></div>`).join('')}</div>` : ''}
+    <div class="two"><div class="mini"><b>What you should feel</b><ul class="bul small">${e.cues.map(c => `<li>${esc(c)}</li>`).join('')}</ul></div><div class="mini"><b>Common mistakes</b><ul class="bul small">${e.avoid.map(c => `<li>${esc(c)}</li>`).join('')}</ul></div></div>
+    ${e.easier || e.harder ? `<div class="two">${e.easier ? `<div class="mini"><b>Make it easier</b><span class="small">${esc(e.easier)}</span></div>` : ''}${e.harder ? `<div class="mini"><b>Make it harder</b><span class="small">${esc(e.harder)}</span></div>` : ''}</div>` : ''}
+    <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(e.q)}" target="_blank" rel="noopener">Watch demo videos on YouTube ↗</a>`;
+  $('#sheet').hidden = false;
+  $('#sheetPanel').scrollTop = 0;
+  setTimeout(() => { const b = $('#sheetPanel [data-act="close-sheet"]'); b && b.focus(); }, 30);
+}
+function closeSheet() { $('#sheet').hidden = true; if (lastFocus && lastFocus.focus) lastFocus.focus(); }
+
+/* ---------- Timer ---------- */
+const tm = { end: 0, id: null, ctx: null, lock: null };
+function renderTimer() {
+  const el = $('#timer');
+  el.hidden = ui.view !== 'today';
+  if (tm.end) {
+    const left = Math.max(0, Math.ceil((tm.end - Date.now()) / 1000));
+    el.className = 'timer running';
+    el.innerHTML = `<span class="clock" aria-live="off">${Math.floor(left / 60)}:${pad(left % 60)}</span><button data-act="timer-stop">Stop</button>`;
+  } else {
+    el.className = 'timer';
+    el.innerHTML = `<span class="timer-ico">${IC.timer}</span>${[30, 45, 60, 90].map(s => `<button data-act="timer" data-s="${s}" aria-label="Start ${s} second timer">${s}s</button>`).join('')}`;
+  }
+}
+function beep(n = 3) {
+  try { const c = tm.ctx; if (!c) return; for (let i = 0; i < n; i++) { const o = c.createOscillator(), g = c.createGain(); o.frequency.value = 880; o.connect(g); g.connect(c.destination); const t0 = c.currentTime + i * 0.25; g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.3, t0 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.18); o.start(t0); o.stop(t0 + 0.2); } } catch (e) {}
+  try { navigator.vibrate && navigator.vibrate([150, 80, 150]); } catch (e) {}
+}
+async function startTimer(s) {
+  try { tm.ctx = tm.ctx || new (window.AudioContext || window.webkitAudioContext)(); tm.ctx.resume && tm.ctx.resume(); } catch (e) {}
+  try { if ('wakeLock' in navigator && !tm.lock) tm.lock = await navigator.wakeLock.request('screen'); } catch (e) {}
+  tm.end = Date.now() + s * 1000; clearInterval(tm.id);
+  tm.id = setInterval(() => { if (Date.now() >= tm.end) { stopTimer(); beep(); toast('Time!'); } else renderTimer(); }, 250);
+  renderTimer();
+}
+function stopTimer() { clearInterval(tm.id); tm.end = 0; try { tm.lock && tm.lock.release(); } catch (e) {} tm.lock = null; renderTimer(); }
+
+/* ---------- Toast ---------- */
+let toastT;
+function toast(m) { const t = $('#toast'); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2600); }
+
+/* ---------- Render ---------- */
+function render() {
+  renderNav(); renderRail(); renderTimer();
+  const y = window.scrollY;
+  const v = { today: viewToday, plan: viewPlan, library: viewLibrary, progress: viewProgress, settings: viewSettings }[ui.view] || viewToday;
+  $('#view').innerHTML = v();
+  window.scrollTo(0, y);
+}
+function go(view) { ui.view = view; ui.resetArm = false; saveUi(); window.scrollTo(0, 0); render(); }
+
+/* ---------- Events ---------- */
+document.addEventListener('click', async ev => {
+  const a = ev.target.closest('[data-act]'); if (!a || a.disabled) return;
+  const act = a.dataset.act, date = ui.date;
+  switch (act) {
+    case 'nav': go(a.dataset.view); break;
+    case 'day': { const n = +a.dataset.d; ui.date = n === 0 ? today() : addDays(ui.date, n); render(); break; }
+    case 'goto': ui.date = a.dataset.date; go('today'); break;
+    case 'set': {
+      const id = a.dataset.ex, i = +a.dataset.i, d = getDay(date), done = { ...(d.done || {}) };
+      done[id] = (done[id] || 0) > i ? i : i + 1;
+      setDay(date, { done }); render();
+      if (dayPct(date) >= 1) toast('Session complete. Nice work.');
+      break;
+    }
+    case 'all-done': { const done = {}; blocksFor(date).forEach(b => b.items.forEach(i => { done[i.id] = i.sets; })); setDay(date, { done }); render(); toast('Session complete. Nice work.'); break; }
+    case 'clear-done': setDay(date, { done: {} }); render(); break;
+    case 'type': setDay(date, { type: a.dataset.type }); render(); break;
+    case 'seg': setDay(date, { [a.dataset.field]: a.dataset.v }); render(); break;
+    case 'log': setDay(date, { checkedIn: true, painL: getDay(date).painL || 0, painR: getDay(date).painR || 0 }); render(); toast('Check-in logged'); break;
+    case 'open-ex': openEx(a.dataset.ex, a.dataset.dose); break;
+    case 'close-sheet': closeSheet(); break;
+    case 'timer': startTimer(+a.dataset.s); break;
+    case 'timer-stop': stopTimer(); break;
+    case 'lib-phase': ui.libPhase = a.dataset.v; render(); break;
+    case 'lib-cat': ui.libCat = a.dataset.v; render(); break;
+    case 'plan-phase': ui.planPhase = +a.dataset.p; render(); break;
+    case 'advance': if (S.settings.phase < 5) { setSettings({ phase: S.settings.phase + 1 }); render(); toast(`Welcome to Phase ${S.settings.phase}: ${PHASES[S.settings.phase - 1].name}`); } break;
+    case 'run': setSettings({ runStage: Math.max(0, Math.min(RUN.length - 1, S.settings.runStage + +a.dataset.d)) }); render(); break;
+    case 'save-test': {
+      const v = {}; let any = false;
+      TESTS.forEach(x => { const l = $(`#t-${x.k}-L`).value, r = $(`#t-${x.k}-R`).value; if (l !== '' || r !== '') { v[x.k] = { L: l === '' ? null : +l, R: r === '' ? null : +r }; any = true; } });
+      if (!any) { toast('Enter at least one result first'); break; }
+      const tests = S.settings.tests.filter(e => e.date !== today()); const prev = S.settings.tests.find(e => e.date === today());
+      tests.push({ date: today(), v: { ...(prev ? prev.v : {}), ...v } });
+      setSettings({ tests }); ensureStart(); render(); toast('Results saved'); break;
+    }
+    case 'del-test': { const tests = S.settings.tests.filter((e, i) => i !== +a.dataset.i); setSettings({ tests }); render(); break; }
+    case 'export': {
+      const data = JSON.stringify({ app: 'knee-comeback', version: 1, exportedAt: new Date().toISOString(), settings: S.settings, days: S.days }, null, 2);
+      let dl = null; try { dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null; } catch (e) {}
+      if (dl) { try { await dl.save({ filename: `knee-comeback-${today()}.json`, data }); toast('Backup saved'); } catch (e) { if (e && e.code !== 'declined') { ui.json = data; render(); } } }
+      else { try { const u = URL.createObjectURL(new Blob([data], { type: 'application/json' })); const l = document.createElement('a'); l.href = u; l.download = `knee-comeback-${today()}.json`; document.body.appendChild(l); l.click(); l.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); ui.json = data; render(); toast('Backup downloaded'); } catch (e) { ui.json = data; render(); } }
+      break;
+    }
+    case 'copy-json': { const ta = $('#jsonOut'); try { await navigator.clipboard.writeText(ta.value); toast('Copied'); } catch (e) { ta.select(); toast('Selected. Use Copy from the menu'); } break; }
+    case 'reset-arm': ui.resetArm = true; render(); break;
+    case 'reset-cancel': ui.resetArm = false; render(); break;
+    case 'reset-go': {
+      const ids = new Set([...cloud.ids, 'settings', ...Object.keys(S.days).map(monthId)]);
+      S = { settings: defaults(), days: {} }; dirty.clear(); saveLocal(); ui.resetArm = false;
+      if (cloud.col && cloud.mode === 'cloud') for (const id of ids) { try { await cloud.col.doc(id).delete(); } catch (e) {} }
+      cloud.ids.clear(); go('today'); toast('All data erased'); break;
+    }
+  }
+});
+document.addEventListener('input', ev => {
+  const el = ev.target;
+  if (el.dataset.pain) {
+    const side = el.dataset.pain, v = +el.value;
+    setDay(ui.date, { ['pain' + side]: v });
+    const pv = $('#pv' + side); if (pv) pv.innerHTML = `${v}<small>/10</small>`;
+    const vd = verdict(getDay(ui.date)), box = $('#verdict');
+    if (box) { box.className = 'verdict ' + vd.c; box.innerHTML = `<span class="light"></span><div><b>${vd.t}</b><span class="small">${vd.m}</span></div>`; }
+  } else if (el.dataset.rpe) {
+    setDay(ui.date, { rpe: +el.value }); const r = $('#rpeV'); if (r) r.textContent = el.value + '/10';
+  } else if (el.id === 'libQ') {
+    ui.q = el.value; $('#libGrid').innerHTML = libGrid();
+  }
+});
+document.addEventListener('change', ev => {
+  const el = ev.target;
+  if (el.dataset.notes) setDay(ui.date, { notes: el.value.slice(0, 2000) });
+  else if (el.dataset.crit) { setSettings({ criteria: { ...S.settings.criteria, [el.dataset.crit]: el.checked } }); render(); }
+  else if (el.id === 'startDate' && el.value) { setSettings({ startDate: el.value }); render(); toast('Start date updated'); }
+  else if (el.id === 'phaseSel') { setSettings({ phase: +el.value }); render(); toast('Phase updated'); }
+  else if (el.id === 'importFile' && el.files[0]) {
+    const f = el.files[0], rd = new FileReader();
+    rd.onload = () => {
+      try {
+        const o = JSON.parse(rd.result);
+        if (!o || typeof o !== 'object' || !o.days || !o.settings) throw new Error('bad');
+        S = { settings: normSettings(o.settings), days: o.days }; S.settings.ts = Date.now();
+        Object.values(S.days).forEach(d => { d.ts = Date.now(); });
+        saveLocal(); markAll(); render(); toast('Backup imported');
+      } catch (e) { toast('That file isn’t a Knee Comeback backup'); }
+    };
+    rd.readAsText(f);
+  }
+});
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && !$('#sheet').hidden) closeSheet(); });
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState === 'visible') {
+    if (tm.end && !tm.lock) { try { tm.lock = await navigator.wakeLock.request('screen'); } catch (e) {} }
+    if (ui.view === 'today' && ui.date < today() && !tm.end) { /* keep the chosen date */ }
+  } else { tm.lock = null; }
+});
+
+/* ---------- Boot ---------- */
+loadLocal();
+render();
+initCloud();
+
+
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) { window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {})); }
+
+</script>
+</body></html>
