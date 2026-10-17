@@ -141,7 +141,28 @@ p { margin: 0; }
 .seg button { border: 0; background: transparent; padding: 8px 12px; border-radius: 9px; font-weight: 600; font-size: 14px; color: var(--muted); min-height: 36px; }
 .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
 .seg.sev button[aria-pressed="true"][data-v="mild"], .seg.sev button[aria-pressed="true"][data-v="gt30"] { color: var(--warn); }
-.seg.sev button[aria-pressed="true"][data-v="visible"], .seg.sev button[aria-pressed="true"][data-v="yes"] { color: var(--bad); }
+.seg.sev button[aria-pressed="true"][data-v="visible"], .seg.sev button[aria-pressed="true"][data-v="yes"], .seg.sev-ext button[aria-pressed="true"][data-v="no"] { color: var(--bad); }
+.seg.sev-am button[aria-pressed="true"][data-v="worse"] { color: var(--warn); }
+.seg.sev-am button[aria-pressed="true"][data-v="better"] { color: var(--good); }
+.ex-main { display: grid; gap: 8px; min-width: 0; }
+.ex-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.kg { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.kg input { width: 76px; min-height: 36px; padding: 6px 10px; font-family: var(--f-mono); font-size: 15px; border-radius: 10px; }
+.hold-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.toggle input { width: 22px; height: 22px; accent-color: var(--accent); }
+.rules { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; counter-reset: r; }
+.rules li { display: grid; grid-template-columns: 30px 1fr; gap: 10px; counter-increment: r; }
+.rules li::before { content: counter(r); width: 28px; height: 28px; border-radius: 8px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 800; font-family: var(--f-mono); font-size: 13px; }
+.grid-2 { align-items: start; }
+.ladder { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; align-items: end; }
+.rung { border-radius: 10px; padding: 8px 2px; background: var(--surface-2); display: grid; gap: 0; text-align: center; min-width: 0; }
+.rung b { font-family: var(--f-mono); font-size: 15px; line-height: 1.2; }
+.rung span { font-size: 11px; color: var(--muted); }
+.rung.done { background: var(--good-soft); }
+.rung.cur { background: var(--accent); color: var(--accent-ink); }
+.rung.cur span { color: inherit; opacity: .85; }
+.rung.locked { opacity: .45; }
 
 /* Header */
 .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
@@ -153,8 +174,8 @@ p { margin: 0; }
 .kpi .v small { font-size: 15px; color: var(--muted); font-weight: 600; }
 
 /* Check-in */
-.knees { display: grid; gap: 14px; grid-template-columns: 1fr; }
-@media (min-width: 560px) { .knees { grid-template-columns: 1fr 1fr; } }
+.knees { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); }
+.knee { min-width: 0; }
 .knee { border-radius: 14px; padding: 16px; display: grid; gap: 12px; background: var(--surface-2); }
 .knee-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .knee-label { white-space: nowrap; }
@@ -209,6 +230,8 @@ textarea { resize: vertical; min-height: 70px; }
 .timer .clock { font-family: var(--f-mono); font-size: 20px; font-weight: 600; padding: 4px 12px; min-width: 76px; text-align: center; }
 .timer.running { background: var(--accent); color: var(--accent-ink); }
 .timer-ico { width: 18px; height: 18px; margin-left: 8px; }
+.timer-lab { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding-left: 12px; opacity: .85; }
+.timer-lab:empty { display: none; }
 
 /* Library */
 .lib-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
@@ -814,48 +837,218 @@ const EX = {
   }
 };
 
-/* ---------- Phases ---------- */
+
+/* ---------- Merged and upgraded exercises (v2) ---------- */
+Object.assign(EX, {
+  'spanish-squat': {
+    name: 'Spanish squat (band)', cat: 'Strength', target: 'Quadriceps, patellar tendon (isometric)',
+    why: 'A heavy band behind the knees lets you sit back with your shins vertical. You can load the quads hard without the shin sliding forward, which strains the ACL, and without deep bending, which pinches the back of the meniscus where both of your tears are. Long isometric holds also tend to calm knee pain for a few hours afterwards.',
+    setup: 'Loop a heavy resistance band around a sturdy post, bed frame or door anchor at knee height. Step both legs into the loop so it sits behind both knees, then walk backwards until the band is very tight.',
+    steps: ['Stand with feet hip-width apart and toes forward.', 'Sit your hips back into a 45–60° squat while the band holds your knees back. Your shins stay vertical.', 'Drive your heels down and hold for the prescribed time, breathing steadily.', 'Stand up slowly and rest 60 seconds between holds.'],
+    cues: ['Strong, even burning effort in the front of both thighs.', 'Lean back into the band as if sitting in an invisible chair.'],
+    avoid: ['Knees drifting forward past the toes. The band is too loose, so walk further back.', 'Squatting deeper than 60° in Phases 1–2.'],
+    easier: 'Shorter holds (20 s), or a higher position (30°).', harder: 'Hold a dumbbell at your chest, sit to 70°, or hold for 60 s.',
+    q: 'spanish squat band knee'
+  },
+  'elev-ham-bridge': {
+    name: 'Single-leg elevated hamstring bridge', cat: 'Strength', target: 'Hamstrings, glutes',
+    why: 'Putting the heel on a step with the knee bent only about 60° shifts a bridge from mostly glutes to mostly hamstrings. Strong hamstrings pull the shin backwards, which directly takes load off a partially torn ACL.',
+    setup: 'Lie on your back with one heel on the bottom stair or a low chair, knee bent about 60°, which is straighter than a normal bridge. Lift the other leg up in the air.',
+    steps: ['Dig the heel down into the step and lift your hips high.', 'Pause for 1 second at the top with hips level.', 'Lower over 3 seconds.', 'Finish all reps, then switch legs.'],
+    cues: ['You feel it in the back of the thigh and the buttock.', 'Pull the heel towards you slightly as you lift, as if dragging the step.'],
+    avoid: ['Hips twisting or dropping on the free-leg side.', 'Pushing through the toes.', 'Cramping. If it happens, bend the knee a little more for that set.'],
+    easier: 'Both feet on the step.', harder: 'A straighter knee, a 3-second pause at the top, or a weight on your hips.',
+    q: 'single leg elevated hamstring bridge'
+  },
+  'sl-balance-row': {
+    name: 'Single-leg balance with band rows', cat: 'Balance', target: 'Reactive knee stability, proprioception',
+    why: 'Rowing a band while you balance creates small, unpredictable pulls that the knee has to resist automatically. This retrains the nerve sensors in and around the ACL to react quickly, and that quick reaction is what stops a knee giving way.',
+    setup: 'Anchor a resistance band in front of you at chest height. Stand on one leg on a folded towel or foam pad, knee softly bent (about 15°).',
+    steps: ['Hold the band with both hands and arms straight.', 'Row the band towards your ribs and return, at a steady pace.', 'Keep the knee steady over your second toe throughout.', 'Keep going for the prescribed time, then switch legs.'],
+    cues: ['Hips level and trunk tall.', 'The knee stays still while the arms move.'],
+    avoid: ['Locking the knee straight.', 'Twisting the trunk to finish the row.'],
+    easier: 'Firm floor, or plain single-leg balance without the band.', harder: 'One-arm rows, a thicker pad, or eyes closed.',
+    q: 'single leg balance band row'
+  },
+  'split-squat-static': {
+    name: 'Dumbbell split squat', cat: 'Strength', target: 'Quadriceps, glutes, hamstrings (single leg)',
+    why: 'Works each leg separately to even out left-right differences. Keeping the front shin vertical spreads the effort across quads, glutes and hamstrings and keeps the meniscus out of deep, compressed positions. It is the step before the Bulgarian split squat.',
+    setup: 'Take a long split stance, longer than a normal stride, holding dumbbells at your sides. Lift the back heel.',
+    steps: ['Lower the back knee straight down towards the floor over 3 seconds.', 'Stop a few centimetres above the floor, or earlier if the front knee complains.', 'Push through the whole front foot to rise.', 'Do all reps on one side, then switch.'],
+    cues: ['Front shin as vertical as possible.', 'Move straight down and up, like a lift.'],
+    avoid: ['Front knee drifting inwards or far past the toes.', 'A narrow, tightrope stance that makes you wobble. Keep feet hip-width apart.'],
+    easier: 'No weights, a hand on the wall, or a shorter range.', harder: 'Heavier dumbbells, or a 2-second pause at the bottom.',
+    q: 'dumbbell split squat vertical shin'
+  },
+  'box-squat': {
+    name: 'Goblet box squat (to chair)', cat: 'Strength', target: 'Quadriceps, glutes',
+    why: 'Your first weighted squat. The chair stops you at roughly 75–80° of knee bend, thighs just above parallel. That builds strength while preventing you from dropping past 90°, where pressure on the back of the meniscus rises sharply.',
+    setup: 'Hold one dumbbell vertically against your chest. Stand in front of a sturdy chair, feet shoulder-width apart, toes turned out slightly. Add a cushion if needed, so your thighs are just above parallel when you touch the seat.',
+    steps: ['Push your hips back and down over 3 seconds.', 'Lightly touch the chair with your buttocks without sitting or relaxing.', 'Drive up through your whole foot and squeeze the glutes at the top.'],
+    cues: ['Knees track over the second and third toes.', 'Chest up, weight in the heels and midfoot.'],
+    avoid: ['Knees caving in.', 'Plopping down onto the chair.', 'Rising onto your toes.'],
+    easier: 'No weight, or a higher seat.', harder: 'A heavier dumbbell, or a 2-second pause just above the seat.',
+    q: 'goblet box squat to chair'
+  },
+  'tke': {
+    name: 'Terminal knee extension (band)', cat: 'Strength', target: 'Inner quad (VMO), last 20–30° of straightening',
+    why: 'Trains the final degrees of knee straightening while standing. This "locks" the knee for stability and steadies the kneecap. With the foot on the floor, the quad works without pulling the shin forward against your healing ACL.',
+    setup: 'Loop a band around something solid at knee height, step into it so it sits behind the working knee, and face the anchor.',
+    steps: ['Stand with the working knee bent about 20–30° and the band pulling it forward.', 'Squeeze your thigh to straighten the knee against the band.', 'Hold for 2 seconds.', 'Let the knee bend back slowly.'],
+    cues: ['Heel stays on the floor.', 'Feel the teardrop muscle above and inside the kneecap go hard.'],
+    avoid: ['Snapping into hyperextension.', 'Leaning your whole body back.', 'Left knee: a pinch or block deep in the front-centre of the knee as it straightens. The notch lesion sits there, so stop 5° short and mention it to your orthopedist.'],
+    easier: 'A lighter band.', harder: 'A heavier band, or stand on the working leg only.',
+    q: 'terminal knee extension band'
+  },
+  'band-walk': {
+    name: 'Monster walk & athletic side-step', cat: 'Strength', target: 'Gluteus medius, hip control',
+    why: 'Trains the hip muscles that stop the knee caving in. You do it in the same quarter-squat you hold standing on motorcycle footpegs, so the strength carries over to riding as well as to cutting and landing.',
+    setup: 'Put one mini band just above the knees and, once that is easy, a second around the ankles. Drop into an athletic quarter squat (about 30° of knee bend), hips back.',
+    steps: ['Take 12 slow steps sideways, keeping tension on the bands, then 12 back.', 'Take 12 steps diagonally forward, then 12 diagonally backward.', 'Stay low the whole time.'],
+    cues: ['Toes point straight ahead.', 'Knees stay pushed out against the band.'],
+    avoid: ['Feet coming together so the band goes slack.', 'Rocking the trunk side to side.', 'Knees caving inward.'],
+    easier: 'One band above the knees, standing taller.', harder: 'Two bands, a stronger band, or a lower stance.',
+    q: 'monster walk mini band'
+  },
+  'step-down': {
+    name: 'Slow lateral step-down', cat: 'Strength', target: 'Quadriceps braking strength, hip control',
+    why: 'This is the number one knee-control drill. It builds the braking strength you need on stairs, absorbing drops, and shifting weight on one leg over rough ground.',
+    setup: 'Stand side-on at the edge of the bottom stair on the working leg, with the other foot hanging off the side.',
+    steps: ['Keep the pelvis level and the kneecap over your second toe.', 'Take a full 4 seconds to lower the hanging heel until it barely touches the floor.', 'Put no weight on that heel.', 'Drive back up through the heel of the top leg.'],
+    cues: ['Imagine a laser on your kneecap that points straight ahead.', 'Slow and smooth all the way down.'],
+    avoid: ['Knee diving inwards.', 'Hip dropping on the free side.', 'Rushing the lowering.'],
+    easier: 'Hold a rail, or a smaller range.', harder: 'Hold dumbbells, or use a higher step.',
+    q: 'slow lateral step down knee control'
+  },
+  'attack-hold': {
+    name: 'Moto-peg hold', cat: 'Strength', target: 'Quad, glute and adductor endurance for off-road riding',
+    why: 'Standing over broken tarmac and trails means long half-squat holds while absorbing bumps. When the thighs tire, the knees cave in, and that is when riders get hurt. This hold builds the endurance for 3–4 hour rides.',
+    setup: 'Stand with the balls of your feet on the edge of the bottom stair, heels floating slightly, as if on the pegs. Squeeze a cushion or small ball between your knees, which plays the part of the tank. Hold dumbbells at your sides.',
+    steps: ['Bend the knees to about 30° and hinge your hips back.', 'Lean your chest forward over imaginary bars, elbows up and out, head up.', 'Squeeze the cushion with your knees and inner thighs the whole time.', 'Hold for the prescribed time.'],
+    cues: ['Weight on the balls of the feet.', 'Hips do the absorbing, not just the knees.', 'Breathe steadily.'],
+    avoid: ['Sinking lower and lower as you tire. Stop the set instead.', 'Locking the knees.', 'Letting the cushion drop, which means the inner thighs switched off.'],
+    easier: 'Flat floor and shorter holds.', harder: 'Longer holds, small bounces, a wobble cushion, or someone gently pushing you from different directions.',
+    q: 'motocross standing position exercise'
+  },
+  'drop-squat': {
+    name: 'Snap-down', cat: 'Plyometric', target: 'Landing mechanics, deceleration',
+    why: 'Teaches your muscles to absorb force like springs before you leave the ground. Most ACL injuries happen in stiff-legged landings with the knee caving in. This drill builds the safe landing position until it is automatic.',
+    setup: 'Stand tall on your toes with your arms overhead.',
+    steps: ['Throw your arms down and drop fast into a quarter squat.', 'Land on the balls of your feet and roll to your heels.', 'Freeze completely still for 3 seconds.', 'Stand back up on your toes and repeat.'],
+    cues: ['Knees wide over the toes, hips back, chest over the knees.', 'Quiet feet.'],
+    avoid: ['Knees touching or caving in.', 'Landing upright and stiff.'],
+    easier: 'Slow it down.', harder: 'Do it faster, then on one leg.',
+    q: 'snap down drill athletic stance'
+  },
+  'depth-drop': {
+    name: 'Drop landing ladder', cat: 'Plyometric', target: 'Absorbing drops from height',
+    why: 'This rebuilds your confidence with high drops, because you said jumps over 2–3 ft feel uncomfortable. You train controlled impact absorption in small height steps, without the meniscus-compressing push-off of a deep jump.',
+    setup: 'Use a stable step or box at the height shown on the Drop ladder card (Progress). Start with the bottom stair, about 20 cm.',
+    steps: ['Step off the edge. Do not jump up first.', 'Land on both feet at the same time in a soft quarter squat.', 'Freeze for 2 seconds and check that the knees are over the toes.', 'Climb back up and reset. Move up a rung only after 2 weeks of effortless, quiet landings.'],
+    cues: ['Silent landing. A loud slap means you landed too stiff.', 'Even weight on both legs.'],
+    avoid: ['Jumping up before dropping.', 'Skipping rungs because one landing felt fine.'],
+    easier: 'The previous rung.', harder: 'The next rung, then single-leg landings from low heights in Phase 5.',
+    q: 'drop landing technique soft knees'
+  },
+  'hop-stick': {
+    name: 'Single-leg hop and stick', cat: 'Plyometric', target: 'Single-leg landing control',
+    why: 'This shows your nervous system that each leg can stop forward and sideways momentum without giving way. Landing on one leg is the moment of greatest risk for the ACL.',
+    setup: 'A clear floor with a line on it.',
+    steps: ['Stand on one leg.', 'Forward: hop a modest 30–45 cm and land on the same leg, absorbing into about 30° of knee bend.', 'Freeze for 3 full seconds.', 'Sideways: hop over the line and stick it the same way.', 'Do the prescribed reps per leg and direction.'],
+    cues: ['Quiet landing.', 'Hips level, trunk steady.'],
+    avoid: ['Wobbling. If you cannot stick it, hop shorter.', 'Knee caving in.'],
+    easier: 'Hop from two feet and land on one.', harder: 'Longer hops, or hop-hop-stick.',
+    q: 'single leg hop and stick'
+  },
+  'lateral-bound': {
+    name: 'Lateral skater bound', cat: 'Agility', target: 'Side-to-side power and control',
+    why: 'Prepares the medial meniscus and ACL for side-to-side sport movements and sudden weight shifts, like a front wheel deflecting off a rock.',
+    setup: 'About 2 m of clear space. Use body weight first; later, add a band around your waist anchored to one side.',
+    steps: ['Stand on your right leg.', 'Bound sideways onto your left leg.', 'Stick the landing for 2 seconds.', 'Bound back. In Phase 5, bound continuously.'],
+    cues: ['Knee over the toes and hips back on landing.', 'Chest up.'],
+    avoid: ['The knee collapsing on landing.', 'Bounding too far too early.'],
+    easier: 'Shorter distance.', harder: 'A band pulling you sideways, or continuous bounds.',
+    q: 'lateral skater bound stick landing'
+  },
+  'run-program': {
+    name: 'Walk–run program', cat: 'Running', target: 'Gradual return to running',
+    why: 'Running loads tissues that have not seen impact for months. Building up in small stages lets the meniscus, cartilage and tendons adapt. Most running setbacks come from doing too much too soon.',
+    setup: 'Flat grass, a track or a treadmill, and supportive running shoes. Do the dynamic warm-up first.',
+    steps: ['Do the stage shown in today’s session (the stages are listed on the Progress tab).', 'Jog at an easy pace where you could chat.', 'The next morning, check your knee: pain above 2/10, swelling or stiffness means repeat the stage.', 'If you feel good both during and the next morning, move up one stage next time.', 'Run 3 times a week at most, never two days in a row.'],
+    cues: ['Short, quick steps, about 165–175 steps per minute.', 'Land under your body, not out in front.'],
+    avoid: ['Hills, uneven trails and speed in this phase.', 'Skipping stages because you feel fine.'],
+    easier: 'Repeat a stage.', harder: 'One stage at a time, no shortcuts.',
+    q: 'return to running walk jog program'
+  }
+});
+
+/* Exercises that take a weight you can log (kg) */
+const LOADED = new Set(['box-squat', 'goblet-squat', 'rdl', 'split-squat-static', 'split-squat', 'sl-rdl', 'step-down', 'attack-hold', 'reverse-lunge', 'sl-calf']);
+/* Rest between sets, seconds */
+const REST_BY_CAT = { Strength: 60, Plyometric: 90, Agility: 90, Balance: 30, Core: 30 };
+const restFor = id => (EX[id] && (EX[id].rest ?? REST_BY_CAT[EX[id].cat])) || 0;
+
+/* ---------- Phases (merged plan) ---------- */
+const WARM = [['cardio', 1, '5 min easy bike or walk'], ['band-walk', 2, '12 steps each way']];
+const MOB = [['ham-stretch', 2, '30 s / leg'], ['calf-stretch', 2, '30 s each way'], ['hip-flexor', 2, '30 s / side'], ['foam-roll', 1, '5 min']];
 const PHASES = [
   { n: 1, name: 'Activate', weeks: 'Weeks 1–3', range: [1, 3],
-    goal: 'Switch the quads and glutes back on, keep both menisci calm and learn perfect form. Nothing here should hurt.',
-    strength: [['cardio', 1, '5 min easy warm-up'], ['quad-set', 3, '10 × 5 s hold'], ['slr', 3, '10 reps'], ['tke', 3, '15 reps'], ['bridge', 3, '12 reps, 3 s hold'], ['clamshell', 3, '12 / side'], ['side-abd', 3, '12 / side'], ['ham-iso', 2, '10 × 5 s'], ['calf-raise', 3, '15 reps'], ['wall-sit', 3, '30 s at 45°']],
-    cond: [['sl-balance', 3, '30 s / leg'], ['dead-bug', 3, '10 reps'], ['cardio', 1, '20–30 min easy']],
-    mobility: [['heel-slide', 2, '10 reps'], ['ham-stretch', 3, '30 s / leg'], ['calf-stretch', 2, '30 s each way'], ['hip-flexor', 2, '30 s / side'], ['foam-roll', 1, '5 min']],
-    criteria: ['Daily-life pain stays at 0–2/10 for a full week', 'No swelling the morning after sessions', 'Straight leg raise 3 × 10 with the knee fully locked', 'Single-leg stand for 30 s on each leg without touching down'] },
+    goal: 'Load the quads and hamstrings in the positions safest for your meniscus and ACL (Spanish squats, terminal extensions, elevated bridges), switch the hip muscles on and start retraining knee reflexes. Nothing here should hurt.',
+    warmup: [['cardio', 1, '5 min easy bike or walk']],
+    strength: [['spanish-squat', 4, '30–45 s hold at 45°'], ['tke', 3, '15 / leg'], ['elev-ham-bridge', 3, '12 / leg, 3 s lower'], ['band-walk', 3, '12 steps each way'], ['slr', 2, '10 / leg'], ['calf-raise', 3, '15 reps'], ['side-plank', 2, '20 s / side, knees bent']],
+    cond: [['sl-balance-row', 3, '45 s / leg'], ['dead-bug', 3, '10 reps'], ['cardio', 1, '20–30 min easy']],
+    mobility: [['heel-slide', 2, '10 reps'], ...MOB],
+    criteria: ['Daily-life pain stays at 0–2/10 for a full week', 'No swelling the morning after sessions', 'Spanish squat 4 × 45 s with no knee pain', 'Balance with band rows for 45 s on each leg without touching down'] },
   { n: 2, name: 'Build', weeks: 'Weeks 4–6', range: [4, 6],
-    goal: 'Build single-leg strength in a safe range (0–70° of knee bend) and start loading the hamstrings.',
-    strength: [['cardio', 1, '5 min easy warm-up'], ['box-squat', 3, '12 reps'], ['step-up', 3, '10 / leg'], ['rdl', 3, '10 reps'], ['sl-bridge', 3, '8 / leg'], ['band-walk', 3, '10 steps each way'], ['tke', 2, '15 reps'], ['wall-sit', 3, '40 s at 60°'], ['sl-calf', 3, '10 / leg'], ['side-plank', 3, '20 s / side']],
-    cond: [['star-reach', 3, '5 reaches each way / leg'], ['sl-balance', 3, '30 s / leg, eyes closed'], ['dead-bug', 3, '12 reps'], ['cardio', 1, '30 min, moderate']],
-    mobility: [['ham-stretch', 2, '30 s / leg'], ['calf-stretch', 2, '30 s each way'], ['hip-flexor', 2, '30 s / side'], ['foam-roll', 1, '5 min']],
-    criteria: ['10 slow single-leg sit-to-stands from a chair on each leg, knee in line', 'Step-ups 3 × 10 on each leg with no knee caving in', '30 min of bike or brisk walking with no pain during or after', 'No next-day soreness above 2/10'] },
+    goal: 'Weighted squats to 75–80°, slow braking on one leg, a heavy hinge for the hamstrings, and the start of moto-peg endurance.',
+    warmup: WARM,
+    strength: [['box-squat', 3, '12 reps to the chair (75–80°)'], ['split-squat-static', 3, '10 / leg'], ['step-down', 3, '10 / leg, 4 s lower'], ['rdl', 4, '10 reps'], ['elev-ham-bridge', 3, '12 / leg'], ['attack-hold', 3, '60 s hold'], ['sl-calf', 3, '10 / leg'], ['side-plank', 3, '30 s / side']],
+    cond: [['star-reach', 3, '5 reaches each way / leg'], ['sl-balance-row', 3, '45 s / leg, on a pad'], ['dead-bug', 3, '12 reps'], ['cardio', 1, '30 min, moderate']],
+    mobility: MOB,
+    criteria: ['10 slow single-leg sit-to-stands from a chair on each leg, knee in line', 'Step-downs 3 × 10 on each leg with a 4 s lower and no knee caving', 'Moto-peg hold 3 × 60 s without knee pain', '30 min bike or brisk walk with no pain during or after', 'No next-morning soreness above 2/10'] },
   { n: 3, name: 'Load', weeks: 'Weeks 7–10', range: [7, 10],
-    goal: 'Heavier, slower strength work to 90° of knee bend. Build the hamstring and calf capacity that running will need.',
-    strength: [['cardio', 1, '5 min easy warm-up'], ['goblet-squat', 4, '8 reps to 90°'], ['reverse-lunge', 3, '8 / leg'], ['split-squat', 3, '8 / leg'], ['sl-rdl', 3, '8 / leg'], ['slider-curl', 3, '10 reps'], ['step-down', 3, '8 / leg'], ['sl-calf', 3, '15 / leg'], ['copenhagen', 3, '20 s / side']],
-    cond: [['cushion-catch', 3, '30 s / leg'], ['star-reach', 2, '5 each way / leg'], ['side-plank', 3, '30 s / side'], ['bike-intervals', 1, '8 × 30 s hard / 90 s easy']],
-    mobility: [['ham-stretch', 2, '30 s / leg'], ['calf-stretch', 2, '30 s each way'], ['hip-flexor', 2, '30 s / side'], ['foam-roll', 1, '5 min']],
-    criteria: ['20 single-leg calf raises on each leg', '10 lateral step-downs on each leg, hips level and knee over the second toe', 'Goblet squat 3 × 8 to 90° with no pain', '30 min brisk walk with no symptoms that day or the next morning'] },
+    goal: 'Heavier single-leg strength to 90°, eccentric hamstrings, and the first low landings: snap-downs and drops from the bottom stair.',
+    warmup: WARM,
+    strength: [['goblet-squat', 4, '8 reps to 90°'], ['split-squat', 3, '8 / leg'], ['sl-rdl', 3, '8 / leg'], ['slider-curl', 3, '10 reps'], ['step-down', 3, '10 / leg, with dumbbells'], ['attack-hold', 3, '75 s hold'], ['sl-calf', 3, '15 / leg'], ['copenhagen', 3, '20 s / side']],
+    cond: [['dyn-warmup', 1, '8 min'], ['drop-squat', 3, '8 reps'], ['depth-drop', 4, '6 landings, current rung'], ['cushion-catch', 3, '30 s / leg'], ['bike-intervals', 1, '8 × 30 s hard / 90 s easy']],
+    mobility: MOB,
+    criteria: ['20 single-leg calf raises on each leg', 'Goblet squat 3 × 8 to 90° with no pain', 'Drop landings from the second stair (40 cm) quiet and pain-free for 2 weeks', '30 min brisk walk with no symptoms that day or the next morning'] },
   { n: 4, name: 'Impact', weeks: 'Weeks 11–13', range: [11, 13],
-    goal: 'Re-introduce impact: hops, landings and the walk–jog program. Strength work continues and gets heavier.',
-    strength: [['cardio', 1, '5 min easy warm-up'], ['goblet-squat', 4, '6 reps, heavier'], ['split-squat', 3, '8 / leg, with dumbbells'], ['sl-rdl', 3, '8 / leg'], ['nordic', 3, '5 reps'], ['step-down', 3, '10 / leg'], ['sl-calf', 3, '20 / leg'], ['copenhagen', 3, '25 s / side']],
-    cond: [['dyn-warmup', 1, '8 min'], ['pogo', 3, '20 contacts'], ['rope', 3, '45 s on / 45 s off'], ['drop-squat', 3, '6 reps'], ['squat-jump', 3, '6 reps'], ['hop-stick', 3, '5 / leg, forward + sideways'], ['run-program', 1, 'Current stage']],
-    mobility: [['ham-stretch', 2, '30 s / leg'], ['calf-stretch', 2, '30 s each way'], ['hip-flexor', 2, '30 s / side'], ['foam-roll', 1, '5 min']],
-    criteria: ['20 min continuous easy jog with pain at 2/10 or less', 'No swelling or extra pain the morning after running', '3 × 20 pogo hops with no pain', 'Single-leg hop and stick on each leg, quiet and controlled'] },
+    goal: 'Hops, single-leg landings, side-to-side bounds and the walk–run program. Strength keeps getting heavier.',
+    warmup: WARM,
+    strength: [['goblet-squat', 4, '6 reps, heavier'], ['split-squat', 3, '8 / leg, with dumbbells'], ['sl-rdl', 3, '8 / leg'], ['nordic', 3, '5 reps'], ['step-down', 3, '10 / leg, heavier'], ['attack-hold', 3, '90 s hold'], ['sl-calf', 3, '20 / leg'], ['copenhagen', 3, '25 s / side']],
+    cond: [['dyn-warmup', 1, '8 min'], ['pogo', 3, '20 contacts'], ['rope', 2, '45 s on / 45 s off'], ['depth-drop', 4, '6 landings, current rung'], ['hop-stick', 3, '6 / leg, forward + sideways'], ['lateral-bound', 3, '8 / side, 2 s stick'], ['run-program', 1, 'Current stage']],
+    mobility: MOB,
+    criteria: ['20 min continuous easy jog with pain at 2/10 or less', 'No swelling or extra pain the morning after running', 'Drop landings from a sturdy chair (50 cm) soft and quiet', 'Single-leg hop and stick on each leg, quiet and controlled'] },
   { n: 5, name: 'Return', weeks: 'Weeks 14–16+', range: [14, 99],
-    goal: 'Speed, cutting, jumping and riding-specific strength. Finish with return-to-sport testing and your orthopedist’s clearance.',
-    strength: [['cardio', 1, '5 min easy warm-up'], ['goblet-squat', 4, '6 reps, heavy, to parallel'], ['split-squat', 3, '8 / leg, heavy'], ['sl-rdl', 3, '8 / leg, heavy'], ['nordic', 3, '6 reps'], ['attack-hold', 3, '60 s'], ['sl-calf', 3, '25 / leg'], ['copenhagen', 3, '30 s / side']],
-    cond: [['dyn-warmup', 1, '8 min'], ['box-jump', 3, '5 reps'], ['lateral-bound', 3, '6 / side'], ['depth-drop', 3, '5 reps'], ['figure-8', 4, 'laps each direction'], ['cut-drill', 4, '4 / side'], ['shuttle', 6, '10 m reps'], ['run-program', 1, 'Current stage, then 20–30 min runs']],
-    mobility: [['ham-stretch', 2, '30 s / leg'], ['calf-stretch', 2, '30 s each way'], ['hip-flexor', 2, '30 s / side'], ['foam-roll', 1, '5 min']],
-    criteria: ['Single hop and triple hop symmetry of 90% or more (Progress → Tests)', '25 single-leg calf raises on each leg', 'Full-speed cutting and stopping drills without pain or hesitation', 'No swelling after 2 weeks of Phase 5 training', 'Orthopedist has cleared you, and the left-knee notch lesion has been reviewed'] }
+    goal: 'Speed, cutting, higher drops and riding-specific endurance. Finish with return-to-sport tests and your orthopedist’s clearance.',
+    warmup: WARM,
+    strength: [['goblet-squat', 4, '6 reps, heavy, to parallel'], ['split-squat', 3, '8 / leg, heavy'], ['sl-rdl', 3, '8 / leg, heavy'], ['nordic', 3, '6 reps'], ['attack-hold', 3, '90 s, with bounces or pushes'], ['sl-calf', 3, '25 / leg'], ['copenhagen', 3, '30 s / side']],
+    cond: [['dyn-warmup', 1, '8 min'], ['box-jump', 3, '5 reps'], ['lateral-bound', 3, '8 / side, continuous'], ['depth-drop', 4, '6 landings, current rung'], ['figure-8', 4, 'laps each direction'], ['cut-drill', 4, '4 / side'], ['shuttle', 6, '10 m reps'], ['run-program', 1, 'Current stage']],
+    mobility: MOB,
+    criteria: ['Single hop and triple hop symmetry of 90% or more (Progress → Tests)', '25 single-leg calf raises on each leg', 'Moto-peg hold 3 × 90 s, and 2 ft (60 cm) drop landings feel confident', 'Full-speed cutting and stopping drills without pain or hesitation', 'No swelling after 2 weeks of Phase 5 training', 'Orthopedist has cleared you, and the left-knee notch lesion has been reviewed'] }
 ];
 
 const RUN = [
-  { l: 'Stage 1', d: 'Jog 1 min / walk 2 min × 8' },
-  { l: 'Stage 2', d: 'Jog 2 min / walk 2 min × 6' },
-  { l: 'Stage 3', d: 'Jog 3 min / walk 1 min × 6' },
-  { l: 'Stage 4', d: 'Jog 5 min / walk 1 min × 4' },
+  { l: 'Stage 1', d: 'Walk 4 min / jog 1 min × 5 (25 min)' },
+  { l: 'Stage 2', d: 'Walk 3 min / jog 2 min × 5' },
+  { l: 'Stage 3', d: 'Walk 2 min / jog 3 min × 5' },
+  { l: 'Stage 4', d: 'Walk 1 min / jog 4 min × 5' },
   { l: 'Stage 5', d: 'Jog 10 min / walk 1 min × 2' },
-  { l: 'Stage 6', d: 'Jog 20 min continuous' },
-  { l: 'Stage 7', d: 'Run 30 min continuous, easy pace' }
+  { l: 'Stage 6', d: 'Jog 20–25 min continuous' },
+  { l: 'Stage 7', d: 'Run 30 min continuous, easy pace' },
+  { l: 'Stage 8', d: '30 min easy + 4 × 20 s strides at 80%' }
+];
+
+/* Drop-landing ladder towards your 2–3 ft goal. min = first phase allowed */
+const DROP = [
+  { l: '20 cm', d: 'Bottom stair (8 in)', min: 3 },
+  { l: '30 cm', d: 'Low step or two cushions', min: 3 },
+  { l: '40 cm', d: 'Second stair (16 in)', min: 3 },
+  { l: '50 cm', d: 'Sturdy chair (20 in)', min: 4 },
+  { l: '60 cm', d: 'Sturdy box or bench (2 ft)', min: 4 },
+  { l: '75 cm', d: 'High box (2.5 ft)', min: 5 },
+  { l: '90 cm', d: '3 ft, only after clearance', min: 5 }
 ];
 
 const SCHEDULE = { 1: 'strength', 2: 'cond', 3: 'strength', 4: 'cond', 5: 'strength', 6: 'cond', 0: 'recovery' };
@@ -866,6 +1059,7 @@ const TESTS = [
   { k: 'calf', name: 'Single-leg calf raises', unit: 'reps', goal: '25+ each' },
   { k: 'sts', name: 'Single-leg sit-to-stand (chair)', unit: 'reps', goal: '10+ each' },
   { k: 'bal', name: 'Single-leg balance, eyes closed', unit: 's', goal: '30 s each' },
+  { k: 'peg', name: 'Moto-peg hold', unit: 's', goal: '90 s', both: true },
   { k: 'hop', name: 'Single hop for distance', unit: 'cm', goal: '≥ 90% symmetry' },
   { k: 'triple', name: 'Triple hop for distance', unit: 'cm', goal: '≥ 90% symmetry' }
 ];
@@ -910,7 +1104,7 @@ const mondayOf = s => { const d = parse(s); const wd = (d.getDay() + 6) % 7; d.s
 
 /* ---------- State ---------- */
 const LS_KEY = 'knee-comeback-v1', UI_KEY = 'knee-comeback-ui';
-const defaults = () => ({ startDate: null, phase: 1, criteria: {}, tests: [], runStage: 0, ts: 0 });
+const defaults = () => ({ startDate: null, phase: 1, criteria: {}, tests: [], runStage: 0, dropStage: 0, autoRest: true, ts: 0 });
 const normSettings = s => ({ ...defaults(), ...(s || {}), criteria: { ...((s && s.criteria) || {}) }, tests: Array.isArray(s && s.tests) ? s.tests : [] });
 let S = { settings: defaults(), days: {} };
 const ui = { view: 'today', date: today(), libPhase: 'all', libCat: 'all', q: '', planPhase: null, resetArm: false, json: null };
@@ -1010,11 +1204,23 @@ const phaseFor = date => (date < today() && S.days[date] && S.days[date].phase) 
 function typeFor(date) { const d = getDay(date); return d.type || SCHEDULE[parse(date).getDay()]; }
 function sessionName(type, ph) { return (ph >= 4 && SESSION_NAMES_P4[type]) || SESSION_NAMES[type]; }
 const groupOf = (id, cat) => id === 'dyn-warmup' ? 'Warm-up' : ({ Balance: 'Balance & core', Core: 'Balance & core', Plyometric: 'Impact & agility', Agility: 'Impact & agility', Running: 'Running', Cardio: 'Cardio', Strength: 'Strength', Mobility: 'Mobility' })[cat];
+const runStage = () => Math.min(S.settings.runStage || 0, RUN.length - 1);
+const dropMax = ph => ph >= 5 ? DROP.length - 1 : ph >= 4 ? 4 : ph >= 3 ? 2 : -1;
+const dropStage = () => Math.max(0, Math.min(S.settings.dropStage || 0, dropMax(S.settings.phase)));
+function doseOf(a) {
+  if (a[0] === 'run-program') return RUN[runStage()].d;
+  if (a[0] === 'depth-drop') { const r = DROP[dropStage()]; return `6 landings from ${r.l} (${r.d.charAt(0).toLowerCase() + r.d.slice(1)})`; }
+  return a[2];
+}
+function lastLoad(id, before) {
+  const ks = Object.keys(S.days).filter(k => k < before && S.days[k].load && S.days[k].load[id] != null).sort();
+  return ks.length ? { date: ks[ks.length - 1], kg: S.days[ks[ks.length - 1]].load[id] } : null;
+}
 function blocksFor(date) {
   const P = PHASES[phaseFor(date) - 1], type = typeFor(date);
-  const it = a => ({ id: a[0], sets: a[1], dose: a[0] === 'run-program' ? RUN[Math.min(S.settings.runStage, RUN.length - 1)].d : a[2] });
-  if (type === 'strength') return [{ t: 'Warm-up', items: [it(P.strength[0])] }, { t: 'Strength', items: P.strength.slice(1).map(it) }, { t: 'Cool-down mobility', items: P.mobility.map(it) }];
-  if (type === 'recovery') return [{ t: 'Easy movement', items: [it(['cardio', 1, '20–30 min easy walk, optional'])] }, { t: 'Mobility', items: [it(['heel-slide', 2, '10 reps']), ...P.mobility.map(it)] }];
+  const it = a => ({ id: a[0], sets: a[1], dose: doseOf(a) });
+  if (type === 'strength') return [{ t: 'Warm-up', items: P.warmup.map(it) }, { t: 'Strength', items: P.strength.map(it) }, { t: 'Cool-down mobility', items: P.mobility.map(it) }];
+  if (type === 'recovery') { const mob = P.mobility.some(a => a[0] === 'heel-slide') ? P.mobility : [['heel-slide', 2, '10 reps'], ...P.mobility]; return [{ t: 'Easy movement', items: [it(['cardio', 1, '20–30 min easy walk, optional'])] }, { t: 'Mobility', items: mob.map(it) }]; }
   const out = [];
   P.cond.forEach(a => { const g = groupOf(a[0], EX[a[0]].cat); const last = out[out.length - 1]; if (last && last.t === g) last.items.push(it(a)); else out.push({ t: g, items: [it(a)] }); });
   out.push({ t: 'Mobility', items: P.mobility.map(it) });
@@ -1026,11 +1232,23 @@ function dayPct(date) {
   return tot ? got / tot : 0;
 }
 function verdict(d) {
-  const p = Math.max(d.painL || 0, d.painR || 0);
-  if (p >= 6 || d.giveWay === 'yes' || d.swellL === 'visible' || d.swellR === 'visible')
-    return { c: 'red', t: 'Recovery day', m: 'Skip impact and heavy strength today and do the recovery session only. If this lasts more than 2 days, or the knee locks or gives way, contact your orthopedist.' };
-  if (p >= 3 || d.swellL === 'mild' || d.swellR === 'mild' || d.stiff === 'gt30')
-    return { c: 'amber', t: 'Train, but hold', m: 'Do today’s session at last week’s level. Don’t add weight, reps or new exercises. Pain during exercise should stay at 3/10 or less and settle by tomorrow morning.' };
+  const red = [], amber = [];
+  [['L', 'Left'], ['R', 'Right']].forEach(([s, n]) => {
+    const p = d['pain' + s] || 0;
+    if (p >= 6) red.push(`${n} knee pain ${p}/10`); else if (p >= 3) amber.push(`${n} knee pain ${p}/10`);
+    if (d['swell' + s] === 'visible') red.push(`${n} knee visibly swollen`); else if (d['swell' + s] === 'mild') amber.push(`${n} knee mildly swollen`);
+    if (d['ext' + s] === 'no') red.push(`${n} knee won’t fully straighten`);
+  });
+  if (d.giveWay === 'yes') red.push('Knee gave way, locked or caught');
+  if (d.stiff === 'gt30') amber.push('Morning stiffness over 30 min');
+  if (d.morning === 'worse') amber.push('Worse than yesterday morning');
+  const why = a => a.length ? ` (${a.join(', ')})` : '';
+  if (red.length) {
+    const ext = d.extL === 'no' || d.extR === 'no';
+    return { c: 'red', t: 'Recovery day' + why(red), m: 'Skip impact and heavy strength today and do the recovery session only.' + (ext ? ' Losing full straightening can mean something is catching inside the joint; on the left that could be the notch lesion. Contact your orthopedist if it hasn’t returned by tomorrow.' : ' If this lasts more than 2 days, or the knee locks or gives way, contact your orthopedist.') };
+  }
+  if (amber.length)
+    return { c: 'amber', t: 'Train, but hold' + why(amber), m: d.morning === 'worse' ? 'Your knee reacted to the last session. Repeat today at a lower level (one set less, or lighter) and don’t progress this week.' : 'Do today’s session at last week’s level without adding weight, reps or new exercises. Pain during exercise should stay at 3/10 or less and settle by tomorrow morning.' };
   return { c: 'green', t: 'Good to go', m: 'Train as planned. If the last session felt easy and nothing flared up the next morning, you can add a little load.' };
 }
 function stats() {
@@ -1084,8 +1302,15 @@ function viewToday() {
     <div class="block-title">${esc(b.t)}</div>
     <div class="ex-list">${b.items.map(i => {
       const done = Math.min((d.done || {})[i.id] || 0, i.sets), full = done >= i.sets;
-      const dots = Array.from({ length: i.sets }, (_, k) => `<button class="set ${k < done ? 'on' : ''}" data-act="set" data-ex="${i.id}" data-i="${k}" ${future ? 'disabled' : ''} aria-label="${esc(EX[i.id].name)} set ${k + 1}${k < done ? ', done' : ''}">${i.sets === 1 ? '✓' : k + 1}</button>`).join('');
-      return `<div class="ex-row ${full ? 'done' : ''}"><button class="ex-open" data-act="open-ex" data-ex="${i.id}" data-dose="${esc(i.dose)}"><span class="t">${esc(EX[i.id].name)}</span><span class="d">${esc(i.sets > 1 ? i.sets + ' sets · ' : '')}${esc(i.dose)}</span></button><div class="sets">${dots}</div></div>`;
+      const dots = Array.from({ length: i.sets }, (_, k) => `<button class="set ${k < done ? 'on' : ''}" data-act="set" data-ex="${i.id}" data-i="${k}" data-sets="${i.sets}" ${future ? 'disabled' : ''} aria-label="${esc(EX[i.id].name)} set ${k + 1}${k < done ? ', done' : ''}">${i.sets === 1 ? '✓' : k + 1}</button>`).join('');
+      const flagged = (d.flags || {})[i.id];
+      let meta = '';
+      if (LOADED.has(i.id) && !future) {
+        const cur = (d.load || {})[i.id], last = lastLoad(i.id, date);
+        meta += `<label class="kg"><input type="number" inputmode="decimal" min="0" step="0.5" data-kg="${i.id}" value="${cur ?? ''}" placeholder="${last ? last.kg : '0'}" aria-label="Weight used for ${esc(EX[i.id].name)}, kg"><span>kg</span></label>${last ? `<span class="small muted">last ${last.kg} kg</span>` : '<span class="small muted">log weight</span>'}`;
+      }
+      if (flagged) meta += `<span class="chip warn">Bothered your knee: use the easier version</span>`;
+      return `<div class="ex-row ${full ? 'done' : ''}"><div class="ex-main"><button class="ex-open" data-act="open-ex" data-ex="${i.id}" data-dose="${esc(i.dose)}" data-ctx="today"><span class="t">${esc(EX[i.id].name)}</span><span class="d">${esc(i.sets > 1 ? i.sets + ' sets · ' : '')}${esc(i.dose)}</span></button>${meta ? `<div class="ex-meta">${meta}</div>` : ''}</div><div class="sets">${dots}</div></div>`;
     }).join('')}</div>`).join('');
 
   const kneePanel = (side, label) => {
@@ -1093,7 +1318,8 @@ function viewToday() {
     return `<div class="knee ${side}"><div class="knee-top"><span class="knee-label"><i></i>${label}</span><span class="pain-val" id="pv${side}">${p}<small>/10</small></span></div>
       <input type="range" min="0" max="10" step="1" value="${p}" data-pain="${side}" aria-label="${label} pain, 0 to 10" ${future ? 'disabled' : ''}>
       <div class="scale"><span>0 none</span><span>5</span><span>10 worst</span></div>
-      <div class="stack"><span class="field-label">Swelling</span>${seg('swell' + side, sw, [['none', 'None'], ['mild', 'Mild'], ['visible', 'Visible']], future)}</div></div>`;
+      <div class="stack"><span class="field-label">Swelling</span>${seg('swell' + side, sw, [['none', 'None'], ['mild', 'Mild'], ['visible', 'Visible']], future)}</div>
+      <div class="stack"><span class="field-label">Straightens fully?</span>${seg('ext' + side, d['ext' + side] || 'yes', [['yes', 'Yes'], ['no', 'No']], future)}</div></div>`;
   };
 
   return `
@@ -1117,6 +1343,8 @@ function viewToday() {
         <div class="card-head"><div><div class="eyebrow">Daily check-in</div><h2 id="ciT">How do your knees feel?</h2></div>${d.checkedIn ? '<span class="chip good">✓ Logged</span>' : '<span class="chip">Not logged yet</span>'}</div>
         ${future ? '<p class="muted">You can check in on this day when it arrives.</p>' : `
         <div class="knees">${kneePanel('L', 'Left knee')}${kneePanel('R', 'Right knee')}</div>
+        <p class="small muted">Swelling check: sitting with legs straight, stroke up the inner side of the knee twice, then down the outer side. A small bulge reappearing on the inner side means mild swelling. Straightening check: sit with the heel on a cushion; the back of the knee should rest flat.</p>
+        <div class="row"><span class="field-label">This morning vs yesterday</span>${seg('morning', d.morning || 'same', [['better', 'Better'], ['same', 'Same'], ['worse', 'Worse']])}</div>
         <div class="row"><span class="field-label">Morning stiffness</span>${seg('stiff', d.stiff || 'none', [['none', 'None'], ['lt30', '< 30 min'], ['gt30', '> 30 min']])}</div>
         <div class="row"><span class="field-label">Gave way, locked or caught?</span>${seg('giveWay', d.giveWay || 'no', [['no', 'No'], ['yes', 'Yes']])}</div>
         <div class="verdict ${v.c}" id="verdict"><span class="light"></span><div><b>${v.t}</b><span class="small">${v.m}</span></div></div>
@@ -1134,13 +1362,13 @@ function viewToday() {
   </div>`;
 }
 function seg(field, val, opts, disabled = false, act = 'seg') {
-  const sev = (field.startsWith('swell') || field === 'stiff' || field === 'giveWay') ? ' sev' : '';
+  const sev = (field.startsWith('swell') || field === 'stiff' || field === 'giveWay') ? ' sev' : field.startsWith('ext') ? ' sev-ext' : field === 'morning' ? ' sev-am' : '';
   return `<div class="seg${sev}" role="group">${opts.map(([v, l]) => `<button data-act="${act}" data-field="${field}" data-v="${v}" data-type="${v}" aria-pressed="${v === val}" ${disabled ? 'disabled' : ''}>${l}</button>`).join('')}</div>`;
 }
 
 /* ---------- Plan ---------- */
 function exLinks(list) {
-  return `<div class="ex-list">${list.map(a => `<div class="ex-row"><button class="ex-open" data-act="open-ex" data-ex="${a[0]}" data-dose="${esc(a[0] === 'run-program' ? RUN[Math.min(S.settings.runStage, 6)].d : a[2])}"><span class="t">${esc(EX[a[0]].name)}</span><span class="d">${a[1] > 1 ? a[1] + ' sets · ' : ''}${esc(a[2])}</span></button><span class="chip">${esc(EX[a[0]].cat)}</span></div>`).join('')}</div>`;
+  return `<div class="ex-list">${list.map(a => `<div class="ex-row"><button class="ex-open" data-act="open-ex" data-ex="${a[0]}" data-dose="${esc(doseOf(a))}"><span class="t">${esc(EX[a[0]].name)}</span><span class="d">${a[1] > 1 ? a[1] + ' sets · ' : ''}${esc(doseOf(a))}</span></button><span class="chip">${esc(EX[a[0]].cat)}</span></div>`).join('')}</div>`;
 }
 function viewPlan() {
   const sel = ui.planPhase || S.settings.phase, P = PHASES[sel - 1];
@@ -1148,7 +1376,7 @@ function viewPlan() {
   return `
   <header class="page-head"><div><div class="eyebrow">16 weeks · 5 phases · criteria-based</div><h1>Your plan</h1></div></header>
   <section class="card">
-    <div><div class="eyebrow">MRI, 11 Sep 2026 · Fortis Mohali</div><h2>What your scans show</h2></div>
+    <div><div class="eyebrow">From your MRI reports</div><h2>What your scans show</h2></div>
     <div class="grid-2">
       <div class="dx"><div class="knee-label" style="font-weight:700"><i style="width:10px;height:10px;border-radius:50%;background:var(--left);display:inline-block"></i>Left knee</div>
         ${dx('Grade II', 'warn', 'Medial meniscus, posterior horn', 'An internal tear that does not reach the joint surface. This usually responds well to strengthening.')}
@@ -1169,7 +1397,7 @@ function viewPlan() {
     <div class="phase-track">${PHASES.map(p => `<button class="ph ${p.n === S.settings.phase ? 'cur' : ''} ${p.n === sel ? 'sel' : ''}" data-act="plan-phase" data-p="${p.n}" aria-pressed="${p.n === sel}"><span class="n">P${p.n}</span><span class="nm">${p.name}</span><span class="w">${p.weeks}</span></button>`).join('')}</div>
     <div style="display:grid;gap:6px"><h3>Phase ${P.n}: ${P.name} <span class="muted small" style="font-weight:500">${P.weeks}${P.n === S.settings.phase ? ' · you are here' : ''}</span></h3><p>${esc(P.goal)}</p></div>
     <div class="grid-2">
-      <div style="display:grid;gap:10px;min-width:0"><div class="block-title">Strength days · Mon, Wed, Fri</div>${exLinks(P.strength)}</div>
+      <div style="display:grid;gap:10px;min-width:0"><div class="block-title">Warm-up · before every strength session</div>${exLinks(P.warmup)}<div class="block-title">Strength days · Mon, Wed, Fri · rest 60 s between sets</div>${exLinks(P.strength)}</div>
       <div style="display:grid;gap:10px;min-width:0"><div class="block-title">${P.n >= 4 ? 'Impact & running' : 'Conditioning'} days · Tue, Thu, Sat</div>${exLinks(P.cond)}<div class="block-title">Mobility · after every session, and on Sunday</div>${exLinks(P.mobility)}</div>
     </div>
     <div class="mini"><b>Move to the next phase when you can tick all of these</b><ul class="bul small">${P.criteria.map(c => `<li>${esc(c)}</li>`).join('')}</ul></div>
@@ -1196,7 +1424,8 @@ function viewPlan() {
     <section class="card"><div><div class="eyebrow">Protect the meniscus and ACL</div><h2>Avoid for now</h2></div>
       <ul class="bul">
         <li><b>Until Phase 4:</b> running, jumping, sports, deep squats below 90°, loaded kneeling and twisting or pivoting on a planted foot.</li>
-        <li><b>Until Phase 5:</b> cutting at speed, jumping down from height, off-road riding.</li>
+        <li><b>Until Phase 5:</b> cutting at speed, drops above 60 cm (2 ft), off-road riding.</li>
+        <li><b>Until Phase 3:</b> any landing drills. Then only the drop ladder heights.</li>
         <li><b>Throughout:</b> heavy seated leg-extension machines (they pull the shin forward against the ACL) and sitting cross-legged or in a deep squat for long periods.</li>
         <li><b>Never:</b> training through sharp pain, or straight after a check-in that says "recovery day".</li>
       </ul>
@@ -1207,9 +1436,32 @@ function viewPlan() {
       <ul class="bul"><li>The knee locks (gets stuck and won't straighten) or catches repeatedly.</li><li>It gives way during normal walking or stairs.</li><li>Swelling appears and doesn't settle within 48 h.</li><li>You lose the ability to fully straighten the left knee, as the notch lesion can block extension.</li><li>Pain at night or at rest that keeps getting worse.</li></ul>
     </section>
     <section class="card"><div><div class="eyebrow">Your goals</div><h2>Running, sport, off-road riding</h2></div>
-      <ul class="bul"><li><b>Running:</b> starts in Phase 4 with the walk–jog program. Move up one stage only after a symptom-free next morning.</li><li><b>Sport:</b> after the Phase 5 criteria, including hop tests within 90% between legs.</li><li><b>Off-road riding:</b> the riskiest of the three for a partial ACL and medial meniscus, because of sudden twisting, foot-down moments and jumps. Return last, after clearance, with motocross knee braces and easy trails first. Practise the riding stance hold until 60 s is easy.</li><li><b>High jumps (2–3 ft):</b> your caution is right. Jumping returns gradually in Phases 4–5.</li></ul>
+      <ul class="bul"><li><b>Running:</b> starts in Phase 4 with the walk–run program, from walk 4 / jog 1. Move up one stage only after a symptom-free next morning.</li><li><b>Sport:</b> after the Phase 5 criteria, including hop tests within 90% between legs.</li><li><b>Off-road riding:</b> the riskiest of the three for a partial ACL and medial meniscus, because of sudden twisting, foot-down moments and jumps. Endurance builds from Phase 2 with the moto-peg hold; trail riding comes last, after clearance (see below).</li><li><b>High drops (2–3 ft):</b> your caution is right. The drop landing ladder starts at 20 cm in Phase 3 and reaches 60 cm (2 ft) in Phase 4 and 90 cm (3 ft) only after clearance.</li></ul>
     </section>
   </div>
+  <section class="card"><div><div class="eyebrow">Off-road riding</div><h2>Back on the bike</h2></div>
+    <div class="grid-2">
+      <div style="display:grid;gap:10px;min-width:0"><h3>How to stand on the pegs</h3>
+        <ol class="rules">
+          <li><span><b>Grip the tank with your knees and inner thighs.</b> This switches on the adductors and hamstrings and stops the knee twisting inward if the front wheel deflects off a rock.</span></li>
+          <li><span><b>Hinge at the hips, not just the knees.</b> Keep your backside slightly back so the glutes absorb big hits, and never let the knees bottom out past 90°.</span></li>
+          <li><span><b>Stay on the balls of your feet.</b> Ankles are your first suspension, just like in pogo hops.</span></li>
+          <li><span><b>Keep both feet on the pegs.</b> Dabbing a foot down with a straight, planted leg while the bike moves is the classic twist that tears an ACL or meniscus. If you must dab, keep the knee bent and the foot moving.</span></li>
+          <li><span><b>Sit down when your thighs burn.</b> Fatigue is when knees cave in. Stop and rest rather than ride on tired legs.</span></li>
+        </ol>
+      </div>
+      <div style="display:grid;gap:10px;min-width:0"><h3>Return ladder (after clearance)</h3>
+        <ol class="rules">
+          <li><span>30–45 min easy road ride, mostly seated.</span></li>
+          <li><span>1 h road ride with standing sections (moto-peg hold 3 × 90 s is easy by now).</span></li>
+          <li><span>1 h smooth dirt or gravel, no jumps.</span></li>
+          <li><span>2–3 h mixed trails, small obstacles.</span></li>
+          <li><span>Technical trails and small jumps, once 2 ft drop landings feel automatic.</span></li>
+        </ol>
+        <p class="small muted">Move up a rung only if the knees feel normal the next morning. Before every ride: 5 min of band walks, 10 bodyweight squats and leg swings. Wear proper off-road knee braces, as they limit twisting.</p>
+      </div>
+    </div>
+  </section>
   <section class="card"><div><div class="eyebrow">Recovery basics</div><h2>Off the mat</h2></div>
     <div class="grid-3">
       <div class="mini"><b>Protein</b><span class="small muted">Include a protein source (dal, paneer, eggs, curd, chicken) in every meal so muscle can actually build.</span></div>
@@ -1222,7 +1474,7 @@ function viewPlan() {
 }
 
 /* ---------- Library ---------- */
-const exPhases = id => PHASES.filter(p => [...p.strength, ...p.cond, ...p.mobility].some(a => a[0] === id)).map(p => p.n);
+const exPhases = id => PHASES.filter(p => [...p.warmup, ...p.strength, ...p.cond, ...p.mobility].some(a => a[0] === id)).map(p => p.n);
 const phaseRange = a => !a.length ? '' : a.length === 1 ? 'P' + a[0] : a.every((v, i) => !i || v === a[i - 1] + 1) ? `P${a[0]}–${a[a.length - 1]}` : a.map(n => 'P' + n).join(', ');
 function libItems() {
   const q = ui.q.trim().toLowerCase();
@@ -1231,12 +1483,12 @@ function libItems() {
     if (ui.libCat !== 'all' && e.cat !== ui.libCat) return false;
     if (q && !(e.name + ' ' + e.target + ' ' + e.cat).toLowerCase().includes(q)) return false;
     return true;
-  });
+  }).sort((a, b) => (exPhases(a[0])[0] || 9) - (exPhases(b[0])[0] || 9));
 }
 function libGrid() {
   const items = libItems();
   if (!items.length) return '<div class="empty">No exercises match. Clear the search or filters.</div>';
-  return items.map(([id, e]) => `<button class="lib-card" data-act="open-ex" data-ex="${id}"><div class="row"><span class="cat-ico">${IC[e.cat] || ''}</span><span class="chip">${phaseRange(exPhases(id))}</span></div><h3>${esc(e.name)}</h3><span class="small muted">${esc(e.cat)} · ${esc(e.target)}</span><p>${esc(e.why)}</p></button>`).join('');
+  return items.map(([id, e]) => `<button class="lib-card" data-act="open-ex" data-ex="${id}"><div class="row"><span class="cat-ico">${IC[e.cat] || ''}</span><span class="chip">${phaseRange(exPhases(id)) || 'Alternative'}</span></div><h3>${esc(e.name)}</h3><span class="small muted">${esc(e.cat)} · ${esc(e.target)}</span><p>${esc(e.why)}</p></button>`).join('');
 }
 function viewLibrary() {
   const cats = [...new Set(Object.values(EX).map(e => e.cat))];
@@ -1292,12 +1544,12 @@ function heatmap() {
 const lsiCls = v => v >= 90 ? 'good' : v >= 80 ? 'warn' : 'bad';
 function testsCard() {
   const rows = [...S.settings.tests].map((e, i) => ({ e, i })).sort((a, b) => b.e.date.localeCompare(a.e.date));
-  const cell = (v) => { if (!v || (v.L == null && v.R == null)) return '<td class="muted">–</td>'; const l = +v.L || 0, r = +v.R || 0; const lsi = Math.max(l, r) ? Math.round(Math.min(l, r) / Math.max(l, r) * 100) : null; return `<td><span class="num">${v.L ?? '–'} / ${v.R ?? '–'}</span>${lsi != null ? ` <span class="chip ${lsiCls(lsi)} lsi">${lsi}%</span>` : ''}</td>`; };
+  const cell = (v) => { if (v && v.B != null) return `<td><span class="num">${v.B}</span></td>`; if (!v || (v.L == null && v.R == null)) return '<td class="muted">–</td>'; const l = +v.L || 0, r = +v.R || 0; const lsi = Math.max(l, r) ? Math.round(Math.min(l, r) / Math.max(l, r) * 100) : null; return `<td><span class="num">${v.L ?? '–'} / ${v.R ?? '–'}</span>${lsi != null ? ` <span class="chip ${lsiCls(lsi)} lsi">${lsi}%</span>` : ''}</td>`; };
   return `<section class="card" aria-labelledby="tT">
     <div class="card-head"><div><div class="eyebrow">Every 2–3 weeks</div><h2 id="tT">Strength and hop tests</h2></div><span class="chip">Symmetry = weaker ÷ stronger leg</span></div>
     <p class="small muted">Do the tests when fresh, after a warm-up. Hop tests only from Phase 4: hop forward on one leg and stick the landing; measure from your toe at take-off to your heel on landing. Leave a box empty if you didn't do that test.</p>
     <div class="form-grid"><span></span><span class="field-label">Left</span><span class="field-label">Right</span>
-      ${TESTS.map(x => `<span class="lab">${x.name} <span class="muted small">(${x.unit})</span></span><input type="number" inputmode="decimal" min="0" id="t-${x.k}-L" aria-label="${x.name} left"><input type="number" inputmode="decimal" min="0" id="t-${x.k}-R" aria-label="${x.name} right">`).join('')}
+      ${TESTS.map(x => x.both ? `<span class="lab">${x.name} <span class="muted small">(${x.unit})</span></span><input type="number" inputmode="decimal" min="0" id="t-${x.k}-L" aria-label="${x.name}, both legs"><span class="small muted">both legs</span>` : `<span class="lab">${x.name} <span class="muted small">(${x.unit})</span></span><input type="number" inputmode="decimal" min="0" id="t-${x.k}-L" aria-label="${x.name} left"><input type="number" inputmode="decimal" min="0" id="t-${x.k}-R" aria-label="${x.name} right">`).join('')}
     </div>
     <div><button class="btn" data-act="save-test">Save today's results</button></div>
     ${rows.length ? `<div class="table-wrap"><table><thead><tr><th>Date</th>${TESTS.map(x => `<th>${x.name}<br><span style="text-transform:none;letter-spacing:0;font-weight:500">L / R · goal ${x.goal}</span></th>`).join('')}<th></th></tr></thead><tbody>
@@ -1314,6 +1566,18 @@ function viewProgress() {
     <div>${RUN.map((r, i) => `<div class="stage ${i < rs ? 'done' : ''} ${i === rs ? 'cur' : ''}"><span class="b">${i < rs ? '✓' : i + 1}</span><span class="t">${r.d}</span></div>`).join('')}</div>
     <p class="small muted">Run every other day. Move up only if pain stayed at 2/10 or less during the run and the knee was fine the next morning. Otherwise repeat the stage.</p>
     ${S.settings.phase >= 4 ? `<div class="row"><button class="btn ghost sm" data-act="run" data-d="-1" ${rs === 0 ? 'disabled' : ''}>Step back</button><button class="btn sm" data-act="run" data-d="1" ${rs >= RUN.length - 1 ? 'disabled' : ''}>Next morning was fine: move up</button></div>` : ''}
+  </section>`;
+  const ph = S.settings.phase, dmax = dropMax(ph), ds = dropStage();
+  const dropCard = `<section class="card"><div class="card-head"><div><div class="eyebrow">Towards 2–3 ft</div><h2>Drop landing ladder</h2></div>${dmax >= 0 ? `<span class="chip accent">Current: ${DROP[ds].l}</span>` : '<span class="chip">Unlocks in Phase 3</span>'}</div>
+    <div class="ladder" role="list">${DROP.map((r, i) => `<div role="listitem" class="rung ${dmax >= 0 && i < ds ? 'done' : ''} ${dmax >= 0 && i === ds ? 'cur' : ''} ${i > dmax ? 'locked' : ''}" style="padding-top:${8 + i * 5}px" aria-label="${r.l}, ${esc(r.d)}${i > dmax ? ', unlocks in Phase ' + r.min : ''}"><b>${parseInt(r.l)}</b><span>cm</span></div>`).join('')}</div>
+    <p class="small">${dmax >= 0 ? `<b>Now:</b> ${esc(DROP[ds].d)}.${ds < DROP.length - 1 ? ` <b>Next:</b> ${esc(DROP[ds + 1].d)}${DROP[ds + 1].min > ph ? `, from Phase ${DROP[ds + 1].min}` : ''}.` : ' Top rung reached.'}` : `Starts at ${esc(DROP[0].d.toLowerCase())} in Phase 3.`}</p>
+    <p class="small muted">Step off, don't jump. Move up only after about 2 weeks (6 sessions) of quiet, soft landings with no pain during or the next morning.</p>
+    ${dmax >= 0 ? `<div class="row"><button class="btn ghost sm" data-act="drop" data-d="-1" ${ds === 0 ? 'disabled' : ''}>Step back</button><button class="btn sm" data-act="drop" data-d="1" ${ds >= dmax ? 'disabled' : ''}>${ds >= dmax && dmax < DROP.length - 1 ? 'Next rung unlocks in Phase ' + DROP[ds + 1].min : 'Landings felt easy: move up'}</button></div>` : ''}
+  </section>`;
+  const fl = {};
+  for (let i = 0; i < 14; i++) { const dt = addDays(today(), -i), f = getDay(dt).flags || {}; Object.keys(f).forEach(id => { if (f[id] && EX[id]) { fl[id] = fl[id] || { n: 0, last: dt }; fl[id].n++; } }); }
+  const flagCard = `<section class="card"><div><div class="eyebrow">Last 14 days</div><h2>Exercises that bothered you</h2></div>
+    ${Object.keys(fl).length ? `<div class="ex-list">${Object.entries(fl).sort((a, b) => b[1].n - a[1].n).map(([id, o]) => `<div class="ex-row"><button class="ex-open" data-act="open-ex" data-ex="${id}"><span class="t">${esc(EX[id].name)}</span><span class="d">${o.n} day${o.n > 1 ? 's' : ''} · last ${fmtShort(o.last)}</span></button><span class="chip warn">Use the easier version</span></div>`).join('')}</div><p class="small muted">If the same exercise bothers you 3 times in 2 weeks even on the easier version, skip it and mention it to your physio or orthopedist.</p>` : '<div class="empty">Nothing flagged. If an exercise bothers a knee, open it from Today and tap "This bothered my knee".</div>'}
   </section>`;
   return `
   <header class="page-head"><div><div class="eyebrow">Since ${fmtShort(startDate())}</div><h1>Progress</h1></div></header>
@@ -1335,6 +1599,7 @@ function viewProgress() {
     </section>
     ${runCard}
   </div>
+  <div class="grid-2">${dropCard}${flagCard}</div>
   ${testsCard()}`;
 }
 
@@ -1348,6 +1613,7 @@ function viewSettings() {
       <div style="display:grid;gap:6px"><label class="field-label" for="phaseSel">Current phase</label><select id="phaseSel">${PHASES.map(p => `<option value="${p.n}" ${p.n === S.settings.phase ? 'selected' : ''}>Phase ${p.n}: ${p.name} (${p.weeks})</option>`).join('')}</select></div>
     </div>
     <p class="small muted">Normally you move phases from Progress once the criteria are met. Use this if your physiotherapist or orthopedist puts you at a different stage.</p>
+    <label class="toggle" for="autoRest"><span><b>Start the rest timer automatically</b><br><span class="small muted">When you tick a set, the timer counts your rest (60 s for strength, 90 s for jumps).</span></span><input type="checkbox" id="autoRest" ${S.settings.autoRest !== false ? 'checked' : ''}></label>
   </section>
   <section class="card"><h2>Your data</h2>
     ${syncLine()}
@@ -1358,8 +1624,8 @@ function viewSettings() {
   <section class="card"><h2>Reminders and home screen</h2>
     <p>Web pages can't send notifications on iPad, so use these instead:</p>
     <ul class="bul">
-      <li><b>Daily reminder:</b> ask Claude in this chat to "add a daily knee rehab reminder at 7 pm" and it will be created in Apple Reminders on your device. You can also add one yourself in the Reminders app, repeating daily, with this page's link.</li>
-      <li><b>App icon:</b> in Safari, tap Share and then <b>Add to Home Screen</b>. It opens full screen like an app and works with no internet.</li>
+      <li><b>Daily reminder:</b> add a repeating daily reminder in the Reminders app and paste this page's link into it, so tapping the reminder opens the app.</li>
+      <li><b>App icon:</b> in Safari, tap Share and then <b>Add to Home Screen</b>. It opens full screen like an app and works with no internet. Updates arrive automatically the next time you open it online.</li>
       <li><b>During sessions:</b> the timer at the bottom right keeps your screen awake and beeps at the end of each hold or rest.</li>
     </ul>
   </section>
@@ -1370,19 +1636,33 @@ function viewSettings() {
 }
 
 /* ---------- Exercise sheet ---------- */
-let lastFocus = null;
-function openEx(id, dose) {
+let lastFocus = null, sheetCtx = null;
+function holdSecs(dose) {
+  const m = String(dose || '').match(/(\d+)(?:\s*[–-]\s*(\d+))?\s*s\b/);
+  if (!m) return [];
+  return [+m[1], m[2] ? +m[2] : null].filter(Boolean).filter(n => n >= 10 && n <= 120);
+}
+function openEx(id, dose, ctx) {
   const e = EX[id]; if (!e) return;
-  lastFocus = document.activeElement;
+  if ($('#sheet').hidden) lastFocus = document.activeElement;
+  sheetCtx = { id, dose, ctx };
   const ph = exPhases(id);
+  const onDay = ctx === 'today' && ui.date <= today();
+  const flagged = onDay && (getDay(ui.date).flags || {})[id];
+  const holds = holdSecs(dose), rest = restFor(id);
+  const hist = LOADED.has(id) ? Object.keys(S.days).filter(k => S.days[k].load && S.days[k].load[id] != null).sort().slice(-5).reverse() : [];
   $('#sheetPanel').innerHTML = `
     <div class="row" style="align-items:flex-start"><div style="display:flex;gap:12px;align-items:center"><span class="cat-ico">${IC[e.cat] || ''}</span><div><div class="eyebrow">${esc(e.cat)} · ${phaseRange(ph)}</div><div class="small muted">${esc(e.target)}</div></div></div><button class="icon-btn" data-act="close-sheet" aria-label="Close">${IC.close}</button></div>
     <h2 id="sheetTitle">${esc(e.name)}</h2>
-    ${dose ? `<div><span class="chip accent">Prescribed: ${esc(dose)}</span></div>` : ''}
+    ${dose || rest || holds.length ? `<div class="hold-row">${dose ? `<span class="chip accent">Prescribed: ${esc(dose)}</span>` : ''}${rest ? `<span class="chip">Rest ${rest} s between sets</span>` : ''}${holds.map(s => `<button class="btn sm" data-act="hold" data-s="${s}">Start ${s} s timer</button>`).join('')}</div>` : ''}
+    ${onDay ? `<button class="btn ${flagged ? 'danger' : 'ghost'} sm" data-act="flag" data-ex="${id}" aria-pressed="${!!flagged}" style="justify-self:start">${flagged ? 'Flagged: bothered my knee today (tap to undo)' : 'This bothered my knee today'}</button>` : ''}
+    ${flagged ? `<div class="notice warn"><b>Use the easier version next time</b><span class="small">${esc(e.easier || 'Reduce the load or range.')} If it still bothers you, skip it for a week.</span></div>` : ''}
+    ${hist.length ? `<div class="mini"><b>Weight history</b><span class="small num">${hist.map(k => `${fmtShort(k)}: ${S.days[k].load[id]} kg`).join(' · ')}</span></div>` : ''}
     <div class="why"><div class="eyebrow" style="color:var(--accent)">Why it matters for your knees</div><p>${esc(e.why)}</p></div>
     <div style="display:grid;gap:6px"><h3>Setup</h3><p>${esc(e.setup)}</p></div>
     <div style="display:grid;gap:10px"><h3>How to do it</h3><ol class="steps">${e.steps.map(s => `<li><span>${esc(s)}</span></li>`).join('')}</ol></div>
     ${id === 'run-program' ? `<div style="display:grid;gap:4px"><h3>Stages</h3>${RUN.map((r, i) => `<div class="stage ${i < S.settings.runStage ? 'done' : ''} ${i === S.settings.runStage ? 'cur' : ''}"><span class="b">${i + 1}</span><span class="t">${r.d}</span></div>`).join('')}</div>` : ''}
+    ${id === 'depth-drop' ? `<div style="display:grid;gap:4px"><h3>Ladder</h3>${DROP.map((r, i) => `<div class="stage ${i < dropStage() ? 'done' : ''} ${i === dropStage() && dropMax(S.settings.phase) >= 0 ? 'cur' : ''}"><span class="b">${i + 1}</span><span class="t">${r.l}: ${esc(r.d)} <span class="muted small">(from Phase ${r.min})</span></span></div>`).join('')}</div>` : ''}
     <div class="two"><div class="mini"><b>What you should feel</b><ul class="bul small">${e.cues.map(c => `<li>${esc(c)}</li>`).join('')}</ul></div><div class="mini"><b>Common mistakes</b><ul class="bul small">${e.avoid.map(c => `<li>${esc(c)}</li>`).join('')}</ul></div></div>
     ${e.easier || e.harder ? `<div class="two">${e.easier ? `<div class="mini"><b>Make it easier</b><span class="small">${esc(e.easier)}</span></div>` : ''}${e.harder ? `<div class="mini"><b>Make it harder</b><span class="small">${esc(e.harder)}</span></div>` : ''}</div>` : ''}
     <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(e.q)}" target="_blank" rel="noopener">Watch demo videos on YouTube ↗</a>`;
@@ -1400,7 +1680,7 @@ function renderTimer() {
   if (tm.end) {
     const left = Math.max(0, Math.ceil((tm.end - Date.now()) / 1000));
     el.className = 'timer running';
-    el.innerHTML = `<span class="clock" aria-live="off">${Math.floor(left / 60)}:${pad(left % 60)}</span><button data-act="timer-stop">Stop</button>`;
+    el.innerHTML = `<span class="timer-lab">${esc(tm.label || '')}</span><span class="clock" aria-live="off">${Math.floor(left / 60)}:${pad(left % 60)}</span><button data-act="timer-stop">${tm.label === 'Rest' ? 'Skip' : 'Stop'}</button>`;
   } else {
     el.className = 'timer';
     el.innerHTML = `<span class="timer-ico">${IC.timer}</span>${[30, 45, 60, 90].map(s => `<button data-act="timer" data-s="${s}" aria-label="Start ${s} second timer">${s}s</button>`).join('')}`;
@@ -1410,11 +1690,12 @@ function beep(n = 3) {
   try { const c = tm.ctx; if (!c) return; for (let i = 0; i < n; i++) { const o = c.createOscillator(), g = c.createGain(); o.frequency.value = 880; o.connect(g); g.connect(c.destination); const t0 = c.currentTime + i * 0.25; g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.3, t0 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.18); o.start(t0); o.stop(t0 + 0.2); } } catch (e) {}
   try { navigator.vibrate && navigator.vibrate([150, 80, 150]); } catch (e) {}
 }
-async function startTimer(s) {
+async function startTimer(s, label = '') {
+  tm.label = label;
   try { tm.ctx = tm.ctx || new (window.AudioContext || window.webkitAudioContext)(); tm.ctx.resume && tm.ctx.resume(); } catch (e) {}
   try { if ('wakeLock' in navigator && !tm.lock) tm.lock = await navigator.wakeLock.request('screen'); } catch (e) {}
   tm.end = Date.now() + s * 1000; clearInterval(tm.id);
-  tm.id = setInterval(() => { if (Date.now() >= tm.end) { stopTimer(); beep(); toast('Time!'); } else renderTimer(); }, 250);
+  tm.id = setInterval(() => { if (Date.now() >= tm.end) { const l = tm.label; stopTimer(); beep(); toast(l === 'Rest' ? 'Rest over. Next set.' : 'Time!'); } else renderTimer(); }, 250);
   renderTimer();
 }
 function stopTimer() { clearInterval(tm.id); tm.end = 0; try { tm.lock && tm.lock.release(); } catch (e) {} tm.lock = null; renderTimer(); }
@@ -1442,10 +1723,12 @@ document.addEventListener('click', async ev => {
     case 'day': { const n = +a.dataset.d; ui.date = n === 0 ? today() : addDays(ui.date, n); render(); break; }
     case 'goto': ui.date = a.dataset.date; go('today'); break;
     case 'set': {
-      const id = a.dataset.ex, i = +a.dataset.i, d = getDay(date), done = { ...(d.done || {}) };
-      done[id] = (done[id] || 0) > i ? i : i + 1;
+      const id = a.dataset.ex, i = +a.dataset.i, sets = +a.dataset.sets || 1, d = getDay(date), done = { ...(d.done || {}) };
+      const before = done[id] || 0;
+      done[id] = before > i ? i : i + 1;
       setDay(date, { done }); render();
       if (dayPct(date) >= 1) toast('Session complete. Nice work.');
+      else if (done[id] > before && done[id] < sets && S.settings.autoRest !== false && restFor(id)) startTimer(restFor(id), 'Rest');
       break;
     }
     case 'all-done': { const done = {}; blocksFor(date).forEach(b => b.items.forEach(i => { done[i.id] = i.sets; })); setDay(date, { done }); render(); toast('Session complete. Nice work.'); break; }
@@ -1453,9 +1736,18 @@ document.addEventListener('click', async ev => {
     case 'type': setDay(date, { type: a.dataset.type }); render(); break;
     case 'seg': setDay(date, { [a.dataset.field]: a.dataset.v }); render(); break;
     case 'log': setDay(date, { checkedIn: true, painL: getDay(date).painL || 0, painR: getDay(date).painR || 0 }); render(); toast('Check-in logged'); break;
-    case 'open-ex': openEx(a.dataset.ex, a.dataset.dose); break;
+    case 'open-ex': openEx(a.dataset.ex, a.dataset.dose, a.dataset.ctx); break;
+    case 'hold': closeSheet(); startTimer(+a.dataset.s, 'Hold'); break;
+    case 'flag': {
+      const id = a.dataset.ex, f = { ...(getDay(date).flags || {}) };
+      if (f[id]) delete f[id]; else f[id] = true;
+      setDay(date, { flags: f }); render();
+      const st = $('#sheetPanel').scrollTop; openEx(sheetCtx.id, sheetCtx.dose, sheetCtx.ctx); $('#sheetPanel').scrollTop = st;
+      break;
+    }
+    case 'drop': setSettings({ dropStage: Math.max(0, Math.min(dropMax(S.settings.phase), dropStage() + +a.dataset.d)) }); render(); break;
     case 'close-sheet': closeSheet(); break;
-    case 'timer': startTimer(+a.dataset.s); break;
+    case 'timer': startTimer(+a.dataset.s, ''); break;
     case 'timer-stop': stopTimer(); break;
     case 'lib-phase': ui.libPhase = a.dataset.v; render(); break;
     case 'lib-cat': ui.libCat = a.dataset.v; render(); break;
@@ -1464,7 +1756,11 @@ document.addEventListener('click', async ev => {
     case 'run': setSettings({ runStage: Math.max(0, Math.min(RUN.length - 1, S.settings.runStage + +a.dataset.d)) }); render(); break;
     case 'save-test': {
       const v = {}; let any = false;
-      TESTS.forEach(x => { const l = $(`#t-${x.k}-L`).value, r = $(`#t-${x.k}-R`).value; if (l !== '' || r !== '') { v[x.k] = { L: l === '' ? null : +l, R: r === '' ? null : +r }; any = true; } });
+      TESTS.forEach(x => {
+        const l = $(`#t-${x.k}-L`).value;
+        if (x.both) { if (l !== '') { v[x.k] = { B: +l }; any = true; } return; }
+        const r = $(`#t-${x.k}-R`).value; if (l !== '' || r !== '') { v[x.k] = { L: l === '' ? null : +l, R: r === '' ? null : +r }; any = true; }
+      });
       if (!any) { toast('Enter at least one result first'); break; }
       const tests = S.settings.tests.filter(e => e.date !== today()); const prev = S.settings.tests.find(e => e.date === today());
       tests.push({ date: today(), v: { ...(prev ? prev.v : {}), ...v } });
@@ -1506,6 +1802,12 @@ document.addEventListener('input', ev => {
 document.addEventListener('change', ev => {
   const el = ev.target;
   if (el.dataset.notes) setDay(ui.date, { notes: el.value.slice(0, 2000) });
+  else if (el.dataset.kg) {
+    const load = { ...(getDay(ui.date).load || {}) }, v = parseFloat(el.value);
+    if (el.value === '' || isNaN(v)) delete load[el.dataset.kg]; else load[el.dataset.kg] = Math.max(0, Math.min(500, v));
+    setDay(ui.date, { load });
+  }
+  else if (el.id === 'autoRest') { setSettings({ autoRest: el.checked }); toast(el.checked ? 'Rest timer starts automatically' : 'Rest timer is manual'); }
   else if (el.dataset.crit) { setSettings({ criteria: { ...S.settings.criteria, [el.dataset.crit]: el.checked } }); render(); }
   else if (el.id === 'startDate' && el.value) { setSettings({ startDate: el.value }); render(); toast('Start date updated'); }
   else if (el.id === 'phaseSel') { setSettings({ phase: +el.value }); render(); toast('Phase updated'); }
