@@ -262,7 +262,7 @@ textarea { resize: vertical; min-height: 70px; }
 a { color: var(--left); font-weight: 600; }
 
 /* Plan */
-.phase-track { display: grid; gap: 10px; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.phase-track { display: grid; gap: 10px; grid-template-columns: repeat(6, minmax(0, 1fr)); }
 .ph { border: 0; text-align: left; border-radius: 14px; padding: 12px; background: var(--surface-2); display: grid; gap: 2px; min-width: 0; }
 .ph .n { font-family: var(--f-mono); font-size: 12px; color: var(--faint); }
 .ph .nm { font-family: var(--f-display); font-stretch: 112%; font-weight: 750; font-size: 16px; }
@@ -270,7 +270,7 @@ a { color: var(--left); font-weight: 600; }
 .ph.cur { background: var(--accent); color: var(--accent-ink); }
 .ph.cur .n, .ph.cur .w { color: inherit; opacity: .85; }
 .ph.sel:not(.cur) { outline: 2px solid var(--ink); }
-@media (max-width: 600px) { .phase-track { grid-template-columns: repeat(5, 120px); overflow-x: auto; padding-bottom: 4px; } }
+@media (max-width: 760px) { .phase-track { grid-template-columns: repeat(6, 120px); overflow-x: auto; padding-bottom: 4px; } }
 .table-wrap { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: 15px; }
 th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
@@ -321,6 +321,42 @@ td.num, th.num { text-align: right; }
 .ring .bgc { stroke: var(--line); }
 .ring .fg { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset .4s ease; }
 .ring text { font-family: var(--f-mono); font-size: 15px; font-weight: 600; fill: var(--ink); }
+
+/* Coach */
+.coach-list { display: grid; gap: 10px; }
+.tip { border-radius: 14px; padding: 12px 14px; display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--surface-2); }
+.tip .light { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; background: var(--left); }
+.tip b { display: block; }
+.tip.good { background: var(--good-soft); } .tip.good .light { background: var(--good); }
+.tip.warn { background: var(--warn-soft); } .tip.warn .light { background: var(--warn); }
+.tip.bad { background: var(--bad-soft); } .tip.bad .light { background: var(--bad); }
+.conf-list { display: grid; gap: 12px; }
+.conf-q { display: grid; gap: 2px; }
+.conf-q .row { flex-wrap: nowrap; align-items: baseline; }
+.conf-q .num { font-size: 18px; font-weight: 600; }
+/* Guided session */
+.guide { position: fixed; inset: 0; z-index: 45; background: var(--bg); display: grid; grid-template-rows: auto 1fr auto; gap: 12px; overflow-y: auto; padding: calc(16px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); }
+.g-top { display: flex; align-items: center; gap: 14px; max-width: 900px; width: 100%; margin: 0 auto; }
+.g-top .eyebrow { flex: 1; }
+.g-prog { flex: 1; height: 8px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.g-prog span { display: block; height: 100%; background: var(--accent); border-radius: 99px; transition: width .3s ease; }
+.g-body { display: grid; gap: 18px; align-content: center; justify-items: center; text-align: center; max-width: 760px; width: 100%; margin: 0 auto; padding-block: 12px; min-width: 0; }
+.g-name { font-size: clamp(30px, 5vw, 52px); }
+.g-dose { font-size: 20px; color: var(--muted); font-weight: 600; }
+.g-cues { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; color: var(--muted); max-width: 60ch; }
+.g-sets { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.g-set { width: 52px; height: 52px; border-radius: 14px; border: 3px solid var(--line); display: grid; place-items: center; font-family: var(--f-mono); font-weight: 600; font-size: 18px; color: var(--faint); background: var(--surface); }
+.g-set.on { background: var(--good); border-color: var(--good); color: var(--surface); }
+.g-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.g-done { min-height: 64px; min-width: min(260px, 100%); font-size: 20px; border-radius: 16px; }
+.g-clock { display: flex; align-items: center; gap: 14px; padding: 10px 18px; border-radius: 16px; background: var(--surface); box-shadow: var(--shadow); }
+.g-clock.rest { background: var(--left-soft); } .g-clock.hold { background: var(--accent-soft); }
+.g-time { font-size: 40px; font-weight: 600; line-height: 1; }
+.g-next { max-width: 900px; width: 100%; margin: 0 auto; background: var(--surface); border-radius: 16px; padding: 14px 18px; display: grid; gap: 2px; box-shadow: var(--shadow); }
+.g-finish { align-content: center; }
+.g-rpe { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.g-rpe .set { width: 48px; height: 48px; font-size: 16px; }
+@media (prefers-reduced-motion: reduce) { .g-prog span { transition: none; } }
 </style>
 </head><body>
 <div class="shell">
@@ -336,6 +372,7 @@ td.num, th.num { text-align: right; }
 </div>
 <nav class="tabbar" id="tabbar" aria-label="Main navigation"></nav>
 <div class="timer" id="timer" aria-label="Hold and rest timer"></div>
+<div class="guide" id="guide" hidden role="dialog" aria-modal="true" aria-label="Guided session"></div>
 <div class="sheet" id="sheet" hidden>
   <div class="sheet-bg" data-act="close-sheet"></div>
   <div class="sheet-panel" id="sheetPanel" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div>
@@ -985,59 +1022,113 @@ Object.assign(EX, {
 /* Exercises that take a weight you can log (kg) */
 const LOADED = new Set(['box-squat', 'goblet-squat', 'rdl', 'split-squat-static', 'split-squat', 'sl-rdl', 'step-down', 'attack-hold', 'reverse-lunge', 'sl-calf']);
 /* Rest between sets, seconds */
-const REST_BY_CAT = { Strength: 60, Plyometric: 90, Agility: 90, Balance: 30, Core: 30 };
+const REST_BY_CAT = { Strength: 60, Plyometric: 60, Agility: 60, Balance: 30, Core: 30 };
 const restFor = id => (EX[id] && (EX[id].rest ?? REST_BY_CAT[EX[id].cat])) || 0;
 
-/* ---------- Phases (merged plan) ---------- */
+
+/* ---------- v3 additions ---------- */
+Object.assign(EX, {
+  'prevent-warmup': {
+    name: 'Injury-prevention warm-up', cat: 'Cardio', target: 'Knee control before sport or riding',
+    why: 'Structured warm-ups with running, landing and hamstring work roughly halve ACL injuries in athletes. With a partial ACL tear in both knees, this is the 10 minutes that protects your hard work, so do it before every sport session and every off-road ride for good.',
+    setup: 'About 15–20 m of space. Shoes on.',
+    steps: ['2 min easy jog including side shuffles and backward jogging.', 'Leg swings: 10 forward-back and 10 side to side per leg.', '10 bodyweight squats, then 5 slow single-leg squats per leg (left first), knee over the second toe.', '5 slow Nordic lowers or 10 hamstring walkouts.', '10 small sideways hops over a line per leg, landing soft and quiet.', '3 × 20 m runs, building to about 80% speed, with a controlled stop at the end of each.'],
+    cues: ['Quiet landings, knees over the toes.', 'Build intensity gradually through the 10 minutes.'],
+    avoid: ['Skipping it because you feel warm. Feeling warm and being ready to land are different things.'],
+    easier: 'Fewer reps, lower hops.', harder: 'Add partner pushes during the single-leg squats.',
+    q: 'ACL injury prevention warm up program'
+  },
+  'sport': {
+    name: 'Run, sport or ride', cat: 'Running', target: 'Doing what you trained for',
+    why: 'The point of the whole program. Keep the rules that got you here and the knees stay strong.',
+    setup: 'Always after the injury-prevention warm-up. On the bike, wear your knee braces.',
+    steps: ['Pick one: an easy-to-moderate run, a sport session, or a ride.', 'Build up intensity across the session; save your hardest efforts for the middle, not the end when you are tired.', 'Check your knees the next morning in the app.'],
+    cues: ['Stop if your thighs are burning and your landings get loud or your knees start to cave.'],
+    avoid: ['Two hard sessions on back-to-back days.', 'Long technical rides with no strength sessions that week.'],
+    easier: 'Shorter or flatter session.', harder: 'Longer or more technical, one step at a time.',
+    q: 'return to sport after knee injury tips'
+  }
+});
+EX['band-walk'].rest = 20;
+EX['cardio'] = { ...EX['cardio'], cues: [...EX['cardio'].cues, 'Easy for you means about 115–135 beats per minute, or a pace where you can still chat in full sentences.'] };
+
+/* ---------- Phases ---------- */
+/* Item: [exercise id, sets, dose, landings per set (jump drills only)] */
 const WARM = [['cardio', 1, '5 min easy bike or walk'], ['band-walk', 2, '12 steps each way']];
 const MOB = [['ham-stretch', 2, '30 s / leg'], ['calf-stretch', 2, '30 s each way'], ['hip-flexor', 2, '30 s / side'], ['foam-roll', 1, '5 min']];
+/* Short cool-down after strength and conditioning; the full mobility routine is for recovery days */
+const COOL = [['ham-stretch', 1, '30 s / leg'], ['calf-stretch', 1, '30 s each way'], ['hip-flexor', 1, '30 s / side']];
+const SCHEDULE = { 1: 'strength', 2: 'cond', 3: 'strength', 4: 'cond', 5: 'strength', 6: 'cond', 0: 'recovery' };
 const PHASES = [
   { n: 1, name: 'Activate', weeks: 'Weeks 1–3', range: [1, 3],
     goal: 'Load the quads and hamstrings in the positions safest for your meniscus and ACL (Spanish squats, terminal extensions, elevated bridges), switch the hip muscles on and start retraining knee reflexes. Nothing here should hurt.',
-    warmup: [['cardio', 1, '5 min easy bike or walk']],
+    warmup: [['cardio', 1, '5 min easy bike or walk']], power: [],
     strength: [['spanish-squat', 4, '30–45 s hold at 45°'], ['tke', 3, '15 / leg'], ['elev-ham-bridge', 3, '12 / leg, 3 s lower'], ['band-walk', 3, '12 steps each way'], ['slr', 2, '10 / leg'], ['calf-raise', 3, '15 reps'], ['side-plank', 2, '20 s / side, knees bent']],
     cond: [['sl-balance-row', 3, '45 s / leg'], ['dead-bug', 3, '10 reps'], ['cardio', 1, '20–30 min easy']],
     mobility: [['heel-slide', 2, '10 reps'], ...MOB],
+    key: ['spanish-squat', 'elev-ham-bridge', 'tke', 'band-walk'], keyCond: ['sl-balance-row', 'cardio'],
     criteria: ['Daily-life pain stays at 0–2/10 for a full week', 'No swelling the morning after sessions', 'Spanish squat 4 × 45 s with no knee pain', 'Balance with band rows for 45 s on each leg without touching down'] },
   { n: 2, name: 'Build', weeks: 'Weeks 4–6', range: [4, 6],
-    goal: 'Weighted squats to 75–80°, slow braking on one leg, a heavy hinge for the hamstrings, and the start of moto-peg endurance.',
-    warmup: WARM,
+    goal: 'Weighted squats to 75–80°, slow braking on one leg, a heavy hinge for the hamstrings, and the start of moto-peg endurance. Week 6 is a lighter week.',
+    warmup: WARM, power: [],
     strength: [['box-squat', 3, '12 reps to the chair (75–80°)'], ['split-squat-static', 3, '10 / leg'], ['step-down', 3, '10 / leg, 4 s lower'], ['rdl', 4, '10 reps'], ['elev-ham-bridge', 3, '12 / leg'], ['attack-hold', 3, '60 s hold'], ['sl-calf', 3, '10 / leg'], ['side-plank', 3, '30 s / side']],
     cond: [['star-reach', 3, '5 reaches each way / leg'], ['sl-balance-row', 3, '45 s / leg, on a pad'], ['dead-bug', 3, '12 reps'], ['cardio', 1, '30 min, moderate']],
     mobility: MOB,
+    key: ['box-squat', 'step-down', 'rdl', 'attack-hold'], keyCond: ['sl-balance-row', 'cardio'],
     criteria: ['10 slow single-leg sit-to-stands from a chair on each leg, knee in line', 'Step-downs 3 × 10 on each leg with a 4 s lower and no knee caving', 'Moto-peg hold 3 × 60 s without knee pain', '30 min bike or brisk walk with no pain during or after', 'No next-morning soreness above 2/10'] },
   { n: 3, name: 'Load', weeks: 'Weeks 7–10', range: [7, 10],
-    goal: 'Heavier single-leg strength to 90°, eccentric hamstrings, and the first low landings: snap-downs and drops from the bottom stair.',
+    goal: 'Heavier single-leg strength to 90°, eccentric hamstrings, and the first low landings at the start of strength days: snap-downs and drops from the bottom stair (about 40 landings). Strength days now alternate between workout A and B to keep sessions under an hour. Week 10 is a lighter week.',
     warmup: WARM,
-    strength: [['goblet-squat', 4, '8 reps to 90°'], ['split-squat', 3, '8 / leg'], ['sl-rdl', 3, '8 / leg'], ['slider-curl', 3, '10 reps'], ['step-down', 3, '10 / leg, with dumbbells'], ['attack-hold', 3, '75 s hold'], ['sl-calf', 3, '15 / leg'], ['copenhagen', 3, '20 s / side']],
-    cond: [['dyn-warmup', 1, '8 min'], ['drop-squat', 3, '8 reps'], ['depth-drop', 4, '6 landings, current rung'], ['cushion-catch', 3, '30 s / leg'], ['bike-intervals', 1, '8 × 30 s hard / 90 s easy']],
+    power: [['drop-squat', 3, '8 reps', 8], ['depth-drop', 3, '5 landings, current rung', 5]],
+    strength: [['goblet-squat', 4, '8 reps to 90°'], ['sl-rdl', 3, '8 / leg'], ['step-down', 3, '10 / leg, with dumbbells'], ['attack-hold', 3, '75 s hold']],
+    strengthB: [['split-squat', 3, '8 / leg'], ['slider-curl', 3, '10 reps'], ['sl-calf', 3, '15 / leg'], ['copenhagen', 3, '20 s / side']],
+    cond: [['cushion-catch', 3, '30 s / leg'], ['star-reach', 2, '5 each way / leg'], ['side-plank', 3, '30 s / side'], ['bike-intervals', 1, '8 × 30 s hard / 90 s easy']],
     mobility: MOB,
+    key: ['goblet-squat', 'split-squat', 'sl-rdl', 'step-down'], keyCond: ['cushion-catch', 'bike-intervals'],
     criteria: ['20 single-leg calf raises on each leg', 'Goblet squat 3 × 8 to 90° with no pain', 'Drop landings from the second stair (40 cm) quiet and pain-free for 2 weeks', '30 min brisk walk with no symptoms that day or the next morning'] },
   { n: 4, name: 'Impact', weeks: 'Weeks 11–13', range: [11, 13],
-    goal: 'Hops, single-leg landings, side-to-side bounds and the walk–run program. Strength keeps getting heavier.',
+    goal: 'Hops, single-leg landings and side-to-side bounds at the start of strength days (about 100 landings, 3 times a week), and the walk–run program on the days in between. Week 13 is a lighter week.',
     warmup: WARM,
-    strength: [['goblet-squat', 4, '6 reps, heavier'], ['split-squat', 3, '8 / leg, with dumbbells'], ['sl-rdl', 3, '8 / leg'], ['nordic', 3, '5 reps'], ['step-down', 3, '10 / leg, heavier'], ['attack-hold', 3, '90 s hold'], ['sl-calf', 3, '20 / leg'], ['copenhagen', 3, '25 s / side']],
-    cond: [['dyn-warmup', 1, '8 min'], ['pogo', 3, '20 contacts'], ['rope', 2, '45 s on / 45 s off'], ['depth-drop', 4, '6 landings, current rung'], ['hop-stick', 3, '6 / leg, forward + sideways'], ['lateral-bound', 3, '8 / side, 2 s stick'], ['run-program', 1, 'Current stage']],
+    power: [['pogo', 2, '15 contacts', 15], ['depth-drop', 3, '5 landings, current rung', 5], ['squat-jump', 2, '5 reps', 5], ['hop-stick', 2, '4 / leg, forward + sideways', 16], ['lateral-bound', 2, '5 / side, 2 s stick', 10]],
+    strength: [['goblet-squat', 4, '6 reps, heavier'], ['sl-rdl', 3, '8 / leg'], ['attack-hold', 3, '90 s hold'], ['copenhagen', 2, '25 s / side']],
+    strengthB: [['split-squat', 3, '8 / leg, with dumbbells'], ['nordic', 3, '5 reps'], ['sl-calf', 3, '20 / leg'], ['step-down', 2, '10 / leg, heavier']],
+    cond: [['dyn-warmup', 1, '8 min'], ['run-program', 1, 'Current stage'], ['cushion-catch', 3, '30 s / leg'], ['dead-bug', 3, '12 reps']],
     mobility: MOB,
+    key: ['goblet-squat', 'split-squat', 'nordic', 'sl-calf'], keyCond: ['dyn-warmup', 'run-program'],
     criteria: ['20 min continuous easy jog with pain at 2/10 or less', 'No swelling or extra pain the morning after running', 'Drop landings from a sturdy chair (50 cm) soft and quiet', 'Single-leg hop and stick on each leg, quiet and controlled'] },
-  { n: 5, name: 'Return', weeks: 'Weeks 14–16+', range: [14, 99],
-    goal: 'Speed, cutting, higher drops and riding-specific endurance. Finish with return-to-sport tests and your orthopedist’s clearance.',
+  { n: 5, name: 'Return', weeks: 'Weeks 14–16', range: [14, 16],
+    goal: 'Higher drops, box jumps and continuous bounds on strength days; cutting, curved running and the last running stages on the days in between. Finish with return-to-sport tests, a confidence check and your orthopedist’s clearance.',
     warmup: WARM,
-    strength: [['goblet-squat', 4, '6 reps, heavy, to parallel'], ['split-squat', 3, '8 / leg, heavy'], ['sl-rdl', 3, '8 / leg, heavy'], ['nordic', 3, '6 reps'], ['attack-hold', 3, '90 s, with bounces or pushes'], ['sl-calf', 3, '25 / leg'], ['copenhagen', 3, '30 s / side']],
-    cond: [['dyn-warmup', 1, '8 min'], ['box-jump', 3, '5 reps'], ['lateral-bound', 3, '8 / side, continuous'], ['depth-drop', 4, '6 landings, current rung'], ['figure-8', 4, 'laps each direction'], ['cut-drill', 4, '4 / side'], ['shuttle', 6, '10 m reps'], ['run-program', 1, 'Current stage']],
+    power: [['box-jump', 3, '4 reps', 4], ['lateral-bound', 3, '6 / side, continuous', 12], ['depth-drop', 3, '5 landings, current rung', 5], ['hop-stick', 2, '4 / leg, hop-hop-stick', 16]],
+    strength: [['goblet-squat', 4, '6 reps, heavy, to parallel'], ['sl-rdl', 3, '8 / leg, heavy'], ['attack-hold', 3, '90 s, with bounces or pushes'], ['copenhagen', 2, '30 s / side']],
+    strengthB: [['split-squat', 3, '8 / leg, heavy'], ['nordic', 3, '6 reps'], ['sl-calf', 3, '25 / leg']],
+    cond: [['dyn-warmup', 1, '8 min'], ['figure-8', 3, 'laps each direction'], ['cut-drill', 4, '3 / side'], ['shuttle', 4, '10 m reps'], ['run-program', 1, 'Current stage']],
     mobility: MOB,
-    criteria: ['Single hop and triple hop symmetry of 90% or more (Progress → Tests)', '25 single-leg calf raises on each leg', 'Moto-peg hold 3 × 90 s, and 2 ft (60 cm) drop landings feel confident', 'Full-speed cutting and stopping drills without pain or hesitation', 'No swelling after 2 weeks of Phase 5 training', 'Orthopedist has cleared you, and the left-knee notch lesion has been reviewed'] }
+    key: ['goblet-squat', 'split-squat', 'nordic', 'attack-hold'], keyCond: ['dyn-warmup', 'cut-drill', 'run-program'],
+    criteria: ['Single hop and triple hop symmetry of 90% or more (Progress → Tests)', '25 single-leg calf raises on each leg', 'Moto-peg hold 3 × 90 s, and 2 ft (60 cm) drop landings feel confident', 'Full-speed cutting and stopping drills without pain or hesitation', 'Confidence check 75% or more (Progress → Confidence)', 'No swelling after 2 weeks of Phase 5 training', 'Orthopedist has cleared you, and the left-knee notch lesion has been reviewed'] },
+  { n: 6, name: 'Maintain', weeks: 'Week 17 onward', range: [17, 9999], habits: true,
+    goal: 'Keep the strength and landing skill for good: two strength sessions a week with a short jump block, sport or riding on two days, and the injury-prevention warm-up before every one of them.',
+    schedule: { 1: 'strength', 2: 'cond', 3: 'recovery', 4: 'strength', 5: 'recovery', 6: 'cond', 0: 'recovery' },
+    warmup: WARM,
+    power: [['depth-drop', 3, '5 landings, current rung', 5], ['lateral-bound', 2, '5 / side', 10], ['hop-stick', 2, '4 / leg, forward + sideways', 16]],
+    strength: [['goblet-squat', 3, '6 reps, heavy'], ['sl-rdl', 3, '8 / leg'], ['attack-hold', 2, '90 s'], ['copenhagen', 2, '30 s / side']],
+    strengthB: [['split-squat', 3, '8 / leg'], ['nordic', 2, '6 reps'], ['sl-calf', 3, '20 / leg']],
+    cond: [['prevent-warmup', 1, '10 min'], ['sport', 1, 'Run, sport or ride, 30–60 min'], ['cushion-catch', 2, '30 s / leg']],
+    mobility: MOB,
+    key: ['goblet-squat', 'split-squat', 'nordic', 'sl-calf'], keyCond: ['prevent-warmup', 'sport'],
+    criteria: ['Two strength sessions every week', 'Injury-prevention warm-up before every sport session or ride', 'Monthly: confidence check and calf-raise test', 'After more than a month off, go back to Phase 4 for 2 weeks'] }
 ];
+const DELOAD_WEEKS = [6, 10, 13];
 
 const RUN = [
-  { l: 'Stage 1', d: 'Walk 4 min / jog 1 min × 5 (25 min)' },
-  { l: 'Stage 2', d: 'Walk 3 min / jog 2 min × 5' },
-  { l: 'Stage 3', d: 'Walk 2 min / jog 3 min × 5' },
-  { l: 'Stage 4', d: 'Walk 1 min / jog 4 min × 5' },
-  { l: 'Stage 5', d: 'Jog 10 min / walk 1 min × 2' },
-  { l: 'Stage 6', d: 'Jog 20–25 min continuous' },
-  { l: 'Stage 7', d: 'Run 30 min continuous, easy pace' },
-  { l: 'Stage 8', d: '30 min easy + 4 × 20 s strides at 80%' }
+  { l: 'Stage 1', d: 'Walk 4 min / jog 1 min × 5 (25 min)', min: 25 },
+  { l: 'Stage 2', d: 'Walk 3 min / jog 2 min × 5', min: 25 },
+  { l: 'Stage 3', d: 'Walk 2 min / jog 3 min × 5', min: 25 },
+  { l: 'Stage 4', d: 'Walk 1 min / jog 4 min × 5', min: 25 },
+  { l: 'Stage 5', d: 'Jog 10 min / walk 1 min × 2', min: 22 },
+  { l: 'Stage 6', d: 'Jog 20–25 min continuous', min: 25 },
+  { l: 'Stage 7', d: 'Run 30 min continuous, easy pace', min: 30 },
+  { l: 'Stage 8', d: '30 min easy + 4 × 20 s strides at 80%', min: 35 }
 ];
 
 /* Drop-landing ladder towards your 2–3 ft goal. min = first phase allowed */
@@ -1051,9 +1142,9 @@ const DROP = [
   { l: '90 cm', d: '3 ft, only after clearance', min: 5 }
 ];
 
-const SCHEDULE = { 1: 'strength', 2: 'cond', 3: 'strength', 4: 'cond', 5: 'strength', 6: 'cond', 0: 'recovery' };
 const SESSION_NAMES = { strength: 'Strength', cond: 'Balance & conditioning', recovery: 'Recovery & mobility' };
-const SESSION_NAMES_P4 = { cond: 'Impact & running' };
+const SESSION_NAMES_P4 = { cond: 'Running & balance' };
+const SESSION_NAMES_P6 = { cond: 'Sport or ride' };
 
 const TESTS = [
   { k: 'calf', name: 'Single-leg calf raises', unit: 'reps', goal: '25+ each' },
@@ -1062,6 +1153,24 @@ const TESTS = [
   { k: 'peg', name: 'Moto-peg hold', unit: 's', goal: '90 s', both: true },
   { k: 'hop', name: 'Single hop for distance', unit: 'cm', goal: '≥ 90% symmetry' },
   { k: 'triple', name: 'Triple hop for distance', unit: 'cm', goal: '≥ 90% symmetry' }
+];
+
+/* Monthly confidence check (0 = not at all, 10 = completely) */
+const CONF = [
+  { k: 'run', q: 'Running without thinking about your knees' },
+  { k: 'cut', q: 'Changing direction quickly' },
+  { k: 'drop', q: 'Jumping and landing from 2–3 ft' },
+  { k: 'ride', q: 'Standing on the pegs on rough trails' },
+  { k: 'fear', q: 'Not worrying about hurting your knees again' }
+];
+
+const DOCTOR_QS = [
+  'Does the lesion in my left knee’s intercondylar notch (likely nodular synovitis) need removal, or just monitoring? If monitoring, when should I repeat the MRI?',
+  'Are there any exercises or knee angles I should avoid because of that lesion?',
+  'Is it safe to return to running, jumping and off-road motorcycling with partial ACL tears in both knees? What would you want to see first?',
+  'Should I wear a knee brace for riding or sport, and which type?',
+  'Do the grade II medial meniscus tears change anything about deep squatting or kneeling long term?',
+  'Should I keep taking collagen and calcium, and for how long?'
 ];
 
 </script>
@@ -1104,10 +1213,11 @@ const mondayOf = s => { const d = parse(s); const wd = (d.getDay() + 6) % 7; d.s
 
 /* ---------- State ---------- */
 const LS_KEY = 'knee-comeback-v1', UI_KEY = 'knee-comeback-ui';
-const defaults = () => ({ startDate: null, phase: 1, criteria: {}, tests: [], runStage: 0, dropStage: 0, autoRest: true, ts: 0 });
-const normSettings = s => ({ ...defaults(), ...(s || {}), criteria: { ...((s && s.criteria) || {}) }, tests: Array.isArray(s && s.tests) ? s.tests : [] });
+const defaults = () => ({ startDate: null, phase: 1, criteria: {}, tests: [], runStage: 0, dropStage: 0, autoRest: true, deload: {}, breaks: [], confidence: [], remindTime: '19:00', remindSun: false, lastExport: null, lastResume: null, docQs: '', ts: 0 });
+const arr = v => Array.isArray(v) ? v : [];
+const normSettings = s => ({ ...defaults(), ...(s || {}), criteria: { ...((s && s.criteria) || {}) }, deload: { ...((s && s.deload) || {}) }, tests: arr(s && s.tests), breaks: arr(s && s.breaks), confidence: arr(s && s.confidence) });
 let S = { settings: defaults(), days: {} };
-const ui = { view: 'today', date: today(), libPhase: 'all', libCat: 'all', q: '', planPhase: null, resetArm: false, json: null };
+const ui = { view: 'today', date: today(), libPhase: 'all', libCat: 'all', q: '', planPhase: null, resetArm: false, json: null, repWeeks: 4, repText: null };
 
 function loadLocal() {
   try { const raw = localStorage.getItem(LS_KEY); if (raw) { const o = JSON.parse(raw); S = { settings: normSettings(o.settings), days: o.days || {} }; } } catch (e) {}
@@ -1197,39 +1307,108 @@ function setDay(date, patch) {
 }
 
 /* ---------- Derived ---------- */
+const OFFLINE = true;
 const startDate = () => S.settings.startDate || today();
-const weekOf = date => Math.max(1, Math.floor(diff(startDate(), date) / 7) + 1);
-const phaseOfWeek = w => (PHASES.find(p => w >= p.range[0] && w <= p.range[1]) || PHASES[4]).n;
+function breakDaysBefore(date) {
+  let n = 0;
+  (S.settings.breaks || []).forEach(b => { const end = (!b.end || b.end > date) ? date : b.end; if (end > b.start) n += diff(b.start, end); });
+  return n;
+}
+const weekOf = date => Math.max(1, Math.floor((diff(startDate(), date) - breakDaysBefore(date)) / 7) + 1);
+const phaseOfWeek = w => (PHASES.find(p => w >= p.range[0] && w <= p.range[1]) || PHASES[PHASES.length - 1]).n;
 const phaseFor = date => (date < today() && S.days[date] && S.days[date].phase) ? S.days[date].phase : S.settings.phase;
-function typeFor(date) { const d = getDay(date); return d.type || SCHEDULE[parse(date).getDay()]; }
-function sessionName(type, ph) { return (ph >= 4 && SESSION_NAMES_P4[type]) || SESSION_NAMES[type]; }
-const groupOf = (id, cat) => id === 'dyn-warmup' ? 'Warm-up' : ({ Balance: 'Balance & core', Core: 'Balance & core', Plyometric: 'Impact & agility', Agility: 'Impact & agility', Running: 'Running', Cardio: 'Cardio', Strength: 'Strength', Mobility: 'Mobility' })[cat];
+const inBreak = date => (S.settings.breaks || []).some(b => date >= b.start && (!b.end || date < b.end));
+const activeBreak = () => (S.settings.breaks || []).find(b => !b.end) || null;
+function typeFor(date) {
+  if (inBreak(date)) return 'recovery';
+  const d = getDay(date); if (d.type) return d.type;
+  const P = PHASES[phaseFor(date) - 1];
+  return (P.schedule || SCHEDULE)[parse(date).getDay()];
+}
+function sessionName(type, ph) { return (ph >= 6 && SESSION_NAMES_P6[type]) || (ph >= 4 && SESSION_NAMES_P4[type]) || SESSION_NAMES[type]; }
+const condLabel = ph => ph >= 6 ? 'Sport' : ph >= 4 ? 'Run & balance' : 'Conditioning';
+const groupOf = (id, cat) => (id === 'dyn-warmup' || id === 'prevent-warmup') ? 'Warm-up' : ({ Balance: 'Balance & core', Core: 'Balance & core', Plyometric: 'Impact & agility', Agility: 'Agility', Running: 'Running', Cardio: 'Cardio', Strength: 'Strength', Mobility: 'Mobility' })[cat];
 const runStage = () => Math.min(S.settings.runStage || 0, RUN.length - 1);
 const dropMax = ph => ph >= 5 ? DROP.length - 1 : ph >= 4 ? 4 : ph >= 3 ? 2 : -1;
 const dropStage = () => Math.max(0, Math.min(S.settings.dropStage || 0, dropMax(S.settings.phase)));
 function doseOf(a) {
   if (a[0] === 'run-program') return RUN[runStage()].d;
-  if (a[0] === 'depth-drop') { const r = DROP[dropStage()]; return `6 landings from ${r.l} (${r.d.charAt(0).toLowerCase() + r.d.slice(1)})`; }
+  if (a[0] === 'depth-drop') { const r = DROP[dropStage()]; const n = parseInt(a[2], 10) || 6; return `${n} landings from ${r.l} (${r.d.charAt(0).toLowerCase() + r.d.slice(1)})`; }
   return a[2];
 }
+const isUni = dose => /\/\s*(leg|side)\b/.test(dose || '');
 function lastLoad(id, before) {
   const ks = Object.keys(S.days).filter(k => k < before && S.days[k].load && S.days[k].load[id] != null).sort();
   return ks.length ? { date: ks[ks.length - 1], kg: S.days[ks[ks.length - 1]].load[id] } : null;
 }
+function isDeload(date) {
+  const w = weekOf(date), o = (S.settings.deload || {})[w];
+  if (o != null) return !!o;
+  const ph = phaseFor(date);
+  return DELOAD_WEEKS.includes(w) && ph >= 2 && ph <= 4;
+}
+const LIGHT_CATS = new Set(['Strength', 'Plyometric', 'Agility', 'Balance', 'Core']);
+/* Workout A/B alternate across the week's strength days (Phase 3 on) */
+function variantFor(date) {
+  const P = PHASES[phaseFor(date) - 1]; if (!P.strengthB) return 'A';
+  const d = getDay(date); if (d.variant) return d.variant;
+  const sched = P.schedule || SCHEDULE, mon = mondayOf(date); let k = 0;
+  for (let i = 0; i < 7; i++) { const x = addDays(mon, i); if (x >= date) break; if (sched[parse(x).getDay()] === 'strength') k++; }
+  return (k + weekOf(date)) % 2 ? 'A' : 'B';
+}
 function blocksFor(date) {
-  const P = PHASES[phaseFor(date) - 1], type = typeFor(date);
-  const it = a => ({ id: a[0], sets: a[1], dose: doseOf(a) });
-  if (type === 'strength') return [{ t: 'Warm-up', items: P.warmup.map(it) }, { t: 'Strength', items: P.strength.map(it) }, { t: 'Cool-down mobility', items: P.mobility.map(it) }];
-  if (type === 'recovery') { const mob = P.mobility.some(a => a[0] === 'heel-slide') ? P.mobility : [['heel-slide', 2, '10 reps'], ...P.mobility]; return [{ t: 'Easy movement', items: [it(['cardio', 1, '20–30 min easy walk, optional'])] }, { t: 'Mobility', items: mob.map(it) }]; }
+  const P = PHASES[phaseFor(date) - 1], type = typeFor(date), d = getDay(date), express = !!d.express, light = isDeload(date);
+  const it = a => {
+    let sets = a[1];
+    if (light && sets > 1 && LIGHT_CATS.has(EX[a[0]].cat)) sets = Math.max(1, Math.ceil(sets * 0.6));
+    return { id: a[0], sets, dose: doseOf(a), contacts: a[3] || 0 };
+  };
+  if (type === 'recovery') {
+    const mob = P.mobility.some(a => a[0] === 'heel-slide') ? P.mobility : [['heel-slide', 2, '10 reps'], ...P.mobility];
+    return [{ t: 'Easy movement', items: [it(['cardio', 1, '20–30 min easy walk, optional'])] }, { t: 'Mobility', items: mob.map(it) }];
+  }
+  const cool = P.cool || COOL;
+  if (type === 'strength') {
+    const v = variantFor(date), list = (v === 'B' && P.strengthB) ? P.strengthB : P.strength;
+    const cap = a => [a[0], Math.min(a[1], 2), a[2], a[3]];
+    const power = express ? P.power.slice(0, 1) : P.power;
+    const out = [{ t: 'Warm-up', items: (express ? P.warmup.slice(0, 1) : P.warmup).map(it) }];
+    if (power.length) out.push({ t: 'Jumps & landings (while fresh)', items: power.map(it) });
+    const main = express ? (P.strengthB ? list.slice(0, 3) : list.filter(a => P.key.includes(a[0]))).map(cap) : list;
+    out.push({ t: (express ? 'Key strength' : 'Strength') + (P.strengthB ? ` · workout ${v}` : ''), items: main.map(it) });
+    if (!express) out.push({ t: 'Cool-down', items: cool.map(it) });
+    return out;
+  }
   const out = [];
-  P.cond.forEach(a => { const g = groupOf(a[0], EX[a[0]].cat); const last = out[out.length - 1]; if (last && last.t === g) last.items.push(it(a)); else out.push({ t: g, items: [it(a)] }); });
-  out.push({ t: 'Mobility', items: P.mobility.map(it) });
+  (express ? P.cond.filter(a => P.keyCond.includes(a[0])) : P.cond).forEach(a => {
+    const g = groupOf(a[0], EX[a[0]].cat), last = out[out.length - 1];
+    if (last && last.t === g) last.items.push(it(a)); else out.push({ t: g, items: [it(a)] });
+  });
+  if (!express) out.push({ t: 'Cool-down', items: cool.map(it) });
   return out;
 }
+function itemMinutes(i) {
+  const dose = i.dose || '';
+  if (i.id === 'run-program') return RUN[runStage()].min;
+  if (i.id === 'bike-intervals') return 26;
+  const mm = dose.match(/(\d+)(?:\s*[–-]\s*(\d+))?\s*min\b/);
+  if (mm) return (mm[2] ? (+mm[1] + +mm[2]) / 2 : +mm[1]) * Math.max(1, i.sets);
+  const hs = dose.match(/(\d+)(?:\s*[–-]\s*(\d+))?\s*s\b/);
+  const cat = EX[i.id].cat, work = hs ? +(hs[2] || hs[1]) : (cat === 'Plyometric' || cat === 'Agility') ? 20 : 40;
+  const per = (isUni(dose) || /each way/.test(dose)) ? 2 : 1;
+  return (i.sets * work * per + Math.max(0, i.sets - 1) * (restFor(i.id) || 15) + 30) / 60;
+}
+const sessionMinutes = blocks => Math.max(5, Math.round(blocks.reduce((s, b) => s + b.items.reduce((t, i) => t + itemMinutes(i), 0), 0) / 5) * 5);
+const sessionLandings = blocks => blocks.reduce((s, b) => s + b.items.reduce((t, i) => t + i.sets * (i.contacts || 0), 0), 0);
 function dayPct(date) {
   const d = getDay(date); const done = d.done || {}; let tot = 0, got = 0;
   blocksFor(date).forEach(b => b.items.forEach(i => { tot += i.sets; got += Math.min(done[i.id] || 0, i.sets); }));
   return tot ? got / tot : 0;
+}
+function setsOn(date, id) {
+  for (const b of blocksFor(date)) for (const i of b.items) if (i.id === id) return i.sets;
+  const P = PHASES[phaseFor(date) - 1], a = [...P.power, ...P.strength, ...(P.strengthB || []), ...P.cond].find(x => x[0] === id);
+  return a ? (isDeload(date) && a[1] > 1 ? Math.max(1, Math.ceil(a[1] * 0.6)) : a[1]) : 0;
 }
 function verdict(d) {
   const red = [], amber = [];
@@ -1245,24 +1424,84 @@ function verdict(d) {
   const why = a => a.length ? ` (${a.join(', ')})` : '';
   if (red.length) {
     const ext = d.extL === 'no' || d.extR === 'no';
-    return { c: 'red', t: 'Recovery day' + why(red), m: 'Skip impact and heavy strength today and do the recovery session only.' + (ext ? ' Losing full straightening can mean something is catching inside the joint; on the left that could be the notch lesion. Contact your orthopedist if it hasn’t returned by tomorrow.' : ' If this lasts more than 2 days, or the knee locks or gives way, contact your orthopedist.') };
+    return { c: 'red', reasons: red, t: 'Recovery day' + why(red), m: 'Skip impact and heavy strength today and do the recovery session only.' + (ext ? ' Losing full straightening can mean something is catching inside the joint; on the left that could be the notch lesion. Contact your orthopedist if it hasn’t returned by tomorrow.' : ' If this lasts more than 2 days, or the knee locks or gives way, contact your orthopedist.') };
   }
   if (amber.length)
-    return { c: 'amber', t: 'Train, but hold' + why(amber), m: d.morning === 'worse' ? 'Your knee reacted to the last session. Repeat today at a lower level (one set less, or lighter) and don’t progress this week.' : 'Do today’s session at last week’s level without adding weight, reps or new exercises. Pain during exercise should stay at 3/10 or less and settle by tomorrow morning.' };
-  return { c: 'green', t: 'Good to go', m: 'Train as planned. If the last session felt easy and nothing flared up the next morning, you can add a little load.' };
+    return { c: 'amber', reasons: amber, t: 'Train, but hold' + why(amber), m: d.morning === 'worse' ? 'Your knee reacted to the last session. Repeat today at a lower level (one set less, or lighter) and don’t progress this week.' : 'Do today’s session at last week’s level without adding weight, reps or new exercises. Pain during exercise should stay at 3/10 or less and settle by tomorrow morning.' };
+  return { c: 'green', reasons: [], t: 'Good to go', m: 'Train as planned. If the last session felt easy and nothing flared up the next morning, you can add a little load.' };
 }
 function stats() {
   const t = today();
   let streak = 0, d = getDay(t).checkedIn ? t : addDays(t, -1);
   while (getDay(d).checkedIn) { streak++; d = addDays(d, -1); }
-  const mon = mondayOf(t); let wk = 0;
-  for (let i = 0; i < 7; i++) { const x = addDays(mon, i); if (x > t) break; if (typeFor(x) !== 'recovery' && dayPct(x) >= 0.5) wk++; }
+  const mon = mondayOf(t); let wk = 0, wkTarget = 0;
+  for (let i = 0; i < 7; i++) { const x = addDays(mon, i); const ty = typeFor(x); if (ty !== 'recovery') wkTarget++; if (x > t) continue; if (ty !== 'recovery' && dayPct(x) >= 0.5) wk++; }
   let sched = 0, hit = 0;
-  for (let i = 0; i < 28; i++) { const x = addDays(t, -i); if (x < startDate()) break; if (typeFor(x) === 'recovery') continue; if (x === t && dayPct(x) < 0.5) continue; sched++; if (dayPct(x) >= 0.5) hit++; }
+  for (let i = 0; i < 28; i++) { const x = addDays(t, -i); if (x < startDate()) break; if (inBreak(x) || typeFor(x) === 'recovery') continue; if (x === t && dayPct(x) < 0.5) continue; sched++; if (dayPct(x) >= 0.5) hit++; }
   const pl = [], pr = [];
   for (let i = 0; i < 7; i++) { const x = getDay(addDays(t, -i)); if (x.checkedIn) { pl.push(x.painL || 0); pr.push(x.painR || 0); } }
   const avg = a => a.length ? (a.reduce((s, v) => s + v, 0) / a.length) : null;
-  return { streak, wk, adh: sched ? Math.round(hit / sched * 100) : null, pl: avg(pl), pr: avg(pr) };
+  return { streak, wk, wkTarget, adh: sched ? Math.round(hit / sched * 100) : null, pl: avg(pl), pr: avg(pr) };
+}
+
+/* Double progression: all sets done at effort ≤ 7 in the last two logged sessions, no flare the next morning */
+function readyToAdd(id, date) {
+  const ks = Object.keys(S.days).filter(k => k < date && S.days[k].load && S.days[k].load[id] != null).sort().slice(-2);
+  if (ks.length < 2) return null;
+  const ok = k => {
+    const d = S.days[k], sets = setsOn(k, id);
+    if (!sets || ((d.done || {})[id] || 0) < sets) return false;
+    if (!(d.rpe && d.rpe <= 7)) return false;
+    const nx = S.days[addDays(k, 1)];
+    return !(nx && nx.checkedIn && verdict(nx).c !== 'green');
+  };
+  if (!ks.every(ok)) return null;
+  const a = S.days[ks[0]].load[id], b = S.days[ks[1]].load[id];
+  if (b < a) return null;
+  const cur = (getDay(date).load || {})[id];
+  const inc = (id === 'sl-calf' || id === 'step-down') ? 2 : 2.5;
+  const to = Math.round((b + inc) * 2) / 2;
+  if (cur != null && cur >= to) return null;
+  return { from: b, to };
+}
+
+/* Coach: rules over the logged data, shown on Today */
+function coach(date) {
+  const out = [], t = today();
+  if (date !== t || activeBreak()) return out;
+  const w = weekOf(t), lr = S.settings.lastResume;
+  if (lr && diff(lr.date, t) <= 7) {
+    const msg = lr.reason === 'surgery' ? 'After a procedure, follow your surgeon’s rehab plan first and restart this plan from Phase 1 when they say so.'
+      : lr.days >= 14 ? `You were away ${lr.days} days, so this week is a lighter week. If the first sessions still feel hard, go back one phase for a week.`
+      : lr.days >= 7 ? `You were away ${lr.days} days, so this week is a lighter week (fewer sets, same weights).`
+      : 'Welcome back. Pick up where you left off, at last week’s weights.';
+    out.push({ tone: 'info', title: 'Back from a break', text: msg, actions: (lr.days >= 14 && S.settings.phase > 1 && lr.reason !== 'surgery') ? [{ act: 'phase-back', label: `Go back to Phase ${S.settings.phase - 1}` }] : [] });
+  }
+  let reds = 0, holds = 0;
+  for (let i = 0; i < 7; i++) { const x = getDay(addDays(t, -i)); if (x.checkedIn) { const c = verdict(x).c; if (c === 'red') reds++; else if (c === 'amber') holds++; } }
+  if (reds >= 2) out.push({ tone: 'bad', title: `${reds} recovery-day check-ins this week`, text: 'That is more than a normal flare. Book a visit with your orthopedist and take the doctor report with you.', actions: [{ act: 'nav', view: 'report', label: 'Open doctor report' }] });
+  if (isDeload(t)) {
+    out.push({ tone: 'info', title: `Week ${w}: lighter week`, text: 'Fewer sets, same weights. Your knees absorb the last few weeks of work before the next push.', actions: [{ act: 'deload', v: '0', label: 'Train normally instead' }] });
+  } else {
+    const rpes = []; for (let i = 1; i <= 14 && rpes.length < 4; i++) { const x = getDay(addDays(t, -i)); if (x.rpe && x.done && Object.values(x.done).some(Boolean)) rpes.push(x.rpe); }
+    const hard = rpes.filter(v => v >= 8).length >= 3;
+    const avgMax = (a, b) => { const v = []; for (let i = a; i < b; i++) { const x = getDay(addDays(t, -i)); if (x.checkedIn) v.push(Math.max(x.painL || 0, x.painR || 0)); } return v.length ? v.reduce((s, n) => s + n, 0) / v.length : null; };
+    const p1 = avgMax(0, 7), p0 = avgMax(7, 14), rising = p1 != null && p0 != null && p1 >= 2.5 && p1 >= p0 + 1;
+    if (reds + holds >= 3 || hard || rising) out.push({ tone: 'warn', title: 'Take a lighter week', text: [rising && 'Your pain has crept up compared with last week.', hard && 'Your last sessions felt very hard.', reds + holds >= 3 && 'Several check-ins this week said hold or rest.', 'A lighter week (fewer sets, same weights) usually settles things.'].filter(Boolean).join(' '), actions: [{ act: 'deload', v: '1', label: 'Make this a lighter week' }] });
+  }
+  if (typeFor(t) !== 'strength' && dayPct(t) === 0) {
+    let missed = false, recent = false;
+    for (let i = 1; i <= 3; i++) { const x = addDays(t, -i); if (x < startDate() || inBreak(x)) continue; if (typeFor(x) === 'strength') { if (dayPct(x) >= 0.5) recent = true; else missed = true; } }
+    if (missed && !recent) out.push({ tone: 'info', title: 'You missed a strength session', text: 'Strength is the most important part of the plan. Do it today instead, and keep at least one day between strength sessions.', actions: [{ act: 'type', type: 'strength', label: 'Do strength today' }] });
+  }
+  blocksFor(t).forEach(b => b.items.forEach(i => { if (LOADED.has(i.id)) { const r = readyToAdd(i.id, t); if (r) out.push({ tone: 'good', title: `${EX[i.id].name}: add weight`, text: `Every set done at an effort of 7/10 or less, twice in a row, with no flare-up. Try ${r.to} kg today (last time ${r.from} kg).`, actions: [] }); } }));
+  const P = PHASES[S.settings.phase - 1];
+  if (!P.habits && w > P.range[1]) out.push({ tone: 'warn', title: `Week ${w}: check the Phase ${P.n} criteria`, text: 'Move up only when every criterion is met. Staying longer is fine.', actions: [{ act: 'nav', view: 'progress', label: 'Open criteria' }] });
+  const cf = S.settings.confidence || [], lastC = cf.length ? cf[cf.length - 1].date : null;
+  if (S.settings.phase >= 3 && (!lastC || diff(lastC, t) >= 28)) out.push({ tone: 'info', title: 'Monthly confidence check', text: 'Five quick sliders on how much you trust your knees. Confidence is part of being ready for sport and riding.', actions: [{ act: 'nav', view: 'progress', anchor: 'conf', label: 'Do it now' }] });
+  if (cloud.mode !== 'cloud' && Object.keys(S.days).length >= 7 && (!S.settings.lastExport || diff(S.settings.lastExport, t) >= 14)) out.push({ tone: 'info', title: 'Back up your progress', text: 'Your data lives only on this device. Export a backup every couple of weeks.', actions: [{ act: 'export', label: 'Export backup' }] });
+  const order = { bad: 0, warn: 1, good: 2, info: 3 };
+  return out.sort((a, b) => order[a.tone] - order[b.tone]).slice(0, 5);
 }
 
 /* ---------- Shell ---------- */
@@ -1282,19 +1521,25 @@ function syncLine() {
 }
 function renderRail() {
   const w = weekOf(today()), P = PHASES[S.settings.phase - 1];
-  $('#railCard').innerHTML = `<div style="display:flex;gap:12px;align-items:center">${ring(Math.min(w, 16) / 16, 'W' + w)}<div><div class="eyebrow">Phase ${P.n} of 5</div><div style="font-family:var(--f-display);font-stretch:112%;font-weight:750;font-size:18px">${P.name}</div><div class="small muted">Week ${w} of 16</div></div></div>${syncLine()}`;
+  $('#railCard').innerHTML = `<div style="display:flex;gap:12px;align-items:center">${ring(Math.min(w, 16) / 16, 'W' + w)}<div><div class="eyebrow">Phase ${P.n} of ${PHASES.length}</div><div style="font-family:var(--f-display);font-stretch:112%;font-weight:750;font-size:18px">${P.name}</div><div class="small muted">Week ${w} of 16</div></div></div>${syncLine()}`;
 }
 
 /* ---------- Today ---------- */
+function coachCard(items) {
+  if (!items.length) return '';
+  return `<section class="card coach" aria-labelledby="coachT"><div><div class="eyebrow">Coach</div><h2 id="coachT">For today</h2></div>
+    <div class="coach-list">${items.map(c => `<div class="tip ${c.tone}"><span class="light"></span><div><b>${esc(c.title)}</b><span class="small">${esc(c.text)}</span>${c.actions.length ? `<div class="row" style="justify-content:flex-start;margin-top:8px">${c.actions.map(a => `<button class="btn sm ${a.act === 'nav' || a.act === 'export' ? 'ghost' : ''}" data-act="${a.act}" ${a.view ? `data-view="${a.view}"` : ''} ${a.anchor ? `data-anchor="${a.anchor}"` : ''} ${a.v != null ? `data-v="${a.v}"` : ''} ${a.type ? `data-type="${a.type}"` : ''}>${esc(a.label)}</button>`).join('')}</div>` : ''}</div></div>`).join('')}</div></section>`;
+}
 function viewToday() {
   const date = ui.date, t = today(), future = date > t;
   const d = getDay(date), ph = phaseFor(date), P = PHASES[ph - 1], type = typeFor(date), w = weekOf(date);
   const blocks = blocksFor(date), pct = dayPct(date), v = verdict(d), st = stats();
   const nItems = blocks.reduce((s, b) => s + b.items.length, 0);
-  const mins = { strength: '40–50 min', cond: ph >= 4 ? '40–50 min' : '35–45 min', recovery: '15–25 min' }[type];
-  const curPhase = PHASES[S.settings.phase - 1];
-  const gateNote = (!future && date === t && w > curPhase.range[1] && S.settings.phase < 5)
-    ? `<div class="notice warn"><b>Week ${w}: time to check Phase ${curPhase.n} criteria</b><span class="small">Move up only when every criterion is met. It is fine to stay longer. <button class="btn sm ghost" data-act="nav" data-view="progress" style="margin-top:6px">Open criteria</button></span></div>` : '';
+  const mins = sessionMinutes(blocks), lands = sessionLandings(blocks), light = isDeload(date);
+  const br = activeBreak(), paused = br && date >= br.start;
+  const hasUni = blocks.some(b => b.items.some(i => isUni(i.dose) && EX[i.id].cat !== 'Mobility'));
+  const tips = future ? [] : coach(date);
+  const pausedNote = paused ? `<div class="notice warn"><b>Plan paused since ${fmtShort(br.start)} (${esc(BREAK_REASONS[br.reason] || br.reason)})</b><span class="small">Sessions are switched to recovery. Gentle mobility and walking are still good if they feel fine.</span><div><button class="btn sm" data-act="resume">Resume the plan</button></div></div>` : '';
   const redNote = (d.checkedIn && v.c === 'red' && type !== 'recovery')
     ? `<div class="notice bad"><b>Your check-in says: recovery day</b><span class="small">Switch today to the recovery session.</span><div><button class="btn sm" data-act="type" data-type="recovery">Switch to recovery</button></div></div>` : '';
 
@@ -1306,9 +1551,10 @@ function viewToday() {
       const flagged = (d.flags || {})[i.id];
       let meta = '';
       if (LOADED.has(i.id) && !future) {
-        const cur = (d.load || {})[i.id], last = lastLoad(i.id, date);
-        meta += `<label class="kg"><input type="number" inputmode="decimal" min="0" step="0.5" data-kg="${i.id}" value="${cur ?? ''}" placeholder="${last ? last.kg : '0'}" aria-label="Weight used for ${esc(EX[i.id].name)}, kg"><span>kg</span></label>${last ? `<span class="small muted">last ${last.kg} kg</span>` : '<span class="small muted">log weight</span>'}`;
+        const cur = (d.load || {})[i.id], last = lastLoad(i.id, date), up = readyToAdd(i.id, date);
+        meta += `<label class="kg"><input type="number" inputmode="decimal" min="0" step="0.5" data-kg="${i.id}" value="${cur ?? ''}" placeholder="${up ? up.to : last ? last.kg : '0'}" aria-label="Weight used for ${esc(EX[i.id].name)}, kg"><span>kg</span></label>${up ? `<span class="chip good">Try ${up.to} kg</span>` : last ? `<span class="small muted">last ${last.kg} kg</span>` : '<span class="small muted">log weight</span>'}`;
       }
+      if (i.contacts) meta += `<span class="small muted">${i.sets * i.contacts} landings</span>`;
       if (flagged) meta += `<span class="chip warn">Bothered your knee: use the easier version</span>`;
       return `<div class="ex-row ${full ? 'done' : ''}"><div class="ex-main"><button class="ex-open" data-act="open-ex" data-ex="${i.id}" data-dose="${esc(i.dose)}" data-ctx="today"><span class="t">${esc(EX[i.id].name)}</span><span class="d">${esc(i.sets > 1 ? i.sets + ' sets · ' : '')}${esc(i.dose)}</span></button>${meta ? `<div class="ex-meta">${meta}</div>` : ''}</div><div class="sets">${dots}</div></div>`;
     }).join('')}</div>`).join('');
@@ -1321,24 +1567,29 @@ function viewToday() {
       <div class="stack"><span class="field-label">Swelling</span>${seg('swell' + side, sw, [['none', 'None'], ['mild', 'Mild'], ['visible', 'Visible']], future)}</div>
       <div class="stack"><span class="field-label">Straightens fully?</span>${seg('ext' + side, d['ext' + side] || 'yes', [['yes', 'Yes'], ['no', 'No']], future)}</div></div>`;
   };
+  const meta = [`about ${mins} min`, lands ? `${lands} landings` : '', light ? 'lighter week' : '', d.express ? 'express' : ''].filter(Boolean).join(' · ');
 
   return `
   <header class="page-head">
     <div><div class="eyebrow">Week ${w} · Phase ${ph} · ${esc(P.name)}</div><h1>${date === t ? 'Today, ' : ''}${esc(fmtLong(date))}</h1></div>
     <div class="date-nav"><button class="icon-btn" data-act="day" data-d="-1" aria-label="Previous day">${IC.left}</button><button class="btn ghost sm" data-act="day" data-d="0">Today</button><button class="icon-btn" data-act="day" data-d="1" aria-label="Next day">${IC.right}</button></div>
   </header>
-  <div class="chips"><span class="chip accent">${st.streak}-day check-in streak</span><span class="chip">${st.wk}/6 training days this week</span>${S.settings.startDate ? '' : '<span class="chip warn">Your plan starts today. Change the date in Settings.</span>'}</div>
-  ${gateNote}
+  <div class="chips"><span class="chip accent">${st.streak}-day check-in streak</span><span class="chip">${st.wk}/${st.wkTarget} training days this week</span>${S.settings.startDate ? '' : '<span class="chip warn">Your plan starts today. Change the date in Settings.</span>'}</div>
+  ${pausedNote}
   <div class="today-grid">
+    <div style="display:grid;gap:20px;min-width:0">
     <section class="card" aria-labelledby="sessT">
-      <div class="card-head nowrap"><div><div class="eyebrow">${future ? 'Coming up' : 'Session'} · ${mins}</div><h2 id="sessT">${esc(sessionName(type, ph))}</h2><p class="small muted">${nItems} exercises. Tap a name for full instructions; tap the numbered boxes as you finish each set.</p></div>${ring(pct, Math.round(pct * 100) + '%')}</div>
-      ${seg('type', type, [['strength', 'Strength'], ['cond', ph >= 4 ? 'Impact & run' : 'Conditioning'], ['recovery', 'Recovery']], future, 'type')}
+      <div class="card-head nowrap"><div><div class="eyebrow">${future ? 'Coming up' : 'Session'} · ${meta}</div><h2 id="sessT">${esc(sessionName(type, ph))}</h2><p class="small muted">${nItems} exercises. Tap a name for instructions and the boxes as you finish each set.${hasUni ? ' Single-leg work: left leg first, then the same reps on the right.' : ''}</p></div>${ring(pct, Math.round(pct * 100) + '%')}</div>
+      ${paused ? '' : `<div class="row" style="justify-content:flex-start">${seg('type', type, [['strength', 'Strength'], ['cond', condLabel(ph)], ['recovery', 'Recovery']], future, 'type')}${type === 'strength' && P.strengthB ? seg('variant', variantFor(date), [['A', 'Workout A'], ['B', 'Workout B']], future) : ''}${type !== 'recovery' ? `<button class="filter" data-act="express" aria-pressed="${!!d.express}" ${future ? 'disabled' : ''}>Express (short on time)</button>` : ''}</div>`}
       ${redNote}
+      ${future ? '' : `<button class="btn" data-act="guide-start">${pct > 0 && pct < 1 ? 'Continue guided session' : 'Start guided session'}</button>`}
       <div class="progress-bar"><span style="width:${Math.round(pct * 100)}%"></span></div>
       ${rows}
       ${future ? '' : `<div class="row"><button class="btn ghost sm" data-act="all-done">Mark everything done</button><button class="btn ghost sm" data-act="clear-done">Clear ticks</button></div>`}
     </section>
+    </div>
     <div style="display:grid;gap:20px;min-width:0">
+      ${coachCard(tips)}
       <section class="card" aria-labelledby="ciT">
         <div class="card-head"><div><div class="eyebrow">Daily check-in</div><h2 id="ciT">How do your knees feel?</h2></div>${d.checkedIn ? '<span class="chip good">✓ Logged</span>' : '<span class="chip">Not logged yet</span>'}</div>
         ${future ? '<p class="muted">You can check in on this day when it arrives.</p>' : `
@@ -1355,12 +1606,14 @@ function viewToday() {
         <div class="row"><span class="field-label">Session effort (RPE)</span><span class="num" id="rpeV">${d.rpe ? d.rpe + '/10' : '–'}</span></div>
         <input type="range" min="1" max="10" step="1" value="${d.rpe || 5}" data-rpe="1" aria-label="Session effort, 1 to 10" style="accent-color:var(--accent)">
         <div class="scale"><span>1 very easy</span><span>5 moderate</span><span>10 max</span></div>
+        <p class="small muted">Logging effort lets the coach tell you when to add weight.</p>
         <label class="field-label" for="notes">Notes (what felt good, what didn't, which knee)</label>
         <textarea id="notes" data-notes="1" placeholder="e.g. Left knee felt tight on step-downs, fine after warm-up">${esc(d.notes || '')}</textarea>
       </section>`}
     </div>
   </div>`;
 }
+const BREAK_REASONS = { travel: 'travel', illness: 'illness', flare: 'knee flare-up', surgery: 'procedure or surgery', other: 'other' };
 function seg(field, val, opts, disabled = false, act = 'seg') {
   const sev = (field.startsWith('swell') || field === 'stiff' || field === 'giveWay') ? ' sev' : field.startsWith('ext') ? ' sev-ext' : field === 'morning' ? ' sev-am' : '';
   return `<div class="seg${sev}" role="group">${opts.map(([v, l]) => `<button data-act="${act}" data-field="${field}" data-v="${v}" data-type="${v}" aria-pressed="${v === val}" ${disabled ? 'disabled' : ''}>${l}</button>`).join('')}</div>`;
@@ -1374,7 +1627,7 @@ function viewPlan() {
   const sel = ui.planPhase || S.settings.phase, P = PHASES[sel - 1];
   const dx = (sev, cls, title, text) => `<div class="dx-item"><span class="sev chip ${cls}">${sev}</span><div><b>${title}</b><div class="small muted">${text}</div></div></div>`;
   return `
-  <header class="page-head"><div><div class="eyebrow">16 weeks · 5 phases · criteria-based</div><h1>Your plan</h1></div></header>
+  <header class="page-head"><div><div class="eyebrow">16 weeks, then maintenance · criteria-based</div><h1>Your plan</h1></div></header>
   <section class="card">
     <div><div class="eyebrow">From your MRI reports</div><h2>What your scans show</h2></div>
     <div class="grid-2">
@@ -1390,30 +1643,37 @@ function viewPlan() {
         ${dx('Normal', 'good', 'Everything else', 'Lateral meniscus, PCL, collaterals, tendons and cartilage are all intact. No fluid.')}
       </div>
     </div>
-    <p class="small muted">What this means for training: the posterior horn of the medial meniscus is squeezed most in deep, loaded knee bends and in twisting on a planted foot, so the plan limits depth (to 90°) and rotation until later. The partial ACL tears mean hamstring strength, balance and landing control get extra attention.</p>
+    <p class="small muted">What this means for training: the posterior horn of the medial meniscus is squeezed most in deep, loaded knee bends and in twisting on a planted foot, so the plan limits depth (to 90°) and rotation until later. The partial ACL tears mean hamstring strength, balance and landing control get extra attention. Your left knee has more findings, so every single-leg exercise starts with the left and the right does the same reps, never more; the tests on Progress track the gap.</p>
   </section>
   <section class="card">
-    <div class="card-head"><div><div class="eyebrow">Phases</div><h2>Five stages, one at a time</h2></div><span class="chip">Move up by criteria, not by calendar</span></div>
+    <div class="card-head"><div><div class="eyebrow">Phases</div><h2>Six stages, one at a time</h2></div><span class="chip">Move up by criteria, not by calendar</span></div>
     <div class="phase-track">${PHASES.map(p => `<button class="ph ${p.n === S.settings.phase ? 'cur' : ''} ${p.n === sel ? 'sel' : ''}" data-act="plan-phase" data-p="${p.n}" aria-pressed="${p.n === sel}"><span class="n">P${p.n}</span><span class="nm">${p.name}</span><span class="w">${p.weeks}</span></button>`).join('')}</div>
     <div style="display:grid;gap:6px"><h3>Phase ${P.n}: ${P.name} <span class="muted small" style="font-weight:500">${P.weeks}${P.n === S.settings.phase ? ' · you are here' : ''}</span></h3><p>${esc(P.goal)}</p></div>
     <div class="grid-2">
-      <div style="display:grid;gap:10px;min-width:0"><div class="block-title">Warm-up · before every strength session</div>${exLinks(P.warmup)}<div class="block-title">Strength days · Mon, Wed, Fri · rest 60 s between sets</div>${exLinks(P.strength)}</div>
-      <div style="display:grid;gap:10px;min-width:0"><div class="block-title">${P.n >= 4 ? 'Impact & running' : 'Conditioning'} days · Tue, Thu, Sat</div>${exLinks(P.cond)}<div class="block-title">Mobility · after every session, and on Sunday</div>${exLinks(P.mobility)}</div>
+      <div style="display:grid;gap:10px;min-width:0"><div class="block-title">Warm-up · before every strength session</div>${exLinks(P.warmup)}${P.power.length ? `<div class="block-title">Jumps & landings · start of strength days · ${P.power.reduce((t, a) => t + a[1] * (a[3] || 0), 0)} landings</div>${exLinks(P.power)}` : ''}<div class="block-title">Strength days · ${P.schedule ? 'Mon, Thu' : 'Mon, Wed, Fri'} · rest 60 s between sets${P.strengthB ? ' · workout A' : ''}</div>${exLinks(P.strength)}${P.strengthB ? `<div class="block-title">Workout B · alternates with A</div>${exLinks(P.strengthB)}` : ''}</div>
+      <div style="display:grid;gap:10px;min-width:0"><div class="block-title">${P.n >= 6 ? 'Sport or ride' : P.n >= 4 ? 'Running & balance' : 'Conditioning'} days · ${P.schedule ? 'Tue, Sat' : 'Tue, Thu, Sat'}</div>${exLinks(P.cond)}<div class="block-title">Cool-down after every session</div>${exLinks(P.cool || COOL)}<div class="block-title">Full mobility · recovery days</div>${exLinks(P.mobility)}</div>
     </div>
-    <div class="mini"><b>Move to the next phase when you can tick all of these</b><ul class="bul small">${P.criteria.map(c => `<li>${esc(c)}</li>`).join('')}</ul></div>
+    <div class="mini"><b>${P.habits ? 'Habits that keep your knees strong' : 'Move to the next phase when you can tick all of these'}</b><ul class="bul small">${P.criteria.map(c => `<li>${esc(c)}</li>`).join('')}</ul></div>
   </section>
   <section class="card">
     <div><div class="eyebrow">Every week</div><h2>Weekly rhythm</h2></div>
     <div class="table-wrap"><table><thead><tr><th>Day</th><th>Session</th><th>What it does</th></tr></thead><tbody>
-      <tr><td>Mon</td><td><b>Strength</b></td><td>Builds muscle around the knee. Slow lowering, perfect alignment.</td></tr>
-      <tr><td>Tue</td><td><b>Balance & conditioning</b></td><td>Knee reflexes, core, cardio. Running and jumps from Phase 4.</td></tr>
-      <tr><td>Wed</td><td><b>Strength</b></td><td>Same as Monday. Add load if Monday felt easy and nothing flared up.</td></tr>
+      <tr><td>Mon</td><td><b>Strength</b></td><td>Builds muscle around the knee. From Phase 3 it starts with a short jump and landing block while your legs are fresh.</td></tr>
+      <tr><td>Tue</td><td><b>Balance & conditioning</b></td><td>Knee reflexes, core and cardio. From Phase 4 this is your running day.</td></tr>
+      <tr><td>Wed</td><td><b>Strength</b></td><td>Same as Monday. The coach tells you when to add weight.</td></tr>
       <tr><td>Thu</td><td><b>Balance & conditioning</b></td><td>Same as Tuesday.</td></tr>
       <tr><td>Fri</td><td><b>Strength</b></td><td>Same as Monday.</td></tr>
       <tr><td>Sat</td><td><b>Balance & conditioning</b></td><td>Your longest cardio or run of the week.</td></tr>
       <tr><td>Sun</td><td><b>Recovery</b></td><td>Easy walk and mobility. Tissues adapt on rest days.</td></tr>
     </tbody></table></div>
-    <p class="small muted">You can swap any day's session on the Today screen. Never run on two days in a row in Phases 4 and 5.</p>
+    <div class="grid-3">
+      <div class="mini"><b>Lighter weeks</b><span class="small muted">Weeks 6, 10 and 13 use fewer sets at the same weights, and the coach suggests an extra one if pain or effort creeps up.</span></div>
+      <div class="mini"><b>Short on time?</b><span class="small muted">Tap Express on Today for a 20–25 minute version with the key exercises only (running days stay longer, because the run can't be shortened). Better than skipping.</span></div>
+      <div class="mini"><b>Workouts A and B</b><span class="small muted">From Phase 3, strength days alternate between two workouts so each stays under an hour. Each exercise is still trained 1–2 times a week.</span></div>
+      <div class="mini"><b>Jumps and running</b><span class="small muted">Jumps happen on strength days and runs on the days in between, so impact is spread out and you never run two days in a row.</span></div>
+      <div class="mini"><b>Phase 6 (week 17+)</b><span class="small muted">Strength Mon and Thu, sport or riding Tue and Sat, rest the other days. This is how you keep the knees strong.</span></div>
+    </div>
+    <p class="small muted">You can swap any day's session on the Today screen, or pause the plan in Settings for travel, illness or a flare-up.</p>
   </section>
   <div class="grid-2">
     <section class="card"><div><div class="eyebrow">The 0–10 rule</div><h2>How much pain is OK?</h2></div>
@@ -1426,7 +1686,8 @@ function viewPlan() {
         <li><b>Until Phase 4:</b> running, jumping, sports, deep squats below 90°, loaded kneeling and twisting or pivoting on a planted foot.</li>
         <li><b>Until Phase 5:</b> cutting at speed, drops above 60 cm (2 ft), off-road riding.</li>
         <li><b>Until Phase 3:</b> any landing drills. Then only the drop ladder heights.</li>
-        <li><b>Throughout:</b> heavy seated leg-extension machines (they pull the shin forward against the ACL) and sitting cross-legged or in a deep squat for long periods.</li>
+        <li><b>Throughout:</b> heavy seated leg-extension machines (they pull the shin forward against the ACL).</li>
+        <li><b>Daily life, until Phase 3:</b> squat-style toilets, sitting cross-legged on the floor and long deep squats press hard on the back of both menisci. Use a western toilet or a commode stool, and sit on a chair for meals and prayers.</li>
         <li><b>Never:</b> training through sharp pain, or straight after a check-in that says "recovery day".</li>
       </ul>
     </section>
@@ -1474,7 +1735,7 @@ function viewPlan() {
 }
 
 /* ---------- Library ---------- */
-const exPhases = id => PHASES.filter(p => [...p.warmup, ...p.strength, ...p.cond, ...p.mobility].some(a => a[0] === id)).map(p => p.n);
+const exPhases = id => PHASES.filter(p => [...p.warmup, ...p.power, ...p.strength, ...(p.strengthB || []), ...p.cond, ...p.mobility].some(a => a[0] === id)).map(p => p.n);
 const phaseRange = a => !a.length ? '' : a.length === 1 ? 'P' + a[0] : a.every((v, i) => !i || v === a[i - 1] + 1) ? `P${a[0]}–${a[a.length - 1]}` : a.map(n => 'P' + n).join(', ');
 function libItems() {
   const q = ui.q.trim().toLowerCase();
@@ -1562,7 +1823,7 @@ function viewProgress() {
   const crit = P.criteria.map((c, i) => { const k = `p${P.n}-${i}`; return `<label class="check"><input type="checkbox" data-crit="${k}" ${S.settings.criteria[k] ? 'checked' : ''}><span>${esc(c)}</span></label>`; }).join('');
   const all = P.criteria.every((c, i) => S.settings.criteria[`p${P.n}-${i}`]);
   const rs = S.settings.runStage;
-  const runCard = `<section class="card"><div class="card-head"><div><div class="eyebrow">Phase 4 onward</div><h2>Walk–jog program</h2></div>${S.settings.phase >= 4 ? `<span class="chip accent">${RUN[rs].l}</span>` : '<span class="chip">Unlocks in Phase 4</span>'}</div>
+  const runCard = `<section class="card"><div class="card-head"><div><div class="eyebrow">Phase 4 onward</div><h2>Walk–run program</h2></div>${S.settings.phase >= 4 ? `<span class="chip accent">${RUN[rs].l}</span>` : '<span class="chip">Unlocks in Phase 4</span>'}</div>
     <div>${RUN.map((r, i) => `<div class="stage ${i < rs ? 'done' : ''} ${i === rs ? 'cur' : ''}"><span class="b">${i < rs ? '✓' : i + 1}</span><span class="t">${r.d}</span></div>`).join('')}</div>
     <p class="small muted">Run every other day. Move up only if pain stayed at 2/10 or less during the run and the knee was fine the next morning. Otherwise repeat the stage.</p>
     ${S.settings.phase >= 4 ? `<div class="row"><button class="btn ghost sm" data-act="run" data-d="-1" ${rs === 0 ? 'disabled' : ''}>Step back</button><button class="btn sm" data-act="run" data-d="1" ${rs >= RUN.length - 1 ? 'disabled' : ''}>Next morning was fine: move up</button></div>` : ''}
@@ -1574,16 +1835,23 @@ function viewProgress() {
     <p class="small muted">Step off, don't jump. Move up only after about 2 weeks (6 sessions) of quiet, soft landings with no pain during or the next morning.</p>
     ${dmax >= 0 ? `<div class="row"><button class="btn ghost sm" data-act="drop" data-d="-1" ${ds === 0 ? 'disabled' : ''}>Step back</button><button class="btn sm" data-act="drop" data-d="1" ${ds >= dmax ? 'disabled' : ''}>${ds >= dmax && dmax < DROP.length - 1 ? 'Next rung unlocks in Phase ' + DROP[ds + 1].min : 'Landings felt easy: move up'}</button></div>` : ''}
   </section>`;
+  const cf = S.settings.confidence || [], lastC = cf[cf.length - 1];
+  const confScore = c => Math.round(CONF.reduce((t, q) => t + (+c.v[q.k] || 0), 0) / CONF.length * 10);
+  const confCard = `<section class="card" id="conf"><div class="card-head"><div><div class="eyebrow">Monthly</div><h2>Confidence check</h2></div>${lastC ? `<span class="chip ${confScore(lastC) >= 75 ? 'good' : confScore(lastC) >= 50 ? 'warn' : 'bad'}">${confScore(lastC)}% on ${fmtShort(lastC.date)}</span>` : '<span class="chip">Not done yet</span>'}</div>
+    <p class="small muted">How much do you trust your knees right now? 0 = not at all, 10 = completely. Being physically ready isn't enough on its own; aim for 75% or more before sport and trail riding.</p>
+    <div class="conf-list">${CONF.map(q => { const v = lastC ? (lastC.v[q.k] ?? 5) : 5; return `<div class="conf-q"><div class="row"><label class="field-label" for="cf-${q.k}">${esc(q.q)}</label><span class="num" id="cfv-${q.k}">${v}</span></div><input type="range" min="0" max="10" step="1" value="${v}" id="cf-${q.k}" data-conf="${q.k}" style="accent-color:var(--accent)"></div>`; }).join('')}</div>
+    <div class="row" style="justify-content:flex-start"><button class="btn" data-act="conf-save">Save today's check</button>${cf.length > 1 ? `<span class="small muted">History: ${cf.slice(-5).map(c => `${fmtShort(c.date)} ${confScore(c)}%`).join(' · ')}</span>` : ''}</div>
+  </section>`;
   const fl = {};
   for (let i = 0; i < 14; i++) { const dt = addDays(today(), -i), f = getDay(dt).flags || {}; Object.keys(f).forEach(id => { if (f[id] && EX[id]) { fl[id] = fl[id] || { n: 0, last: dt }; fl[id].n++; } }); }
   const flagCard = `<section class="card"><div><div class="eyebrow">Last 14 days</div><h2>Exercises that bothered you</h2></div>
     ${Object.keys(fl).length ? `<div class="ex-list">${Object.entries(fl).sort((a, b) => b[1].n - a[1].n).map(([id, o]) => `<div class="ex-row"><button class="ex-open" data-act="open-ex" data-ex="${id}"><span class="t">${esc(EX[id].name)}</span><span class="d">${o.n} day${o.n > 1 ? 's' : ''} · last ${fmtShort(o.last)}</span></button><span class="chip warn">Use the easier version</span></div>`).join('')}</div><p class="small muted">If the same exercise bothers you 3 times in 2 weeks even on the easier version, skip it and mention it to your physio or orthopedist.</p>` : '<div class="empty">Nothing flagged. If an exercise bothers a knee, open it from Today and tap "This bothered my knee".</div>'}
   </section>`;
   return `
-  <header class="page-head"><div><div class="eyebrow">Since ${fmtShort(startDate())}</div><h1>Progress</h1></div></header>
+  <header class="page-head"><div><div class="eyebrow">Since ${fmtShort(startDate())}</div><h1>Progress</h1></div><button class="btn ghost sm" data-act="nav" data-view="report">Doctor report</button></header>
   <div class="kpis">
     <div class="kpi"><span class="eyebrow">Check-in streak</span><span class="v">${st.streak}<small> days</small></span></div>
-    <div class="kpi"><span class="eyebrow">This week</span><span class="v">${st.wk}<small> / 6 days</small></span></div>
+    <div class="kpi"><span class="eyebrow">This week</span><span class="v">${st.wk}<small> / ${st.wkTarget} days</small></span></div>
     <div class="kpi"><span class="eyebrow">Adherence, 28 days</span><span class="v">${st.adh == null ? '–' : st.adh + '<small>%</small>'}</span></div>
     <div class="kpi"><span class="eyebrow">Avg pain, 7 days</span><span class="v" style="font-size:24px"><span style="color:var(--left)">L ${st.pl == null ? '–' : st.pl.toFixed(1)}</span> · <span style="color:var(--right)">R ${st.pr == null ? '–' : st.pr.toFixed(1)}</span></span></div>
   </div>
@@ -1593,13 +1861,14 @@ function viewProgress() {
     <section class="card"><div><div class="eyebrow">16-week program</div><h2>Program calendar</h2></div>${heatmap()}</section>
   </div>
   <div class="grid-2">
-    <section class="card"><div class="card-head"><div><div class="eyebrow">Phase ${P.n}: ${P.name}</div><h2>Ready to move up?</h2></div><span class="chip ${all ? 'good' : ''}">${P.criteria.filter((c, i) => S.settings.criteria[`p${P.n}-${i}`]).length}/${P.criteria.length}</span></div>
+    <section class="card"><div class="card-head"><div><div class="eyebrow">Phase ${P.n}: ${P.name}</div><h2>${P.habits ? 'Keep it up' : 'Ready to move up?'}</h2></div><span class="chip ${all ? 'good' : ''}">${P.criteria.filter((c, i) => S.settings.criteria[`p${P.n}-${i}`]).length}/${P.criteria.length}</span></div>
       <div>${crit}</div>
-      ${P.n < 5 ? `<button class="btn" data-act="advance" ${all ? '' : 'disabled'}>Move to Phase ${P.n + 1}: ${PHASES[P.n].name}</button>${all ? '' : '<p class="small muted">Tick every criterion to unlock. Taking extra weeks here is normal and protects your knees.</p>'}` : `<p class="small muted">${all ? 'All return-to-sport criteria met. Build up sport and riding gradually over 4–6 weeks.' : 'These are your return-to-sport criteria.'}</p>`}
+      ${P.habits ? '<p class="small muted">These are ongoing habits, not a gate. Tick them as a reminder of what keeps your knees strong.</p>' : `<button class="btn" data-act="advance" ${all ? '' : 'disabled'}>Move to Phase ${P.n + 1}: ${PHASES[P.n].name}</button>${all ? (P.n === 5 ? '<p class="small muted">All return-to-sport criteria met. Build up sport and riding gradually over 4–6 weeks.</p>' : '') : `<p class="small muted">${P.n === 5 ? 'These are your return-to-sport criteria.' : 'Tick every criterion to unlock.'} Taking extra weeks here is normal and protects your knees.</p>`}`}
     </section>
     ${runCard}
   </div>
   <div class="grid-2">${dropCard}${flagCard}</div>
+  <div class="grid-2">${confCard}<section class="card"><div><div class="eyebrow">For your appointments</div><h2>Doctor report</h2></div><p class="small muted">A one-page summary of your last 4 or 8 weeks: pain, swelling, straightening problems, sessions, weights, tests and confidence, plus questions to ask. Share or copy it before you see your orthopedist.</p><div><button class="btn" data-act="nav" data-view="report">Open doctor report</button></div></section></div>
   ${testsCard()}`;
 }
 
@@ -1615,6 +1884,8 @@ function viewSettings() {
     <p class="small muted">Normally you move phases from Progress once the criteria are met. Use this if your physiotherapist or orthopedist puts you at a different stage.</p>
     <label class="toggle" for="autoRest"><span><b>Start the rest timer automatically</b><br><span class="small muted">When you tick a set, the timer counts your rest (60 s for strength, 90 s for jumps).</span></span><input type="checkbox" id="autoRest" ${S.settings.autoRest !== false ? 'checked' : ''}></label>
   </section>
+  ${pauseCard()}
+  ${calendarCard()}
   <section class="card"><h2>Your data</h2>
     ${syncLine()}
     <p class="small muted">${cloud.mode === 'cloud' ? 'Check-ins and progress are stored privately in your Claude account, so they appear on any device where you open this page while signed in. Nobody else can see them.' : 'Progress is stored on this device and works fully offline. Export a backup now and then, because clearing Safari website data erases it.'}</p>
@@ -1632,6 +1903,23 @@ function viewSettings() {
   <section class="card"><h2>Start over</h2>
     <p class="small muted">Erases every check-in, test result and setting, on all your devices.</p>
     <div class="row" style="justify-content:flex-start">${ui.resetArm ? '<button class="btn danger" data-act="reset-go">Yes, erase everything</button><button class="btn ghost" data-act="reset-cancel">Cancel</button>' : '<button class="btn danger" data-act="reset-arm">Erase all data…</button>'}</div>
+  </section>`;
+}
+
+function pauseCard() {
+  const br = activeBreak(), past = (S.settings.breaks || []).filter(b => b.end).slice(-3).reverse();
+  return `<section class="card"><h2>Taking a break?</h2>
+    ${br ? `<div class="notice warn"><b>Paused since ${fmtShort(br.start)} (${esc(BREAK_REASONS[br.reason] || br.reason)})</b><span class="small">When you resume, the app eases you back in: a lighter week after 7+ days off, and the option to step back a phase after 14+ days.</span><div><button class="btn sm" data-act="resume">Resume the plan</button></div></div>`
+    : `<p class="small muted">Travel, illness, a flare-up or a procedure? Pause the plan so days off don't count against you. Sessions switch to recovery, and when you come back the app eases you in.</p>
+    <div class="row" style="justify-content:flex-start"><select id="breakReason" aria-label="Reason for the break" style="width:auto">${Object.entries(BREAK_REASONS).map(([k, l]) => `<option value="${k}">${l.charAt(0).toUpperCase() + l.slice(1)}</option>`).join('')}</select><button class="btn ghost" data-act="pause">Pause the plan</button></div>`}
+    ${past.length ? `<p class="small muted">Past breaks: ${past.map(b => `${fmtShort(b.start)}–${fmtShort(b.end)} (${esc(BREAK_REASONS[b.reason] || b.reason)})`).join(' · ')}</p>` : ''}
+  </section>`;
+}
+function calendarCard() {
+  return `<section class="card"><h2>Calendar reminders</h2>
+    <p class="small muted">Adds your weekly sessions to the iPad Calendar as repeating events with an alert, so you get a real notification on training days, even offline.</p>
+    <div class="row" style="justify-content:flex-start"><label class="field-label" for="remTime">Alert time</label><input type="time" id="remTime" value="${esc(S.settings.remindTime || '19:00')}" style="width:auto"><label class="toggle" for="remSun" style="gap:8px"><input type="checkbox" id="remSun" ${S.settings.remindSun ? 'checked' : ''}><span class="small">Include Sunday recovery</span></label></div>
+    ${OFFLINE ? `<div><button class="btn" data-act="ics">Add sessions to Calendar</button></div><p class="small muted">Your iPad shows the events to add. If it saves a file instead, open it from the Files app and tap <b>Add All</b>. Export again when you reach Phase 6, because the weekly rhythm changes.</p>` : `<p class="small muted">Calendar export works in the installed app (the GitHub version). Here, ask Claude in the chat to add a daily reminder for you.</p>`}
   </section>`;
 }
 
@@ -1655,6 +1943,7 @@ function openEx(id, dose, ctx) {
     <div class="row" style="align-items:flex-start"><div style="display:flex;gap:12px;align-items:center"><span class="cat-ico">${IC[e.cat] || ''}</span><div><div class="eyebrow">${esc(e.cat)} · ${phaseRange(ph)}</div><div class="small muted">${esc(e.target)}</div></div></div><button class="icon-btn" data-act="close-sheet" aria-label="Close">${IC.close}</button></div>
     <h2 id="sheetTitle">${esc(e.name)}</h2>
     ${dose || rest || holds.length ? `<div class="hold-row">${dose ? `<span class="chip accent">Prescribed: ${esc(dose)}</span>` : ''}${rest ? `<span class="chip">Rest ${rest} s between sets</span>` : ''}${holds.map(s => `<button class="btn sm" data-act="hold" data-s="${s}">Start ${s} s timer</button>`).join('')}</div>` : ''}
+    ${isUni(dose) && e.cat !== 'Mobility' ? '<div class="notice"><b>Left leg first</b><span class="small">Your left knee has more findings. Do all reps on the left, then the same number on the right, never more.</span></div>' : ''}
     ${onDay ? `<button class="btn ${flagged ? 'danger' : 'ghost'} sm" data-act="flag" data-ex="${id}" aria-pressed="${!!flagged}" style="justify-self:start">${flagged ? 'Flagged: bothered my knee today (tap to undo)' : 'This bothered my knee today'}</button>` : ''}
     ${flagged ? `<div class="notice warn"><b>Use the easier version next time</b><span class="small">${esc(e.easier || 'Reduce the load or range.')} If it still bothers you, skip it for a week.</span></div>` : ''}
     ${hist.length ? `<div class="mini"><b>Weight history</b><span class="small num">${hist.map(k => `${fmtShort(k)}: ${S.days[k].load[id]} kg`).join(' · ')}</span></div>` : ''}
@@ -1676,7 +1965,8 @@ function closeSheet() { $('#sheet').hidden = true; if (lastFocus && lastFocus.fo
 const tm = { end: 0, id: null, ctx: null, lock: null };
 function renderTimer() {
   const el = $('#timer');
-  el.hidden = ui.view !== 'today';
+  el.hidden = ui.view !== 'today' || guide.open;
+  if (guide.open) { const c = $('#gClock'); if (c) c.innerHTML = guideClock(); }
   if (tm.end) {
     const left = Math.max(0, Math.ceil((tm.end - Date.now()) / 1000));
     el.className = 'timer running';
@@ -1700,6 +1990,190 @@ async function startTimer(s, label = '') {
 }
 function stopTimer() { clearInterval(tm.id); tm.end = 0; try { tm.lock && tm.lock.release(); } catch (e) {} tm.lock = null; renderTimer(); }
 
+/* ---------- Guided workout mode ---------- */
+const guide = { open: false, date: null, idx: 0, finished: false, lock: null };
+function guideItems() { return blocksFor(guide.date).flatMap(b => b.items.map(i => ({ ...i, block: b.t }))); }
+async function openGuide() {
+  guide.open = true; guide.date = ui.date; guide.finished = false;
+  const items = guideItems(), done = getDay(guide.date).done || {};
+  const first = items.findIndex(i => (done[i.id] || 0) < i.sets);
+  guide.idx = first < 0 ? 0 : first;
+  try { if ('wakeLock' in navigator) guide.lock = await navigator.wakeLock.request('screen'); } catch (e) {}
+  $('#guide').hidden = false; document.documentElement.style.overflow = 'hidden';
+  renderGuide();
+  setTimeout(() => { const b = $('#guide [data-act="g-done"]') || $('#guide [data-act="guide-close"]'); b && b.focus(); }, 30);
+}
+function closeGuide() {
+  guide.open = false; $('#guide').hidden = true; document.documentElement.style.overflow = '';
+  try { guide.lock && guide.lock.release(); } catch (e) {} guide.lock = null;
+  render();
+}
+function guideClock() {
+  if (!tm.end) return '';
+  const left = Math.max(0, Math.ceil((tm.end - Date.now()) / 1000));
+  return `<div class="g-clock ${tm.label === 'Rest' ? 'rest' : 'hold'}"><span class="eyebrow">${esc(tm.label || 'Timer')}</span><span class="g-time num">${Math.floor(left / 60)}:${pad(left % 60)}</span><button class="btn ghost sm" data-act="timer-stop">${tm.label === 'Rest' ? 'Skip rest' : 'Stop'}</button></div>`;
+}
+function renderGuide() {
+  if (!guide.open) return;
+  const el = $('#guide'), items = guideItems(), n = items.length, d = getDay(guide.date);
+  if (guide.finished || !n) {
+    const pct = Math.round(dayPct(guide.date) * 100);
+    el.innerHTML = `<div class="g-top"><span class="eyebrow">Guided session</span><button class="icon-btn" data-act="guide-close" aria-label="Close">${IC.close}</button></div>
+      <div class="g-body g-finish"><h1 class="g-name">${pct >= 100 ? 'Session complete' : `Session finished, ${pct}% done`}</h1>
+      <p class="muted">How hard was it overall? This lets the coach tell you when to add weight.</p>
+      <div class="g-rpe">${Array.from({ length: 10 }, (_, k) => `<button class="set ${d.rpe === k + 1 ? 'on' : ''}" data-act="g-rpe" data-v="${k + 1}" aria-label="Effort ${k + 1} of 10">${k + 1}</button>`).join('')}</div>
+      <div class="scale" style="max-width:520px;width:100%"><span>1 very easy</span><span>5 moderate</span><span>10 max</span></div>
+      <div class="row" style="justify-content:center"><button class="btn" data-act="guide-close">Done</button></div></div>`;
+    return;
+  }
+  guide.idx = Math.min(guide.idx, n - 1);
+  const i = items[guide.idx], e = EX[i.id], done = Math.min((d.done || {})[i.id] || 0, i.sets), next = items[guide.idx + 1];
+  const holds = holdSecs(i.dose), left = isUni(i.dose) && e.cat !== 'Mobility';
+  const ll = LOADED.has(i.id) ? lastLoad(i.id, guide.date) : null, up = LOADED.has(i.id) ? readyToAdd(i.id, guide.date) : null;
+  const totalDone = items.reduce((t, x) => t + Math.min((d.done || {})[x.id] || 0, x.sets), 0), totalSets = items.reduce((t, x) => t + x.sets, 0);
+  el.innerHTML = `
+    <div class="g-top"><span class="num small">${guide.idx + 1} / ${n}</span><div class="g-prog" role="progressbar" aria-valuemin="0" aria-valuemax="${totalSets}" aria-valuenow="${totalDone}"><span style="width:${totalSets ? totalDone / totalSets * 100 : 0}%"></span></div><button class="icon-btn" data-act="guide-close" aria-label="Close guided session">${IC.close}</button></div>
+    <div class="g-body">
+      <div class="eyebrow">${esc(i.block)}</div>
+      <h1 class="g-name">${esc(e.name)}</h1>
+      <div class="g-dose">${i.sets > 1 ? i.sets + ' sets · ' : ''}${esc(i.dose)}</div>
+      <div class="chips" style="justify-content:center">${left ? '<span class="chip accent">Left leg first, then match on the right</span>' : ''}${up ? `<span class="chip good">Try ${up.to} kg today</span>` : ll ? `<span class="chip">Last time ${ll.kg} kg</span>` : ''}${(d.flags || {})[i.id] ? '<span class="chip warn">Bothered you before: use the easier version</span>' : ''}</div>
+      <ul class="g-cues">${e.cues.slice(0, 2).map(c => `<li>${esc(c)}</li>`).join('')}</ul>
+      <div class="g-sets" aria-label="${done} of ${i.sets} sets done">${Array.from({ length: i.sets }, (_, k) => `<span class="g-set ${k < done ? 'on' : ''}">${k + 1}</span>`).join('')}</div>
+      <div id="gClock">${guideClock()}</div>
+      <div class="g-actions">${holds.map(s => `<button class="btn ghost" data-act="g-hold" data-s="${s}">${s} s hold</button>`).join('')}<button class="btn g-done" data-act="g-done">${done >= i.sets ? (next ? 'Next exercise' : 'Finish') : i.sets > 1 ? `Set ${done + 1} done` : 'Done'}</button></div>
+      <div class="row" style="justify-content:center"><button class="btn ghost sm" data-act="g-prev" ${guide.idx === 0 ? 'disabled' : ''}>Previous</button><button class="btn ghost sm" data-act="open-ex" data-ex="${i.id}" data-dose="${esc(i.dose)}" data-ctx="today">How to do it</button><button class="btn ghost sm" data-act="g-skip">${next ? 'Skip' : 'Finish'}</button></div>
+    </div>
+    ${next ? `<div class="g-next"><span class="eyebrow">Next up</span><b>${esc(EX[next.id].name)}</b><span class="small muted">${next.sets > 1 ? next.sets + ' sets · ' : ''}${esc(next.dose)}</span></div>` : ''}`;
+}
+function guideAdvance() {
+  const n = guideItems().length;
+  if (guide.idx < n - 1) guide.idx++; else guide.finished = true;
+}
+function guideDone() {
+  const items = guideItems(), i = items[guide.idx]; if (!i) return;
+  const d = getDay(guide.date), done = { ...(d.done || {}) }, cur = Math.min(done[i.id] || 0, i.sets);
+  if (cur >= i.sets) { guideAdvance(); renderGuide(); return; }
+  done[i.id] = cur + 1; setDay(guide.date, { done });
+  const rest = restFor(i.id), auto = S.settings.autoRest !== false;
+  if (done[i.id] >= i.sets) { guideAdvance(); if (auto && rest && !guide.finished) startTimer(rest, 'Rest'); }
+  else if (auto && rest) startTimer(rest, 'Rest');
+  if (guide.finished) { stopTimer(); beep(2); }
+  renderGuide();
+}
+
+/* ---------- Doctor report ---------- */
+function reportData(weeks) {
+  const t = today(), from = addDays(t, -weeks * 7 + 1);
+  const days = []; for (let x = from; x <= t; x = addDays(x, 1)) days.push(x);
+  const rows = [];
+  for (let k = 0; k < weeks; k++) {
+    const ws = addDays(from, k * 7), we = addDays(ws, 6), ci = [];
+    let sessions = 0, planned = 0;
+    for (let x = ws; x <= we && x <= t; x = addDays(x, 1)) {
+      const d = getDay(x); if (d.checkedIn) ci.push(d);
+      if (x >= startDate() && !inBreak(x) && typeFor(x) !== 'recovery') { planned++; if (dayPct(x) >= 0.5) sessions++; }
+    }
+    const avg = (a, f) => a.length ? (a.reduce((s, d) => s + (d[f] || 0), 0) / a.length).toFixed(1) : '–';
+    const mx = (a, f) => a.length ? Math.max(...a.map(d => d[f] || 0)) : '–';
+    rows.push({ ws, we, n: ci.length, avgL: avg(ci, 'painL'), avgR: avg(ci, 'painR'), maxL: mx(ci, 'painL'), maxR: mx(ci, 'painR'),
+      swellL: ci.filter(d => d.swellL && d.swellL !== 'none').length, swellR: ci.filter(d => d.swellR && d.swellR !== 'none').length, sessions, planned });
+  }
+  const events = days.map(x => ({ x, d: getDay(x) })).filter(o => o.d.checkedIn && verdict(o.d).c === 'red').map(o => ({ date: o.x, reasons: verdict(o.d).reasons }));
+  const notes = days.map(x => ({ x, n: (getDay(x).notes || '').trim() })).filter(o => o.n).slice(-12);
+  const flags = {}; days.forEach(x => Object.keys(getDay(x).flags || {}).forEach(id => { if (EX[id]) flags[id] = (flags[id] || 0) + 1; }));
+  const loads = [...LOADED].map(id => { const ks = days.filter(x => getDay(x).load && getDay(x).load[id] != null); return ks.length ? { id, first: getDay(ks[0]).load[id], last: getDay(ks[ks.length - 1]).load[id], firstD: ks[0], lastD: ks[ks.length - 1] } : null; }).filter(Boolean);
+  const tests = [...S.settings.tests].sort((a, b) => a.date.localeCompare(b.date));
+  const cf = S.settings.confidence || [];
+  const conf = cf.length ? { date: cf[cf.length - 1].date, score: Math.round(CONF.reduce((s, q) => s + (+cf[cf.length - 1].v[q.k] || 0), 0) / CONF.length * 10) } : null;
+  const breaks = (S.settings.breaks || []).filter(b => (b.end || t) >= from);
+  return { from, t, rows, events, notes, flags, loads, tests, conf, breaks };
+}
+const testStr = (x, v) => !v ? '–' : v.B != null ? `${v.B} ${x.unit}` : `L ${v.L ?? '–'} / R ${v.R ?? '–'} ${x.unit}${(+v.L && +v.R) ? ` (${Math.round(Math.min(v.L, v.R) / Math.max(v.L, v.R) * 100)}%)` : ''}`;
+function reportText(weeks) {
+  const r = reportData(weeks), P = PHASES[S.settings.phase - 1], L = [];
+  L.push(`KNEE REHAB SUMMARY · ${fmtShort(r.from)} to ${fmtShort(r.t)} (${weeks} weeks)`);
+  L.push('Diagnosis (MRI): both knees grade II tear, posterior horn of medial meniscus; partial ACL tear (left), low-grade ACL sprain/partial tear (right). Left knee: grade I signal posterior horn lateral meniscus; 1.7 × 1.4 × 2.3 cm lesion in the intercondylar notch, likely localised nodular synovitis.');
+  L.push(`Home program: started ${fmtShort(startDate())}, now week ${weekOf(r.t)}, Phase ${P.n} (${P.name}). Walk–run: ${RUN[runStage()].l}. Drop landings: ${S.settings.phase >= 3 ? DROP[dropStage()].l : 'not started'}.`);
+  L.push('', 'WEEKLY SYMPTOMS (pain 0–10, average / max)');
+  r.rows.forEach(w => L.push(`${fmtShort(w.ws)}–${fmtShort(w.we)}: Left ${w.avgL}/${w.maxL}, Right ${w.avgR}/${w.maxR}; swelling days L ${w.swellL}, R ${w.swellR}; sessions ${w.sessions}/${w.planned}; check-ins ${w.n}`));
+  L.push('', 'RED-FLAG DAYS');
+  L.push(...(r.events.length ? r.events.map(e => `${fmtShort(e.date)}: ${e.reasons.join(', ')}`) : ['None']));
+  if (r.breaks.length) { L.push('', 'BREAKS'); r.breaks.forEach(b => L.push(`${fmtShort(b.start)}–${b.end ? fmtShort(b.end) : 'ongoing'}: ${BREAK_REASONS[b.reason] || b.reason}`)); }
+  if (r.loads.length) { L.push('', 'STRENGTH (kg, first → latest)'); r.loads.forEach(l => L.push(`${EX[l.id].name}: ${l.first} → ${l.last}`)); }
+  if (r.tests.length) { const a = r.tests[0], b = r.tests[r.tests.length - 1]; L.push('', `TESTS (${fmtShort(a.date)}${a !== b ? ' → ' + fmtShort(b.date) : ''})`); TESTS.forEach(x => { if (a.v[x.k] || b.v[x.k]) L.push(`${x.name}: ${testStr(x, a.v[x.k])}${a !== b ? ' → ' + testStr(x, b.v[x.k]) : ''}`); }); }
+  if (r.conf) L.push('', `CONFIDENCE: ${r.conf.score}% (${fmtShort(r.conf.date)})`);
+  const fl = Object.entries(r.flags); if (fl.length) { L.push('', 'EXERCISES THAT BOTHERED A KNEE'); fl.forEach(([id, n]) => L.push(`${EX[id].name}: ${n} day${n > 1 ? 's' : ''}`)); }
+  if (r.notes.length) { L.push('', 'NOTES'); r.notes.forEach(o => L.push(`${fmtShort(o.x)}: ${o.n}`)); }
+  L.push('', 'QUESTIONS'); [...DOCTOR_QS, ...(S.settings.docQs || '').split('\n').map(q => q.trim()).filter(Boolean)].forEach((q, k) => L.push(`${k + 1}. ${q}`));
+  return L.join('\n');
+}
+function viewReport() {
+  const weeks = ui.repWeeks, r = reportData(weeks), P = PHASES[S.settings.phase - 1];
+  const any = r.rows.some(w => w.n);
+  return `
+  <header class="page-head"><div><div class="eyebrow">For your orthopedist</div><h1>Doctor report</h1></div>
+    <div class="row">${seg('repWeeks', String(weeks), [['4', '4 weeks'], ['8', '8 weeks']], false, 'rep-weeks')}<button class="btn" data-act="rep-share">Share</button><button class="btn ghost" data-act="rep-copy">Copy text</button></div></header>
+  ${ui.repText ? `<section class="card"><p class="small muted">Copy this text into WhatsApp, Notes or an email:</p><textarea id="repOut" readonly rows="10">${esc(ui.repText)}</textarea></section>` : ''}
+  <section class="card">
+    <div><div class="eyebrow">${fmtShort(r.from)} – ${fmtShort(r.t)}</div><h2>Summary</h2></div>
+    <p class="small">MRI: both knees grade II tear in the posterior horn of the medial meniscus, partial ACL tear (left) and low-grade ACL sprain or partial tear (right). Left knee also has grade I lateral meniscus signal and a 1.7 × 1.4 × 2.3 cm notch lesion, likely localised nodular synovitis.</p>
+    <div class="grid-3"><div class="mini"><b>Program</b><span class="small muted">Week ${weekOf(r.t)} · Phase ${P.n} (${esc(P.name)})</span></div><div class="mini"><b>Running</b><span class="small muted">${S.settings.phase >= 4 ? RUN[runStage()].l + ': ' + esc(RUN[runStage()].d) : 'Not started (from Phase 4)'}</span></div><div class="mini"><b>Drop landings</b><span class="small muted">${S.settings.phase >= 3 ? DROP[dropStage()].l : 'Not started (from Phase 3)'}</span></div><div class="mini"><b>Confidence</b><span class="small muted">${r.conf ? r.conf.score + '% on ' + fmtShort(r.conf.date) : 'Not checked yet'}</span></div></div>
+  </section>
+  <section class="card"><div><div class="eyebrow">Pain 0–10, average / highest</div><h2>Week by week</h2></div>
+    ${any ? `<div class="table-wrap"><table><thead><tr><th>Week</th><th class="num">Left</th><th class="num">Right</th><th class="num">Swelling days L / R</th><th class="num">Sessions</th></tr></thead><tbody>
+      ${r.rows.map(w => `<tr><td class="num">${fmtShort(w.ws)}</td><td class="num">${w.avgL} / ${w.maxL}</td><td class="num">${w.avgR} / ${w.maxR}</td><td class="num">${w.swellL} / ${w.swellR}</td><td class="num">${w.sessions}/${w.planned}</td></tr>`).join('')}
+    </tbody></table></div>` : '<div class="empty">No check-ins in this period yet. The report fills in as you log daily check-ins.</div>'}
+  </section>
+  <div class="grid-2">
+    <section class="card"><div><div class="eyebrow">Locking, giving way, swelling, straightening</div><h2>Red-flag days</h2></div>
+      ${r.events.length ? `<ul class="bul">${r.events.map(e => `<li><b>${fmtShort(e.date)}:</b> ${esc(e.reasons.join(', '))}</li>`).join('')}</ul>` : '<p class="muted">None in this period.</p>'}
+      ${r.breaks.length ? `<p class="small muted">Breaks: ${r.breaks.map(b => `${fmtShort(b.start)}–${b.end ? fmtShort(b.end) : 'ongoing'} (${esc(BREAK_REASONS[b.reason] || b.reason)})`).join(' · ')}</p>` : ''}
+    </section>
+    <section class="card"><div><div class="eyebrow">First → latest in period</div><h2>Strength and tests</h2></div>
+      ${r.loads.length ? `<ul class="bul">${r.loads.map(l => `<li>${esc(EX[l.id].name)}: <span class="num">${l.first} → ${l.last} kg</span></li>`).join('')}</ul>` : '<p class="muted small">No weights logged yet.</p>'}
+      ${r.tests.length ? (() => { const a = r.tests[0], b = r.tests[r.tests.length - 1]; return `<ul class="bul small">${TESTS.filter(x => a.v[x.k] || b.v[x.k]).map(x => `<li>${esc(x.name)}: <span class="num">${esc(testStr(x, a.v[x.k]))}${a !== b ? ' → ' + esc(testStr(x, b.v[x.k])) : ''}</span></li>`).join('')}</ul>`; })() : '<p class="muted small">No test results yet.</p>'}
+      ${Object.keys(r.flags).length ? `<p class="small"><b>Bothered a knee:</b> ${Object.entries(r.flags).map(([id, n]) => `${esc(EX[id].name)} (${n})`).join(', ')}</p>` : ''}
+    </section>
+  </div>
+  ${r.notes.length ? `<section class="card"><div><div class="eyebrow">From your check-ins</div><h2>Notes</h2></div><ul class="bul small">${r.notes.map(o => `<li><b>${fmtShort(o.x)}:</b> ${esc(o.n)}</li>`).join('')}</ul></section>` : ''}
+  <section class="card"><div><div class="eyebrow">Take these with you</div><h2>Questions to ask</h2></div>
+    <ol class="bul">${DOCTOR_QS.map(q => `<li>${esc(q)}</li>`).join('')}</ol>
+    <label class="field-label" for="docQs">Your own questions, one per line</label>
+    <textarea id="docQs" data-docqs="1" rows="3" placeholder="e.g. Can I play football again by March?">${esc(S.settings.docQs || '')}</textarea>
+  </section>`;
+}
+
+/* ---------- Calendar export (.ics) ---------- */
+function icsText() {
+  const P = PHASES[S.settings.phase - 1], sched = P.schedule || SCHEDULE;
+  const [hh, mm] = (S.settings.remindTime || '19:00').split(':').map(Number);
+  const codes = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+  const groups = { strength: [], cond: [], recovery: [] };
+  for (let wd = 0; wd < 7; wd++) groups[sched[wd]].push(wd);
+  const names = { strength: 'Knee rehab: strength', cond: `Knee rehab: ${condLabel(P.n).toLowerCase()}`, recovery: 'Knee rehab: recovery & mobility' };
+  const dur = { strength: 'PT60M', cond: 'PT45M', recovery: 'PT20M' };
+  const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z');
+  const link = /^https?:/.test(location.href) ? location.href.split('#')[0] : '';
+  const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Knee Comeback//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Knee rehab'];
+  Object.entries(groups).forEach(([type, wds]) => {
+    if (!wds.length || (type === 'recovery' && !S.settings.remindSun)) return;
+    let first = today(); for (let k = 0; k < 7; k++) { const x = addDays(today(), k); if (wds.includes(parse(x).getDay())) { first = x; break; } }
+    const ds = first.replace(/-/g, '') + 'T' + pad(hh) + pad(mm) + '00';
+    L.push('BEGIN:VEVENT', `UID:knee-comeback-${type}-${Date.now()}@knee-comeback`, `DTSTAMP:${stamp}`, `DTSTART:${ds}`, `DURATION:${dur[type]}`,
+      `RRULE:FREQ=WEEKLY;BYDAY=${wds.map(w => codes[w]).join(',')}`, `SUMMARY:${names[type]}`,
+      `DESCRIPTION:Open Knee Comeback\\, do your check-in and start the guided session.${link ? '\\n' + link : ''}`, ...(link ? [`URL:${link}`] : []),
+      'BEGIN:VALARM', 'ACTION:DISPLAY', `DESCRIPTION:${names[type]}`, 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT');
+  });
+  L.push('END:VCALENDAR');
+  return L.join('\r\n') + '\r\n';
+}
+function downloadFile(name, text, type) {
+  const u = URL.createObjectURL(new Blob([text], { type }));
+  const a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(u), 5000);
+}
+
 /* ---------- Toast ---------- */
 let toastT;
 function toast(m) { const t = $('#toast'); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2600); }
@@ -1708,18 +2182,18 @@ function toast(m) { const t = $('#toast'); t.textContent = m; t.hidden = false; 
 function render() {
   renderNav(); renderRail(); renderTimer();
   const y = window.scrollY;
-  const v = { today: viewToday, plan: viewPlan, library: viewLibrary, progress: viewProgress, settings: viewSettings }[ui.view] || viewToday;
+  const v = { today: viewToday, plan: viewPlan, library: viewLibrary, progress: viewProgress, settings: viewSettings, report: viewReport }[ui.view] || viewToday;
   $('#view').innerHTML = v();
   window.scrollTo(0, y);
 }
-function go(view) { ui.view = view; ui.resetArm = false; saveUi(); window.scrollTo(0, 0); render(); }
+function go(view) { if (guide.open) closeGuide(); ui.view = view; ui.resetArm = false; ui.repText = null; saveUi(); window.scrollTo(0, 0); render(); }
 
 /* ---------- Events ---------- */
 document.addEventListener('click', async ev => {
   const a = ev.target.closest('[data-act]'); if (!a || a.disabled) return;
   const act = a.dataset.act, date = ui.date;
   switch (act) {
-    case 'nav': go(a.dataset.view); break;
+    case 'nav': { go(a.dataset.view); const an = a.dataset.anchor; if (an) setTimeout(() => { const el = document.getElementById(an); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60); break; }
     case 'day': { const n = +a.dataset.d; ui.date = n === 0 ? today() : addDays(ui.date, n); render(); break; }
     case 'goto': ui.date = a.dataset.date; go('today'); break;
     case 'set': {
@@ -1752,7 +2226,7 @@ document.addEventListener('click', async ev => {
     case 'lib-phase': ui.libPhase = a.dataset.v; render(); break;
     case 'lib-cat': ui.libCat = a.dataset.v; render(); break;
     case 'plan-phase': ui.planPhase = +a.dataset.p; render(); break;
-    case 'advance': if (S.settings.phase < 5) { setSettings({ phase: S.settings.phase + 1 }); render(); toast(`Welcome to Phase ${S.settings.phase}: ${PHASES[S.settings.phase - 1].name}`); } break;
+    case 'advance': if (S.settings.phase < PHASES.length && !PHASES[S.settings.phase - 1].habits) { setSettings({ phase: S.settings.phase + 1 }); render(); toast(`Welcome to Phase ${S.settings.phase}: ${PHASES[S.settings.phase - 1].name}`); } break;
     case 'run': setSettings({ runStage: Math.max(0, Math.min(RUN.length - 1, S.settings.runStage + +a.dataset.d)) }); render(); break;
     case 'save-test': {
       const v = {}; let any = false;
@@ -1768,6 +2242,7 @@ document.addEventListener('click', async ev => {
     }
     case 'del-test': { const tests = S.settings.tests.filter((e, i) => i !== +a.dataset.i); setSettings({ tests }); render(); break; }
     case 'export': {
+      setSettings({ lastExport: today() });
       const data = JSON.stringify({ app: 'knee-comeback', version: 1, exportedAt: new Date().toISOString(), settings: S.settings, days: S.days }, null, 2);
       let dl = null; try { dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null; } catch (e) {}
       if (dl) { try { await dl.save({ filename: `knee-comeback-${today()}.json`, data }); toast('Backup saved'); } catch (e) { if (e && e.code !== 'declined') { ui.json = data; render(); } } }
@@ -1775,6 +2250,47 @@ document.addEventListener('click', async ev => {
       break;
     }
     case 'copy-json': { const ta = $('#jsonOut'); try { await navigator.clipboard.writeText(ta.value); toast('Copied'); } catch (e) { ta.select(); toast('Selected. Use Copy from the menu'); } break; }
+    case 'guide-start': openGuide(); break;
+    case 'guide-close': closeGuide(); break;
+    case 'g-done': guideDone(); break;
+    case 'g-prev': guide.idx = Math.max(0, guide.idx - 1); guide.finished = false; renderGuide(); break;
+    case 'g-skip': guideAdvance(); renderGuide(); break;
+    case 'g-hold': startTimer(+a.dataset.s, 'Hold'); renderGuide(); break;
+    case 'g-rpe': setDay(guide.date, { rpe: +a.dataset.v }); renderGuide(); toast('Effort saved'); break;
+    case 'express': setDay(date, { express: !getDay(date).express }); render(); break;
+    case 'deload': { const w = weekOf(date); setSettings({ deload: { ...S.settings.deload, [w]: a.dataset.v === '1' } }); render(); toast(a.dataset.v === '1' ? `Week ${w} is now a lighter week` : 'Back to normal training this week'); break; }
+    case 'pause': {
+      const sel = $('#breakReason'), reason = sel ? sel.value : 'other';
+      setSettings({ breaks: [...S.settings.breaks.filter(b => b.end), { start: today(), end: null, reason }] });
+      render(); toast('Plan paused. Look after yourself.'); break;
+    }
+    case 'resume': {
+      const br = activeBreak(); if (!br) break;
+      const days = diff(br.start, today());
+      const breaks = S.settings.breaks.map(b => b === br ? { ...b, end: today() } : b);
+      if (days < 1) { setSettings({ breaks: S.settings.breaks.filter(b => b !== br) }); render(); toast('Pause cancelled'); break; }
+      setSettings({ breaks, lastResume: { date: today(), days, reason: br.reason } });
+      if (days >= 7 && br.reason !== 'surgery') setSettings({ deload: { ...S.settings.deload, [weekOf(today())]: true } });
+      render(); toast(`Welcome back after ${days} day${days > 1 ? 's' : ''}`); break;
+    }
+    case 'phase-back': if (S.settings.phase > 1) { setSettings({ phase: S.settings.phase - 1, lastResume: { ...S.settings.lastResume, days: 0 } }); render(); toast(`Back to Phase ${S.settings.phase} for a week`); } break;
+    case 'conf-save': {
+      const v = {}; CONF.forEach(q => { const el = $('#cf-' + q.k); v[q.k] = el ? +el.value : 5; });
+      setSettings({ confidence: [...S.settings.confidence.filter(c => c.date !== today()), { date: today(), v }] });
+      render(); toast('Confidence check saved'); break;
+    }
+    case 'rep-weeks': ui.repWeeks = +a.dataset.v; ui.repText = null; render(); break;
+    case 'rep-share': case 'rep-copy': {
+      const text = reportText(ui.repWeeks);
+      if (act === 'rep-share' && OFFLINE && navigator.share) { try { await navigator.share({ title: 'Knee rehab summary', text }); break; } catch (e) { if (e && e.name === 'AbortError') break; } }
+      try { await navigator.clipboard.writeText(text); toast('Report copied. Paste it into WhatsApp, Notes or email.'); }
+      catch (e) { ui.repText = text; render(); setTimeout(() => { const t = $('#repOut'); if (t) { t.focus(); t.select(); } }, 50); toast('Select the text below and copy it'); }
+      break;
+    }
+    case 'ics': {
+      try { downloadFile('knee-rehab-schedule.ics', icsText(), 'text/calendar'); toast('Calendar file created'); } catch (e) { toast('Couldn\u2019t create the calendar file here'); }
+      break;
+    }
     case 'reset-arm': ui.resetArm = true; render(); break;
     case 'reset-cancel': ui.resetArm = false; render(); break;
     case 'reset-go': {
@@ -1793,6 +2309,8 @@ document.addEventListener('input', ev => {
     const pv = $('#pv' + side); if (pv) pv.innerHTML = `${v}<small>/10</small>`;
     const vd = verdict(getDay(ui.date)), box = $('#verdict');
     if (box) { box.className = 'verdict ' + vd.c; box.innerHTML = `<span class="light"></span><div><b>${vd.t}</b><span class="small">${vd.m}</span></div>`; }
+  } else if (el.dataset.conf) {
+    const o = $('#cfv-' + el.dataset.conf); if (o) o.textContent = el.value;
   } else if (el.dataset.rpe) {
     setDay(ui.date, { rpe: +el.value }); const r = $('#rpeV'); if (r) r.textContent = el.value + '/10';
   } else if (el.id === 'libQ') {
@@ -1802,6 +2320,9 @@ document.addEventListener('input', ev => {
 document.addEventListener('change', ev => {
   const el = ev.target;
   if (el.dataset.notes) setDay(ui.date, { notes: el.value.slice(0, 2000) });
+  else if (el.dataset.docqs) setSettings({ docQs: el.value.slice(0, 2000) });
+  else if (el.id === 'remTime' && el.value) setSettings({ remindTime: el.value });
+  else if (el.id === 'remSun') setSettings({ remindSun: el.checked });
   else if (el.dataset.kg) {
     const load = { ...(getDay(ui.date).load || {}) }, v = parseFloat(el.value);
     if (el.value === '' || isNaN(v)) delete load[el.dataset.kg]; else load[el.dataset.kg] = Math.max(0, Math.min(500, v));
@@ -1825,7 +2346,7 @@ document.addEventListener('change', ev => {
     rd.readAsText(f);
   }
 });
-document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && !$('#sheet').hidden) closeSheet(); });
+document.addEventListener('keydown', ev => { if (ev.key !== 'Escape') return; if (!$('#sheet').hidden) closeSheet(); else if (guide.open) closeGuide(); });
 document.addEventListener('visibilitychange', async () => {
   if (document.visibilityState === 'visible') {
     if (tm.end && !tm.lock) { try { tm.lock = await navigator.wakeLock.request('screen'); } catch (e) {} }
