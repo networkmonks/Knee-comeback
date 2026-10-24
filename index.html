@@ -373,6 +373,28 @@ td.num, th.num { text-align: right; }
 .tag.core { background: var(--warn-soft); color: var(--warn); }
 .tag.cardio { background: var(--violet-soft); color: var(--violet); }
 .ex-row.done .tag.warm, .ex-row.done .tag.mob { background: transparent; }
+
+/* Plan editing */
+.btn svg { width: 18px; height: 18px; flex: none; }
+.opt-grid { display: grid; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.opt { border: 2px solid var(--line); background: var(--surface); border-radius: 14px; padding: 12px; text-align: left; display: grid; gap: 2px; align-content: start; min-width: 0; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt .chip { justify-self: start; margin-top: 4px; }
+.linkish { border: 0; background: none; padding: 0; color: var(--left); font-weight: 600; text-decoration: underline; font-size: inherit; }
+.ed-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.ed-row { display: grid; grid-template-columns: 1.8em minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); }
+.ed-row.skipped { opacity: .55; }
+.ed-row.skipped b { text-decoration: line-through; }
+.ed-main { display: grid; gap: 2px; min-width: 0; justify-items: start; }
+.ed-acts { display: flex; gap: 6px; align-items: center; }
+.icon-btn.sm { width: 36px; height: 36px; border-radius: 10px; }
+.icon-btn.sm svg { width: 18px; height: 18px; }
+.icon-btn:disabled { opacity: .35; }
+.add-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.add-row select:first-child { flex: 1 1 220px; min-width: 0; }
+.week-grid { display: grid; gap: 8px 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+.week-row { display: grid; grid-template-columns: 7em minmax(0, 1fr); gap: 10px; align-items: center; font-weight: 600; }
+@media (max-width: 480px) { .ed-row { grid-template-columns: 1.6em minmax(0, 1fr); } .ed-acts { grid-column: 2; } .opt-grid { grid-template-columns: 1fr; } }
 </style>
 </head><body>
 <div class="shell">
@@ -1159,7 +1181,7 @@ const DROP = [
   { l: '90 cm', d: '3 ft, only after clearance', min: 5 }
 ];
 
-const SESSION_NAMES = { strength: 'Strength', cond: 'Balance & conditioning', recovery: 'Recovery & mobility' };
+const SESSION_NAMES = { strength: 'Strength', cond: 'Balance & conditioning', recovery: 'Recovery & mobility', rest: 'Rest' };
 const SESSION_NAMES_P4 = { cond: 'Running & balance' };
 const SESSION_NAMES_P6 = { cond: 'Sport or ride' };
 
@@ -1204,6 +1226,9 @@ const IC = {
   right: sv('<path d="M9 5l7 7-7 7"/>', 2.2),
   close: sv('<path d="M6 6l12 12M18 6 6 18"/>', 2.2),
   timer: sv('<circle cx="12" cy="13.5" r="7"/><path d="M12 10v3.5l2 2M10 3h4"/>', 2),
+  edit: sv('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>', 2),
+  up: sv('<path d="M6 15l6-6 6 6"/>', 2.2),
+  down: sv('<path d="M6 9l6 6 6-6"/>', 2.2),
   Strength: sv('<path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/>', 2.2),
   Mobility: sv('<path d="M3 12c3-6 6 6 9 0s6 6 9 0"/>'),
   Balance: sv('<circle cx="12" cy="7.5" r="3.5"/><path d="M12 11v8M4 19h16"/>'),
@@ -1336,10 +1361,13 @@ const phaseOfWeek = w => (PHASES.find(p => w >= p.range[0] && w <= p.range[1]) |
 const phaseFor = date => (date < today() && S.days[date] && S.days[date].phase) ? S.days[date].phase : S.settings.phase;
 const inBreak = date => (S.settings.breaks || []).some(b => date >= b.start && (!b.end || date < b.end));
 const activeBreak = () => (S.settings.breaks || []).find(b => !b.end) || null;
+const schedGroup = ph => ph >= 6 ? 'maint' : 'main';
+const defaultSched = ph => PHASES[ph - 1].schedule || SCHEDULE;
+function schedFor(ph) { const c = (S.settings.week || {})[schedGroup(ph)]; return c ? { ...defaultSched(ph), ...c } : defaultSched(ph); }
+const isTraining = ty => ty === 'strength' || ty === 'cond';
 function plannedType(date) {
   if (inBreak(date)) return 'recovery';
-  const P = PHASES[phaseFor(date) - 1];
-  return (P.schedule || SCHEDULE)[parse(date).getDay()];
+  return schedFor(phaseFor(date))[parse(date).getDay()];
 }
 function typeFor(date) {
   if (inBreak(date)) return 'recovery';
@@ -1381,7 +1409,7 @@ const LIGHT_CATS = new Set(['Strength', 'Plyometric', 'Agility', 'Balance', 'Cor
 function variantFor(date) {
   const P = PHASES[phaseFor(date) - 1]; if (!P.strengthB) return 'A';
   const d = getDay(date); if (d.variant) return d.variant;
-  const sched = P.schedule || SCHEDULE, mon = mondayOf(date); let k = 0;
+  const sched = schedFor(phaseFor(date)), mon = mondayOf(date); let k = 0;
   for (let i = 0; i < 7; i++) { const x = addDays(mon, i); if (x >= date) break; if (sched[parse(x).getDay()] === 'strength') k++; }
   return (k + weekOf(date)) % 2 ? 'A' : 'B';
 }
@@ -1392,6 +1420,7 @@ function blocksFor(date) {
     if (light && sets > 1 && LIGHT_CATS.has(EX[a[0]].cat)) sets = Math.max(1, Math.ceil(sets * 0.6));
     return { id: a[0], sets, dose: doseOf(a), contacts: a[3] || 0 };
   };
+  if (type === 'rest') return [];
   if (type === 'recovery') {
     const mob = P.mobility.some(a => a[0] === 'heel-slide') ? P.mobility : [['heel-slide', 2, '10 reps'], ...P.mobility];
     return [{ t: 'Easy movement', items: [it(['cardio', 1, '20–30 min easy walk, optional'])] }, { t: 'Mobility', items: mob.map(it) }];
@@ -1427,15 +1456,34 @@ function itemMinutes(i) {
   const per = (isUni(dose) || /each way/.test(dose)) ? 2 : 1;
   return (i.sets * work * per + Math.max(0, i.sets - 1) * (restFor(i.id) || 15) + 30) / 60;
 }
-const sessionMinutes = blocks => Math.max(5, Math.round(blocks.reduce((s, b) => s + b.items.reduce((t, i) => t + itemMinutes(i), 0), 0) / 5) * 5);
-const sessionLandings = blocks => blocks.reduce((s, b) => s + b.items.reduce((t, i) => t + i.sets * (i.contacts || 0), 0), 0);
+/* The day's list: the plan's session plus this day's edits (removed, added, reordered) */
+function defaultDose(id, ph) {
+  const lists = p => [...p.warmup, ...p.power, ...p.strength, ...(p.strengthB || []), ...p.cond, ...p.mobility];
+  const near = [PHASES[ph - 1], ...PHASES.filter(p => p.n !== ph)];
+  for (const p of near) { const a = lists(p).find(x => x[0] === id); if (a) return [id, Math.min(a[1], 3), a[2], a[3]]; }
+  const cat = EX[id].cat;
+  return [id, cat === 'Cardio' || cat === 'Running' ? 1 : 3, ({ Strength: '10 reps', Balance: '30 s / leg', Mobility: '30 s', Cardio: '10 min', Core: '10 reps', Plyometric: '5 reps', Agility: '3 / side', Running: '20 min' })[cat] || '10 reps'];
+}
+function itemsFor(date, all = false) {
+  const d = getDay(date), skip = d.skip || {};
+  let items = blocksFor(date).flatMap(b => b.items.map(i => ({ ...i, block: b.t })));
+  (d.extra || []).forEach(a => { if (EX[a[0]] && !items.some(i => i.id === a[0])) items.push({ id: a[0], sets: a[1], dose: doseOf(a), contacts: a[3] || 0, block: 'Added', added: true }); });
+  if (Array.isArray(d.order) && d.order.length) {
+    const pos = id => { const k = d.order.indexOf(id); return k < 0 ? 1e6 : k; };
+    items = items.map((x, k) => ({ x, k })).sort((a, b) => (pos(a.x.id) - pos(b.x.id)) || (a.k - b.k)).map(o => o.x);
+  }
+  return all ? items.map(i => ({ ...i, skipped: !!skip[i.id] })) : items.filter(i => !skip[i.id]);
+}
+const dayEdited = d => !!((d.skip && Object.keys(d.skip).length) || (d.extra && d.extra.length) || (d.order && d.order.length));
+const sessionMinutes = items => items.length ? Math.max(5, Math.round(items.reduce((t, i) => t + itemMinutes(i), 0) / 5) * 5) : 0;
+const sessionLandings = items => items.reduce((t, i) => t + i.sets * (i.contacts || 0), 0);
 function dayPct(date) {
   const d = getDay(date); const done = d.done || {}; let tot = 0, got = 0;
-  blocksFor(date).forEach(b => b.items.forEach(i => { tot += i.sets; got += Math.min(done[i.id] || 0, i.sets); }));
+  itemsFor(date).forEach(i => { tot += i.sets; got += Math.min(done[i.id] || 0, i.sets); });
   return tot ? got / tot : 0;
 }
 function setsOn(date, id) {
-  for (const b of blocksFor(date)) for (const i of b.items) if (i.id === id) return i.sets;
+  for (const i of itemsFor(date)) if (i.id === id) return i.sets;
   const P = PHASES[phaseFor(date) - 1], a = [...P.power, ...P.strength, ...(P.strengthB || []), ...P.cond].find(x => x[0] === id);
   return a ? (isDeload(date) && a[1] > 1 ? Math.max(1, Math.ceil(a[1] * 0.6)) : a[1]) : 0;
 }
@@ -1464,9 +1512,9 @@ function stats() {
   let streak = 0, d = getDay(t).checkedIn ? t : addDays(t, -1);
   while (getDay(d).checkedIn) { streak++; d = addDays(d, -1); }
   const mon = mondayOf(t); let wk = 0, wkTarget = 0;
-  for (let i = 0; i < 7; i++) { const x = addDays(mon, i); const ty = typeFor(x); if (ty !== 'recovery') wkTarget++; if (x > t) continue; if (ty !== 'recovery' && dayPct(x) >= 0.5) wk++; }
+  for (let i = 0; i < 7; i++) { const x = addDays(mon, i); const ty = typeFor(x); if (isTraining(ty)) wkTarget++; if (x > t) continue; if (isTraining(ty) && dayPct(x) >= 0.5) wk++; }
   let sched = 0, hit = 0;
-  for (let i = 0; i < 28; i++) { const x = addDays(t, -i); if (x < startDate()) break; if (inBreak(x) || typeFor(x) === 'recovery') continue; if (x === t && dayPct(x) < 0.5) continue; sched++; if (dayPct(x) >= 0.5) hit++; }
+  for (let i = 0; i < 28; i++) { const x = addDays(t, -i); if (x < startDate()) break; if (inBreak(x) || !isTraining(typeFor(x))) continue; if (x === t && dayPct(x) < 0.5) continue; sched++; if (dayPct(x) >= 0.5) hit++; }
   const pl = [], pr = [];
   for (let i = 0; i < 7; i++) { const x = getDay(addDays(t, -i)); if (x.checkedIn) { pl.push(x.painL || 0); pr.push(x.painR || 0); } }
   const avg = a => a.length ? (a.reduce((s, v) => s + v, 0) / a.length) : null;
@@ -1523,7 +1571,7 @@ function coach(date) {
     for (let i = 1; i <= 3; i++) { const x = addDays(t, -i); if (x < startDate() || inBreak(x)) continue; if (typeFor(x) === 'strength') { if (dayPct(x) >= 0.5) recent = true; else missed = true; } }
     if (missed && !recent) out.push({ tone: 'info', title: 'You missed a strength session', text: 'Strength is the most important part of the plan. Do it today instead, and keep at least one day between strength sessions.', actions: [{ act: 'type', type: 'strength', label: 'Do strength today' }] });
   }
-  blocksFor(t).forEach(b => b.items.forEach(i => { if (LOADED.has(i.id)) { const r = readyToAdd(i.id, t); if (r) out.push({ tone: 'good', title: `${EX[i.id].name}: add weight`, text: `Every set done at an effort of 7/10 or less, twice in a row, with no flare-up. Try ${r.to} kg today (last time ${r.from} kg).`, actions: [] }); } }));
+  itemsFor(t).forEach(i => { { if (LOADED.has(i.id)) { const r = readyToAdd(i.id, t); if (r) out.push({ tone: 'good', title: `${EX[i.id].name}: add weight`, text: `Every set done at an effort of 7/10 or less, twice in a row, with no flare-up. Try ${r.to} kg today (last time ${r.from} kg).`, actions: [] }); } } });
   const P = PHASES[S.settings.phase - 1];
   if (!P.habits && w > P.range[1]) out.push({ tone: 'warn', title: `Week ${w}: check the Phase ${P.n} criteria`, text: 'Move up only when every criterion is met. Staying longer is fine.', actions: [{ act: 'nav', view: 'progress', label: 'Open criteria' }] });
   const cf = S.settings.confidence || [], lastC = cf.length ? cf[cf.length - 1].date : null;
@@ -1562,19 +1610,19 @@ function coachCard(items) {
 function viewToday() {
   const date = ui.date, t = today(), future = date > t;
   const d = getDay(date), ph = phaseFor(date), P = PHASES[ph - 1], type = typeFor(date), w = weekOf(date);
-  const blocks = blocksFor(date), pct = dayPct(date), v = verdict(d), st = stats();
-  const nItems = blocks.reduce((s, b) => s + b.items.length, 0);
-  const mins = sessionMinutes(blocks), lands = sessionLandings(blocks), light = isDeload(date);
+  const items = itemsFor(date), pct = dayPct(date), v = verdict(d), st = stats();
+  const nItems = items.length;
+  const mins = sessionMinutes(items), lands = sessionLandings(items), light = isDeload(date);
   const br = activeBreak(), paused = br && date >= br.start;
-  const hasUni = blocks.some(b => b.items.some(i => isUni(i.dose) && EX[i.id].cat !== 'Mobility'));
+  const hasUni = items.some(i => isUni(i.dose) && EX[i.id].cat !== 'Mobility');
   const tips = future ? [] : coach(date);
   const pausedNote = paused ? `<div class="notice warn"><b>Plan paused since ${fmtShort(br.start)} (${esc(BREAK_REASONS[br.reason] || br.reason)})</b><span class="small">Sessions are switched to recovery. Gentle mobility and walking are still good if they feel fine.</span><div><button class="btn sm" data-act="resume">Resume the plan</button></div></div>` : '';
   const redNote = (d.checkedIn && v.c === 'red' && type !== 'recovery')
     ? `<div class="notice bad"><b>Your check-in says: recovery day</b><span class="small">Switch today to the recovery session.</span><div><button class="btn sm" data-act="type" data-type="recovery">Switch to recovery</button></div></div>` : '';
 
   let n = 0;
-  const rows = `<ol class="ex-list ordered">${blocks.map(b => b.items.map(i => {
-      n++; const [tag, tagCls] = tagFor(b.t, i.id);
+  const rows = !items.length ? `<div class="empty"><b>Rest day.</b><br>Nothing planned. A gentle walk is fine if you feel like it.</div>` : `<ol class="ex-list ordered">${items.map(i => {
+      n++; const [tag, tagCls] = tagFor(i.block, i.id);
       const done = Math.min((d.done || {})[i.id] || 0, i.sets), full = done >= i.sets;
       const dots = Array.from({ length: i.sets }, (_, k) => `<button class="set ${k < done ? 'on' : ''}" data-act="set" data-ex="${i.id}" data-i="${k}" data-sets="${i.sets}" ${future ? 'disabled' : ''} aria-label="${esc(EX[i.id].name)} set ${k + 1}${k < done ? ', done' : ''}">${i.sets === 1 ? '✓' : k + 1}</button>`).join('');
       const flagged = (d.flags || {})[i.id];
@@ -1586,9 +1634,10 @@ function viewToday() {
       if (i.contacts) meta += `<span class="small muted">${i.sets * i.contacts} landings</span>`;
       if (flagged) meta += `<span class="chip warn">Bothered your knee: use the easier version</span>`;
       return `<li class="ex-row ${full ? 'done' : ''}"><div class="ex-main"><button class="ex-open" data-act="open-ex" data-ex="${i.id}" data-dose="${esc(i.dose)}" data-ctx="today"><span class="tagline"><span class="ex-n">${n}</span><span class="tag ${tagCls}">${tag}</span></span><span class="t">${esc(EX[i.id].name)}</span><span class="d">${esc(i.sets > 1 ? i.sets + ' sets · ' : '')}${esc(i.dose)}</span></button>${meta ? `<div class="ex-meta">${meta}</div>` : ''}</div><div class="sets">${dots}</div></li>`;
-    }).join('')).join('')}</ol>`;
-  const planned = plannedType(date);
-  const changedNote = (!paused && d.type && d.type !== planned) ? `<div class="notice"><b>Changed to a ${esc(sessionName(type, ph).toLowerCase())} day</b><span class="small">The plan had ${esc(sessionName(planned, ph).toLowerCase())} for today.</span><div><button class="btn sm ghost" data-act="type-reset">Back to the planned session</button></div></div>` : '';
+    }).join('')}</ol>`;
+  const planned = plannedType(date), typeChanged = !paused && d.type && d.type !== planned;
+  const edits = [typeChanged ? `session changed from ${sessionName(planned, ph).toLowerCase()}` : '', Object.keys(d.skip || {}).length ? `${Object.keys(d.skip).length} removed` : '', (d.extra || []).length ? `${d.extra.length} added` : '', (d.order || []).length ? 'order changed' : ''].filter(Boolean);
+  const changedNote = (!paused && edits.length) ? `<div class="notice"><b>You changed this day</b><span class="small">${esc(edits.join(', ').replace(/^./, c => c.toUpperCase()))}.</span><div class="row" style="justify-content:flex-start"><button class="btn sm ghost" data-act="day-edit">Edit again</button><button class="btn sm ghost" data-act="day-reset">Reset to the plan</button></div></div>` : '';
 
   const kneePanel = (side, label) => {
     const p = d['pain' + side] || 0, sw = d['swell' + side] || 'none';
@@ -1613,11 +1662,11 @@ function viewToday() {
       <div class="card-head nowrap"><div><div class="eyebrow">${future ? 'Coming up' : 'Session'} · ${meta}</div><h2 id="sessT">${esc(sessionName(type, ph))} day${type === 'strength' && P.strengthB ? ` · workout ${variantFor(date)}` : ''}</h2><p class="small muted">${nItems} exercises, done in this order from top to bottom. Tap a name for how to do it, and tap the boxes as you finish each set.${hasUni ? ' Single-leg work: left leg first, then the same reps on the right.' : ''}</p></div>${ring(pct, Math.round(pct * 100) + '%')}</div>
       ${changedNote}
       ${redNote}
-      ${paused || type === 'recovery' ? '' : `<div><button class="filter" data-act="express" aria-pressed="${!!d.express}" ${future ? 'disabled' : ''}>${d.express ? 'Express on: key exercises only' : 'Short on time? Switch to Express'}</button></div>`}
-      ${future ? '' : `<button class="btn" data-act="guide-start">${pct > 0 && pct < 1 ? 'Continue guided session' : 'Start guided session'}</button>`}
+      ${paused ? '' : `<div class="row" style="justify-content:flex-start"><button class="btn ghost sm" data-act="day-edit">${IC.edit}<span>Edit this day</span></button>${isTraining(type) ? `<button class="filter" data-act="express" aria-pressed="${!!d.express}" ${future ? 'disabled' : ''}>${d.express ? 'Express on: key exercises only' : 'Short on time? Switch to Express'}</button>` : ''}</div>`}
+      ${future || !items.length ? '' : `<button class="btn" data-act="guide-start">${pct > 0 && pct < 1 ? 'Continue guided session' : 'Start guided session'}</button>`}
       <div class="progress-bar"><span style="width:${Math.round(pct * 100)}%"></span></div>
       ${rows}
-      ${future ? '' : `<div class="row"><button class="btn ghost sm" data-act="all-done">Mark everything done</button><button class="btn ghost sm" data-act="clear-done">Clear ticks</button></div>`}
+      ${future || !items.length ? '' : `<div class="row"><button class="btn ghost sm" data-act="all-done">Mark everything done</button><button class="btn ghost sm" data-act="clear-done">Clear ticks</button></div>`}
     </section>
     </div>
     <div style="display:grid;gap:20px;min-width:0">
@@ -1688,7 +1737,8 @@ function viewPlan() {
     <div class="mini"><b>${P.habits ? 'Habits that keep your knees strong' : 'Move to the next phase when you can tick all of these'}</b><ul class="bul small">${P.criteria.map(c => `<li>${esc(c)}</li>`).join('')}</ul></div>
   </section>
   <section class="card">
-    <div><div class="eyebrow">Every week</div><h2>Weekly rhythm</h2></div>
+    <div class="card-head"><div><div class="eyebrow">Every week</div><h2>Weekly rhythm</h2></div><button class="btn ghost sm" data-act="nav" data-view="settings" data-anchor="week">Change my week</button></div>
+    ${(S.settings.week || {})[schedGroup(S.settings.phase)] ? `<div class="notice"><b>Your schedule</b><span class="small">${[1, 2, 3, 4, 5, 6, 0].map(k => `${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][k]}: ${esc(typeLabel(schedFor(S.settings.phase)[k], S.settings.phase).replace(' day', ''))}`).join(' · ')}</span></div>` : ''}
     <div class="table-wrap"><table><thead><tr><th>Day</th><th>Session</th><th>What it does</th></tr></thead><tbody>
       <tr><td>Mon</td><td><b>Strength</b></td><td>Builds muscle around the knee. From Phase 3 it starts with a short jump and landing block while your legs are fresh.</td></tr>
       <tr><td>Tue</td><td><b>Balance & conditioning</b></td><td>Knee reflexes, core and cardio. From Phase 4 this is your running day.</td></tr>
@@ -1705,7 +1755,7 @@ function viewPlan() {
       <div class="mini"><b>Jumps and running</b><span class="small muted">Jumps happen on strength days and runs on the days in between, so impact is spread out and you never run two days in a row.</span></div>
       <div class="mini"><b>Phase 6 (week 17+)</b><span class="small muted">Strength Mon and Thu, sport or riding Tue and Sat, rest the other days. This is how you keep the knees strong.</span></div>
     </div>
-    <p class="small muted">Today always shows the planned session for the day, in order, with a tag on each exercise. If a check-in says rest or you missed a strength day, Today offers a one-tap switch. Pause the plan in Settings for travel, illness or a flare-up.</p>
+    <p class="small muted">Today always shows the planned session for the day, in order, with a tag on each exercise. Tap "Edit this day" to change one day, or "Change my week" to move sessions to different weekdays. Pause the plan in Settings for travel, illness or a flare-up.</p>
   </section>
   <div class="grid-2">
     <section class="card"><div><div class="eyebrow">The 0–10 rule</div><h2>How much pain is OK?</h2></div>
@@ -1816,7 +1866,7 @@ function painChart() {
 function weekBars() {
   const t = today(), W = 400, H = 180, L = 22, R = 6, T = 18, B = 24, n = 8;
   const mon = mondayOf(t), data = [];
-  for (let k = n - 1; k >= 0; k--) { const m = addDays(mon, -7 * k); let c = 0; for (let i = 0; i < 7; i++) { const x = addDays(m, i); if (x > t) break; if (typeFor(x) !== 'recovery' && dayPct(x) >= 0.5) c++; } data.push({ m, c }); }
+  for (let k = n - 1; k >= 0; k--) { const m = addDays(mon, -7 * k); let c = 0; for (let i = 0; i < 7; i++) { const x = addDays(m, i); if (x > t) break; if (isTraining(typeFor(x)) && dayPct(x) >= 0.5) c++; } data.push({ m, c }); }
   const bw = (W - L - R) / n, y = v => T + (6 - v) * (H - T - B) / 6;
   const bars = data.map((d, i) => { const h = y(0) - y(d.c); const x = L + i * bw + bw * 0.2; return `<rect x="${x.toFixed(1)}" y="${y(d.c).toFixed(1)}" width="${(bw * 0.6).toFixed(1)}" height="${Math.max(h, 2).toFixed(1)}" rx="5" fill="${i === n - 1 ? 'var(--accent)' : 'color-mix(in srgb, var(--accent) 45%, var(--surface-2))'}"/><text x="${(x + bw * 0.3).toFixed(1)}" y="${(y(d.c) - 5).toFixed(1)}" text-anchor="middle" fill="var(--ink)" font-size="12" font-family="var(--f-mono)">${d.c}</text><text x="${(x + bw * 0.3).toFixed(1)}" y="${H - 6}" text-anchor="middle">${fmtShort(d.m)}</text>`; }).join('');
   return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Training days completed per week, last 8 weeks"><g class="grid"><line x1="${L}" x2="${W - R}" y1="${y(6)}" y2="${y(6)}" stroke-dasharray="4 4"/><line x1="${L}" x2="${W - R}" y1="${y(0)}" y2="${y(0)}"/></g><g class="axis"><text x="${L - 6}" y="${y(6) + 4}" text-anchor="end">6</text><text x="${L - 6}" y="${y(0) + 4}" text-anchor="end">0</text>${bars}</g></svg></div><p class="small muted">Weeks start Monday. Target: 6 training days (dashed line). A day counts when at least half its sets are ticked.</p>`;
@@ -1914,8 +1964,9 @@ function viewSettings() {
       <div style="display:grid;gap:6px"><label class="field-label" for="phaseSel">Current phase</label><select id="phaseSel">${PHASES.map(p => `<option value="${p.n}" ${p.n === S.settings.phase ? 'selected' : ''}>Phase ${p.n}: ${p.name} (${p.weeks})</option>`).join('')}</select></div>
     </div>
     <p class="small muted">Normally you move phases from Progress once the criteria are met. Use this if your physiotherapist or orthopedist puts you at a different stage.</p>
-    <label class="toggle" for="autoRest"><span><b>Start the rest timer automatically</b><br><span class="small muted">When you tick a set, the timer counts your rest (60 s for strength, 90 s for jumps).</span></span><input type="checkbox" id="autoRest" ${S.settings.autoRest !== false ? 'checked' : ''}></label>
+    <label class="toggle" for="autoRest"><span><b>Start the rest timer automatically</b><br><span class="small muted">When you tick a set, the timer counts your rest (60 s for strength and jumps, 30 s for balance and core).</span></span><input type="checkbox" id="autoRest" ${S.settings.autoRest !== false ? 'checked' : ''}></label>
   </section>
+  ${weekCard()}
   ${pauseCard()}
   ${calendarCard()}
   <section class="card"><h2>Your data</h2>
@@ -1955,6 +2006,72 @@ function calendarCard() {
   </section>`;
 }
 
+/* ---------- Plan editing: one day, or the whole week ---------- */
+const TYPE_INFO = ph => ({
+  strength: ['Strength day', ph >= 3 ? 'Warm-up, a short jump block, then strength work' : 'Warm-up and strength work'],
+  cond: [`${condLabel(ph)} day`, ph >= 6 ? 'Injury-prevention warm-up, then your sport or ride' : ph >= 4 ? 'Warm-up, balance, then running (and agility from Phase 5)' : 'Balance, core and easy cardio'],
+  recovery: ['Recovery day', 'Easy walk and the full mobility routine'],
+  rest: ['Rest day', 'Nothing planned']
+});
+const typeLabel = (ty, ph) => TYPE_INFO(ph)[ty][0];
+function dayWarnings(date) {
+  const out = [], ph = phaseFor(date), ty = typeFor(date), prev = typeFor(addDays(date, -1)), next = typeFor(addDays(date, 1)), d = getDay(date);
+  if (ty === 'strength' && (prev === 'strength' || next === 'strength')) out.push('Strength on back-to-back days. Leave at least one day between strength sessions so muscles and tendons recover.');
+  if (ph >= 4 && ph <= 5 && ty === 'cond' && (prev === 'cond' || next === 'cond')) out.push('Running two days in a row. In Phases 4–5, run every other day.');
+  if (d.checkedIn && verdict(d).c === 'red' && isTraining(ty)) out.push('Your check-in says this should be a recovery day.');
+  (d.extra || []).forEach(a => { const ps = exPhases(a[0]); if (EX[a[0]] && ps.length && ps[0] > ph) out.push(`${EX[a[0]].name} belongs to Phase ${ps[0]}. Only keep it if you have met the earlier phase criteria and it feels fine.`); });
+  return out;
+}
+function openDayEditor(date, keepScroll) {
+  ui.editDate = date;
+  const panel = $('#sheetPanel'), st = panel.scrollTop, ph = phaseFor(date), ty = typeFor(date), planned = plannedType(date), info = TYPE_INFO(ph);
+  const all = itemsFor(date, true), ids = new Set(all.map(i => i.id)), warn = dayWarnings(date), d = getDay(date);
+  const cats = [...new Set(Object.values(EX).map(e => e.cat))];
+  const opts = cats.map(c => `<optgroup label="${esc(c)}">${Object.entries(EX).filter(([id, e]) => e.cat === c && !ids.has(id)).sort((x, y) => x[1].name.localeCompare(y[1].name)).map(([id, e]) => { const ps = exPhases(id); return `<option value="${id}">${esc(e.name)}${ps.length && ps[0] > ph ? ` (Phase ${ps[0]})` : ''}</option>`; }).join('')}</optgroup>`).join('');
+  if ($('#sheet').hidden) lastFocus = document.activeElement;
+  panel.innerHTML = `
+    <div class="row" style="align-items:flex-start"><div><div class="eyebrow">Edit the plan</div><h2 id="sheetTitle">${esc(fmtLong(date))}</h2></div><button class="icon-btn" data-act="close-sheet" aria-label="Close">${IC.close}</button></div>
+    <div style="display:grid;gap:8px"><h3>Session for this day</h3>
+      <div class="opt-grid">${['strength', 'cond', 'recovery', 'rest'].map(k => `<button class="opt" data-act="ed-type" data-v="${k}" aria-pressed="${k === ty}"><b>${esc(info[k][0])}</b><span class="small muted">${esc(info[k][1])}</span>${k === planned ? '<span class="chip">Planned</span>' : ''}</button>`).join('')}</div>
+      <p class="small muted">Changing the session clears this day's other edits. To change every ${parse(date).toLocaleDateString('en-IN', { weekday: 'long' })}, <button class="linkish" data-act="nav" data-view="settings" data-anchor="week">edit your weekly schedule</button>.</p>
+    </div>
+    ${warn.length ? `<div class="notice warn"><b>Check before you go</b><ul class="bul small">${warn.map(w => `<li>${esc(w)}</li>`).join('')}</ul></div>` : ''}
+    <div style="display:grid;gap:8px"><h3>Exercises, in order</h3>
+      ${all.length ? `<ol class="ed-list">${all.map((i, k) => { const [tag, cls] = tagFor(i.block, i.id); return `<li class="ed-row ${i.skipped ? 'skipped' : ''}"><span class="ex-n">${k + 1}</span><div class="ed-main"><span class="tag ${cls}">${tag}</span><b>${esc(EX[i.id].name)}</b><span class="small muted">${i.skipped ? 'Removed for this day' : `${i.sets > 1 ? i.sets + ' sets · ' : ''}${esc(i.dose)}`}${i.added ? ' · added' : ''}</span></div><div class="ed-acts"><button class="icon-btn sm" data-act="ed-move" data-ex="${i.id}" data-d="-1" ${k === 0 ? 'disabled' : ''} aria-label="Move ${esc(EX[i.id].name)} up">${IC.up}</button><button class="icon-btn sm" data-act="ed-move" data-ex="${i.id}" data-d="1" ${k === all.length - 1 ? 'disabled' : ''} aria-label="Move ${esc(EX[i.id].name)} down">${IC.down}</button><button class="btn ghost sm" data-act="ed-remove" data-ex="${i.id}">${i.skipped ? 'Restore' : 'Remove'}</button></div></li>`; }).join('')}</ol>` : '<p class="muted">Nothing planned on a rest day. You can still add an exercise below.</p>'}
+      <p class="small muted">The plan's order puts jumps before strength and stretches last. Move things only if you have a reason, and keep jumps before anything tiring.</p>
+    </div>
+    <div style="display:grid;gap:8px"><h3>Add an exercise</h3>
+      <div class="add-row"><select id="edAdd" aria-label="Exercise to add"><option value="">Choose an exercise…</option>${opts}</select><select id="edSets" aria-label="Sets" style="width:auto">${[1, 2, 3, 4].map(n => `<option value="${n}" ${n === 3 ? 'selected' : ''}>${n} set${n > 1 ? 's' : ''}</option>`).join('')}</select><button class="btn" data-act="ed-add">Add</button></div>
+      <p class="small muted">It goes in before the cool-down, with the dose the plan uses for it.</p>
+    </div>
+    <div class="row">${(d.type || dayEdited(d)) ? '<button class="btn ghost" data-act="day-reset">Reset this day to the plan</button>' : '<span></span>'}<button class="btn" data-act="close-sheet">Done</button></div>`;
+  $('#sheet').hidden = false;
+  panel.scrollTop = keepScroll ? st : 0;
+}
+function weekWarnings(sched, ph) {
+  const out = [], days = [1, 2, 3, 4, 5, 6, 0], n = ty => days.filter(x => sched[x] === ty).length;
+  const str = n('strength'), target = ph >= 6 ? 2 : 3;
+  if (str < 2) out.push('Fewer than 2 strength days a week is not enough to keep building strength.');
+  if (str > 3) out.push('More than 3 strength days leaves too little recovery between sessions.');
+  else if (str !== target) out.push(`The plan recommends ${target} strength days a week in this phase.`);
+  const pairs = days.map((x, k) => [x, days[(k + 1) % 7]]);
+  if (pairs.some(([a, b]) => sched[a] === 'strength' && sched[b] === 'strength')) out.push('Two strength days in a row. Leave a day between them.');
+  if (ph >= 4 && ph <= 5 && pairs.some(([a, b]) => sched[a] === 'cond' && sched[b] === 'cond')) out.push('Two running days in a row. In Phases 4–5, run every other day.');
+  if (!days.some(x => sched[x] === 'recovery' || sched[x] === 'rest')) out.push('Keep at least one recovery or rest day each week.');
+  return out;
+}
+function weekCard() {
+  const ph = S.settings.phase, g = schedGroup(ph), sched = schedFor(ph), custom = !!(S.settings.week || {})[g], info = TYPE_INFO(ph), warn = weekWarnings(sched, ph);
+  const names = [['Monday', 1], ['Tuesday', 2], ['Wednesday', 3], ['Thursday', 4], ['Friday', 5], ['Saturday', 6], ['Sunday', 0]];
+  return `<section class="card" id="week"><div class="card-head"><div><div class="eyebrow">${g === 'maint' ? 'Phase 6' : 'Phases 1–5'}</div><h2>Your weekly schedule</h2></div>${custom ? '<span class="chip accent">Customised</span>' : '<span class="chip">Recommended</span>'}</div>
+    <p class="small muted">Choose what each day of the week is. Today follows this automatically, and you can still change a single day from Today.</p>
+    <div class="week-grid">${names.map(([n, k]) => `<label class="week-row" for="wk-${k}"><span>${n}</span><select id="wk-${k}" data-week="${k}">${['strength', 'cond', 'recovery', 'rest'].map(t => `<option value="${t}" ${sched[k] === t ? 'selected' : ''}>${esc(info[t][0])}</option>`).join('')}</select></label>`).join('')}</div>
+    ${warn.length ? `<div class="notice warn"><b>Check this schedule</b><ul class="bul small">${warn.map(w => `<li>${esc(w)}</li>`).join('')}</ul></div>` : '<p class="small" style="color:var(--good)">This schedule follows the plan’s rules.</p>'}
+    ${custom ? `<div><button class="btn ghost sm" data-act="week-reset" data-g="${g}">Reset to the recommended week</button></div>` : ''}
+    <p class="small muted">If you use calendar reminders, export them again after changing your schedule.</p>
+  </section>`;
+}
+
 /* ---------- Exercise sheet ---------- */
 let lastFocus = null, sheetCtx = null;
 function holdSecs(dose) {
@@ -1991,7 +2108,7 @@ function openEx(id, dose, ctx) {
   $('#sheetPanel').scrollTop = 0;
   setTimeout(() => { const b = $('#sheetPanel [data-act="close-sheet"]'); b && b.focus(); }, 30);
 }
-function closeSheet() { $('#sheet').hidden = true; if (lastFocus && lastFocus.focus) lastFocus.focus(); }
+function closeSheet() { $('#sheet').hidden = true; ui.editDate = null; if (lastFocus && lastFocus.focus) lastFocus.focus(); }
 
 /* ---------- Timer ---------- */
 const tm = { end: 0, id: null, ctx: null, lock: null };
@@ -2024,7 +2141,7 @@ function stopTimer() { clearInterval(tm.id); tm.end = 0; try { tm.lock && tm.loc
 
 /* ---------- Guided workout mode ---------- */
 const guide = { open: false, date: null, idx: 0, finished: false, lock: null };
-function guideItems() { return blocksFor(guide.date).flatMap(b => b.items.map(i => ({ ...i, block: b.t }))); }
+function guideItems() { return itemsFor(guide.date); }
 async function openGuide() {
   guide.open = true; guide.date = ui.date; guide.finished = false;
   const items = guideItems(), done = getDay(guide.date).done || {};
@@ -2104,7 +2221,7 @@ function reportData(weeks) {
     let sessions = 0, planned = 0;
     for (let x = ws; x <= we && x <= t; x = addDays(x, 1)) {
       const d = getDay(x); if (d.checkedIn) ci.push(d);
-      if (x >= startDate() && !inBreak(x) && typeFor(x) !== 'recovery') { planned++; if (dayPct(x) >= 0.5) sessions++; }
+      if (x >= startDate() && !inBreak(x) && isTraining(typeFor(x))) { planned++; if (dayPct(x) >= 0.5) sessions++; }
     }
     const avg = (a, f) => a.length ? (a.reduce((s, d) => s + (d[f] || 0), 0) / a.length).toFixed(1) : '–';
     const mx = (a, f) => a.length ? Math.max(...a.map(d => d[f] || 0)) : '–';
@@ -2178,10 +2295,10 @@ function viewReport() {
 
 /* ---------- Calendar export (.ics) ---------- */
 function icsText() {
-  const P = PHASES[S.settings.phase - 1], sched = P.schedule || SCHEDULE;
+  const P = PHASES[S.settings.phase - 1], sched = schedFor(S.settings.phase);
   const [hh, mm] = (S.settings.remindTime || '19:00').split(':').map(Number);
   const codes = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
-  const groups = { strength: [], cond: [], recovery: [] };
+  const groups = { strength: [], cond: [], recovery: [], rest: [] };
   for (let wd = 0; wd < 7; wd++) groups[sched[wd]].push(wd);
   const names = { strength: 'Knee rehab: strength', cond: `Knee rehab: ${condLabel(P.n).toLowerCase()}`, recovery: 'Knee rehab: recovery & mobility' };
   const dur = { strength: 'PT60M', cond: 'PT45M', recovery: 'PT20M' };
@@ -2189,7 +2306,7 @@ function icsText() {
   const link = /^https?:/.test(location.href) ? location.href.split('#')[0] : '';
   const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Knee Comeback//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Knee rehab'];
   Object.entries(groups).forEach(([type, wds]) => {
-    if (!wds.length || (type === 'recovery' && !S.settings.remindSun)) return;
+    if (!wds.length || type === 'rest' || (type === 'recovery' && !S.settings.remindSun)) return;
     let first = today(); for (let k = 0; k < 7; k++) { const x = addDays(today(), k); if (wds.includes(parse(x).getDay())) { first = x; break; } }
     const ds = first.replace(/-/g, '') + 'T' + pad(hh) + pad(mm) + '00';
     L.push('BEGIN:VEVENT', `UID:knee-comeback-${type}-${Date.now()}@knee-comeback`, `DTSTAMP:${stamp}`, `DTSTART:${ds}`, `DURATION:${dur[type]}`,
@@ -2225,7 +2342,7 @@ document.addEventListener('click', async ev => {
   const a = ev.target.closest('[data-act]'); if (!a || a.disabled) return;
   const act = a.dataset.act, date = ui.date;
   switch (act) {
-    case 'nav': { go(a.dataset.view); const an = a.dataset.anchor; if (an) setTimeout(() => { const el = document.getElementById(an); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60); break; }
+    case 'nav': { if (!$('#sheet').hidden) closeSheet(); go(a.dataset.view); const an = a.dataset.anchor; if (an) setTimeout(() => { const el = document.getElementById(an); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60); break; }
     case 'day': { const n = +a.dataset.d; ui.date = n === 0 ? today() : addDays(ui.date, n); render(); break; }
     case 'goto': ui.date = a.dataset.date; go('today'); break;
     case 'set': {
@@ -2237,10 +2354,33 @@ document.addEventListener('click', async ev => {
       else if (done[id] > before && done[id] < sets && S.settings.autoRest !== false && restFor(id)) startTimer(restFor(id), 'Rest');
       break;
     }
-    case 'all-done': { const done = {}; blocksFor(date).forEach(b => b.items.forEach(i => { done[i.id] = i.sets; })); setDay(date, { done }); render(); toast('Session complete. Nice work.'); break; }
+    case 'all-done': { const done = {}; itemsFor(date).forEach(i => { done[i.id] = i.sets; }); setDay(date, { done }); render(); toast('Session complete. Nice work.'); break; }
     case 'clear-done': setDay(date, { done: {} }); render(); break;
     case 'type': setDay(date, { type: a.dataset.type }); render(); break;
     case 'type-reset': setDay(date, { type: null }); render(); break;
+    case 'day-reset': setDay(date, { type: null, skip: {}, extra: [], order: [] }); if (!$('#sheet').hidden && ui.editDate) openDayEditor(ui.editDate); render(); toast('Day reset to the plan'); break;
+    case 'day-edit': openDayEditor(date); break;
+    case 'ed-type': { const ty = a.dataset.v; setDay(ui.editDate, { type: ty === plannedType(ui.editDate) ? null : ty, skip: {}, extra: [], order: [] }); render(); openDayEditor(ui.editDate, true); break; }
+    case 'ed-move': {
+      const all = itemsFor(ui.editDate, true).map(i => i.id), k = all.indexOf(a.dataset.ex), j = k + +a.dataset.d;
+      if (k < 0 || j < 0 || j >= all.length) break;
+      [all[k], all[j]] = [all[j], all[k]]; setDay(ui.editDate, { order: all }); render(); openDayEditor(ui.editDate, true); break;
+    }
+    case 'ed-remove': {
+      const id = a.dataset.ex, d0 = getDay(ui.editDate);
+      if ((d0.extra || []).some(x => x[0] === id)) setDay(ui.editDate, { extra: d0.extra.filter(x => x[0] !== id), order: (d0.order || []).filter(x => x !== id) });
+      else { const sk = { ...(d0.skip || {}) }; if (sk[id]) delete sk[id]; else sk[id] = true; setDay(ui.editDate, { skip: sk }); }
+      render(); openDayEditor(ui.editDate, true); break;
+    }
+    case 'ed-add': {
+      const sel = $('#edAdd'), id = sel && sel.value; if (!id || !EX[id]) { toast('Pick an exercise to add first'); break; }
+      const ed = ui.editDate, d0 = getDay(ed), a0 = defaultDose(id, phaseFor(ed)), sets = +($('#edSets') || {}).value || a0[1];
+      const all = itemsFor(ed, true).map(i => i.id), cd = itemsFor(ed, true).findIndex(i => /^Cool-down|^Mobility/.test(i.block));
+      const order = [...all]; order.splice(cd < 0 ? order.length : cd, 0, id);
+      setDay(ed, { extra: [...(d0.extra || []).filter(x => x[0] !== id), [id, sets, a0[2], a0[3]]], order, skip: Object.fromEntries(Object.entries(d0.skip || {}).filter(([k]) => k !== id)) });
+      render(); openDayEditor(ed, true); toast(`${EX[id].name} added`); break;
+    }
+    case 'week-reset': { const g = a.dataset.g, w = { ...(S.settings.week || {}) }; delete w[g]; setSettings({ week: w }); render(); toast('Weekly schedule reset to the recommended one'); break; }
     case 'seg': setDay(date, { [a.dataset.field]: a.dataset.v }); render(); break;
     case 'log': setDay(date, { checkedIn: true, painL: getDay(date).painL || 0, painR: getDay(date).painR || 0 }); render(); toast('Check-in logged'); break;
     case 'open-ex': openEx(a.dataset.ex, a.dataset.dose, a.dataset.ctx); break;
@@ -2354,6 +2494,10 @@ document.addEventListener('change', ev => {
   const el = ev.target;
   if (el.dataset.notes) setDay(ui.date, { notes: el.value.slice(0, 2000) });
   else if (el.dataset.docqs) setSettings({ docQs: el.value.slice(0, 2000) });
+  else if (el.dataset.week != null) {
+    const ph = S.settings.phase, g = schedGroup(ph), cur = { ...schedFor(ph), [el.dataset.week]: el.value };
+    setSettings({ week: { ...(S.settings.week || {}), [g]: cur } }); render(); toast('Weekly schedule updated');
+  }
   else if (el.id === 'remTime' && el.value) setSettings({ remindTime: el.value });
   else if (el.id === 'remSun') setSettings({ remindSun: el.checked });
   else if (el.dataset.kg) {
