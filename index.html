@@ -37,6 +37,8 @@ img{max-width:100%}
   --warn-soft: #FBF0D4;
   --bad: #D33F3F;
   --bad-soft: #FADEDE;
+  --violet: #7044CF;
+  --violet-soft: #EEE7FB;
   --shadow: 0 1px 2px rgba(15,26,40,.06), 0 8px 24px rgba(15,26,40,.06);
   --f-display: -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
   --f-body: -apple-system, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
@@ -49,7 +51,7 @@ img{max-width:100%}
     --bg: #0B1119; --surface: #141C27; --surface-2: #1A2431; --ink: #E9EEF5; --muted: #98A6B9; --faint: #6D7C90; --line: #25303F;
     --accent: #FF7547; --accent-soft: #3A2016; --accent-ink: #1A0B05;
     --left: #6F9BFF; --left-soft: #19284A; --right: #FF7547;
-    --good: #3CCB8F; --good-soft: #12301F; --warn: #F2B93B; --warn-soft: #33290F; --bad: #FF6B6B; --bad-soft: #3A1818;
+    --good: #3CCB8F; --good-soft: #12301F; --warn: #F2B93B; --warn-soft: #33290F; --bad: #FF6B6B; --bad-soft: #3A1818; --violet: #B79BFF; --violet-soft: #2A2142;
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
     color-scheme: dark;
   }
@@ -58,7 +60,7 @@ img{max-width:100%}
   --bg: #0B1119; --surface: #141C27; --surface-2: #1A2431; --ink: #E9EEF5; --muted: #98A6B9; --faint: #6D7C90; --line: #25303F;
   --accent: #FF7547; --accent-soft: #3A2016; --accent-ink: #1A0B05;
   --left: #6F9BFF; --left-soft: #19284A; --right: #FF7547;
-  --good: #3CCB8F; --good-soft: #12301F; --warn: #F2B93B; --warn-soft: #33290F; --bad: #FF6B6B; --bad-soft: #3A1818;
+  --good: #3CCB8F; --good-soft: #12301F; --warn: #F2B93B; --warn-soft: #33290F; --bad: #FF6B6B; --bad-soft: #3A1818; --violet: #B79BFF; --violet-soft: #2A2142;
   --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
   color-scheme: dark;
 }
@@ -357,6 +359,20 @@ td.num, th.num { text-align: right; }
 .g-rpe { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 .g-rpe .set { width: 48px; height: 48px; font-size: 16px; }
 @media (prefers-reduced-motion: reduce) { .g-prog span { transition: none; } }
+
+/* Ordered session list with tags */
+.ex-list.ordered { list-style: none; margin: 0; padding: 0; }
+.tagline { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.ex-n { font-family: var(--f-mono); font-size: 12px; font-weight: 600; color: var(--faint); min-width: 1.6em; font-variant-numeric: tabular-nums; }
+.tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; line-height: 1.3; }
+.tag.warm { background: var(--surface); color: var(--muted); box-shadow: inset 0 0 0 1px var(--line); }
+.tag.mob { background: var(--surface); color: var(--faint); box-shadow: inset 0 0 0 1px var(--line); }
+.tag.jumps { background: var(--accent-soft); color: var(--accent); }
+.tag.strength { background: var(--left-soft); color: var(--left); }
+.tag.balance { background: var(--good-soft); color: var(--good); }
+.tag.core { background: var(--warn-soft); color: var(--warn); }
+.tag.cardio { background: var(--violet-soft); color: var(--violet); }
+.ex-row.done .tag.warm, .ex-row.done .tag.mob { background: transparent; }
 </style>
 </head><body>
 <div class="shell">
@@ -1320,11 +1336,23 @@ const phaseOfWeek = w => (PHASES.find(p => w >= p.range[0] && w <= p.range[1]) |
 const phaseFor = date => (date < today() && S.days[date] && S.days[date].phase) ? S.days[date].phase : S.settings.phase;
 const inBreak = date => (S.settings.breaks || []).some(b => date >= b.start && (!b.end || date < b.end));
 const activeBreak = () => (S.settings.breaks || []).find(b => !b.end) || null;
-function typeFor(date) {
+function plannedType(date) {
   if (inBreak(date)) return 'recovery';
-  const d = getDay(date); if (d.type) return d.type;
   const P = PHASES[phaseFor(date) - 1];
   return (P.schedule || SCHEDULE)[parse(date).getDay()];
+}
+function typeFor(date) {
+  if (inBreak(date)) return 'recovery';
+  const d = getDay(date); return d.type || plannedType(date);
+}
+/* Tag shown on each exercise: what kind of work it is */
+function tagFor(block, id) {
+  const cat = EX[id].cat;
+  if (/^Warm-up/.test(block) || id === 'dyn-warmup' || id === 'prevent-warmup') return ['Warm-up', 'warm'];
+  if (/^Cool-down/.test(block)) return ['Cool-down', 'mob'];
+  if (/^Jumps/.test(block)) return ['Jumps', 'jumps'];
+  if (/^Easy movement/.test(block)) return ['Easy walk', 'cardio'];
+  return ({ Strength: ['Strength', 'strength'], Plyometric: ['Jumps', 'jumps'], Agility: ['Agility', 'jumps'], Balance: ['Balance', 'balance'], Core: ['Core', 'core'], Cardio: ['Cardio', 'cardio'], Running: ['Run', 'cardio'], Mobility: ['Mobility', 'mob'] })[cat] || [cat, 'mob'];
 }
 function sessionName(type, ph) { return (ph >= 6 && SESSION_NAMES_P6[type]) || (ph >= 4 && SESSION_NAMES_P4[type]) || SESSION_NAMES[type]; }
 const condLabel = ph => ph >= 6 ? 'Sport' : ph >= 4 ? 'Run & balance' : 'Conditioning';
@@ -1544,9 +1572,9 @@ function viewToday() {
   const redNote = (d.checkedIn && v.c === 'red' && type !== 'recovery')
     ? `<div class="notice bad"><b>Your check-in says: recovery day</b><span class="small">Switch today to the recovery session.</span><div><button class="btn sm" data-act="type" data-type="recovery">Switch to recovery</button></div></div>` : '';
 
-  const rows = blocks.map(b => `
-    <div class="block-title">${esc(b.t)}</div>
-    <div class="ex-list">${b.items.map(i => {
+  let n = 0;
+  const rows = `<ol class="ex-list ordered">${blocks.map(b => b.items.map(i => {
+      n++; const [tag, tagCls] = tagFor(b.t, i.id);
       const done = Math.min((d.done || {})[i.id] || 0, i.sets), full = done >= i.sets;
       const dots = Array.from({ length: i.sets }, (_, k) => `<button class="set ${k < done ? 'on' : ''}" data-act="set" data-ex="${i.id}" data-i="${k}" data-sets="${i.sets}" ${future ? 'disabled' : ''} aria-label="${esc(EX[i.id].name)} set ${k + 1}${k < done ? ', done' : ''}">${i.sets === 1 ? '✓' : k + 1}</button>`).join('');
       const flagged = (d.flags || {})[i.id];
@@ -1557,8 +1585,10 @@ function viewToday() {
       }
       if (i.contacts) meta += `<span class="small muted">${i.sets * i.contacts} landings</span>`;
       if (flagged) meta += `<span class="chip warn">Bothered your knee: use the easier version</span>`;
-      return `<div class="ex-row ${full ? 'done' : ''}"><div class="ex-main"><button class="ex-open" data-act="open-ex" data-ex="${i.id}" data-dose="${esc(i.dose)}" data-ctx="today"><span class="t">${esc(EX[i.id].name)}</span><span class="d">${esc(i.sets > 1 ? i.sets + ' sets · ' : '')}${esc(i.dose)}</span></button>${meta ? `<div class="ex-meta">${meta}</div>` : ''}</div><div class="sets">${dots}</div></div>`;
-    }).join('')}</div>`).join('');
+      return `<li class="ex-row ${full ? 'done' : ''}"><div class="ex-main"><button class="ex-open" data-act="open-ex" data-ex="${i.id}" data-dose="${esc(i.dose)}" data-ctx="today"><span class="tagline"><span class="ex-n">${n}</span><span class="tag ${tagCls}">${tag}</span></span><span class="t">${esc(EX[i.id].name)}</span><span class="d">${esc(i.sets > 1 ? i.sets + ' sets · ' : '')}${esc(i.dose)}</span></button>${meta ? `<div class="ex-meta">${meta}</div>` : ''}</div><div class="sets">${dots}</div></li>`;
+    }).join('')).join('')}</ol>`;
+  const planned = plannedType(date);
+  const changedNote = (!paused && d.type && d.type !== planned) ? `<div class="notice"><b>Changed to a ${esc(sessionName(type, ph).toLowerCase())} day</b><span class="small">The plan had ${esc(sessionName(planned, ph).toLowerCase())} for today.</span><div><button class="btn sm ghost" data-act="type-reset">Back to the planned session</button></div></div>` : '';
 
   const kneePanel = (side, label) => {
     const p = d['pain' + side] || 0, sw = d['swell' + side] || 'none';
@@ -1580,9 +1610,10 @@ function viewToday() {
   <div class="today-grid">
     <div style="display:grid;gap:20px;min-width:0">
     <section class="card" aria-labelledby="sessT">
-      <div class="card-head nowrap"><div><div class="eyebrow">${future ? 'Coming up' : 'Session'} · ${meta}</div><h2 id="sessT">${esc(sessionName(type, ph))}</h2><p class="small muted">${nItems} exercises. Tap a name for instructions and the boxes as you finish each set.${hasUni ? ' Single-leg work: left leg first, then the same reps on the right.' : ''}</p></div>${ring(pct, Math.round(pct * 100) + '%')}</div>
-      ${paused ? '' : `<div class="row" style="justify-content:flex-start">${seg('type', type, [['strength', 'Strength'], ['cond', condLabel(ph)], ['recovery', 'Recovery']], future, 'type')}${type === 'strength' && P.strengthB ? seg('variant', variantFor(date), [['A', 'Workout A'], ['B', 'Workout B']], future) : ''}${type !== 'recovery' ? `<button class="filter" data-act="express" aria-pressed="${!!d.express}" ${future ? 'disabled' : ''}>Express (short on time)</button>` : ''}</div>`}
+      <div class="card-head nowrap"><div><div class="eyebrow">${future ? 'Coming up' : 'Session'} · ${meta}</div><h2 id="sessT">${esc(sessionName(type, ph))} day${type === 'strength' && P.strengthB ? ` · workout ${variantFor(date)}` : ''}</h2><p class="small muted">${nItems} exercises, done in this order from top to bottom. Tap a name for how to do it, and tap the boxes as you finish each set.${hasUni ? ' Single-leg work: left leg first, then the same reps on the right.' : ''}</p></div>${ring(pct, Math.round(pct * 100) + '%')}</div>
+      ${changedNote}
       ${redNote}
+      ${paused || type === 'recovery' ? '' : `<div><button class="filter" data-act="express" aria-pressed="${!!d.express}" ${future ? 'disabled' : ''}>${d.express ? 'Express on: key exercises only' : 'Short on time? Switch to Express'}</button></div>`}
       ${future ? '' : `<button class="btn" data-act="guide-start">${pct > 0 && pct < 1 ? 'Continue guided session' : 'Start guided session'}</button>`}
       <div class="progress-bar"><span style="width:${Math.round(pct * 100)}%"></span></div>
       ${rows}
@@ -1674,7 +1705,7 @@ function viewPlan() {
       <div class="mini"><b>Jumps and running</b><span class="small muted">Jumps happen on strength days and runs on the days in between, so impact is spread out and you never run two days in a row.</span></div>
       <div class="mini"><b>Phase 6 (week 17+)</b><span class="small muted">Strength Mon and Thu, sport or riding Tue and Sat, rest the other days. This is how you keep the knees strong.</span></div>
     </div>
-    <p class="small muted">You can swap any day's session on the Today screen, or pause the plan in Settings for travel, illness or a flare-up.</p>
+    <p class="small muted">Today always shows the planned session for the day, in order, with a tag on each exercise. If a check-in says rest or you missed a strength day, Today offers a one-tap switch. Pause the plan in Settings for travel, illness or a flare-up.</p>
   </section>
   <div class="grid-2">
     <section class="card"><div><div class="eyebrow">The 0–10 rule</div><h2>How much pain is OK?</h2></div>
@@ -2035,7 +2066,7 @@ function renderGuide() {
   el.innerHTML = `
     <div class="g-top"><span class="num small">${guide.idx + 1} / ${n}</span><div class="g-prog" role="progressbar" aria-valuemin="0" aria-valuemax="${totalSets}" aria-valuenow="${totalDone}"><span style="width:${totalSets ? totalDone / totalSets * 100 : 0}%"></span></div><button class="icon-btn" data-act="guide-close" aria-label="Close guided session">${IC.close}</button></div>
     <div class="g-body">
-      <div class="eyebrow">${esc(i.block)}</div>
+      <div><span class="tag ${tagFor(i.block, i.id)[1]}">${tagFor(i.block, i.id)[0]}</span></div>
       <h1 class="g-name">${esc(e.name)}</h1>
       <div class="g-dose">${i.sets > 1 ? i.sets + ' sets · ' : ''}${esc(i.dose)}</div>
       <div class="chips" style="justify-content:center">${left ? '<span class="chip accent">Left leg first, then match on the right</span>' : ''}${up ? `<span class="chip good">Try ${up.to} kg today</span>` : ll ? `<span class="chip">Last time ${ll.kg} kg</span>` : ''}${(d.flags || {})[i.id] ? '<span class="chip warn">Bothered you before: use the easier version</span>' : ''}</div>
@@ -2209,6 +2240,7 @@ document.addEventListener('click', async ev => {
     case 'all-done': { const done = {}; blocksFor(date).forEach(b => b.items.forEach(i => { done[i.id] = i.sets; })); setDay(date, { done }); render(); toast('Session complete. Nice work.'); break; }
     case 'clear-done': setDay(date, { done: {} }); render(); break;
     case 'type': setDay(date, { type: a.dataset.type }); render(); break;
+    case 'type-reset': setDay(date, { type: null }); render(); break;
     case 'seg': setDay(date, { [a.dataset.field]: a.dataset.v }); render(); break;
     case 'log': setDay(date, { checkedIn: true, painL: getDay(date).painL || 0, painR: getDay(date).painR || 0 }); render(); toast('Check-in logged'); break;
     case 'open-ex': openEx(a.dataset.ex, a.dataset.dose, a.dataset.ctx); break;
