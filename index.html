@@ -1185,7 +1185,7 @@ const PHASES = [
 const DELOAD_WEEKS = [6, 10, 13];
 /* Mini sessions: short, easy repeats of the key knee exercises, at least 6 h apart from any other session */
 const MINI_GAP_H = 6, MINI_REST = 30;
-const MINI_MAX = { strength: 1, cond: 2, recovery: 2, rest: 2 };
+const MINI_MAX = { strength: 1, cond: 2, recovery: 2, rest: 0 };
 /* Movement snacks: 2–4 min of gentle balance and mobility between loading sessions */
 const SNACK_MAX = 3, SNACK_REST = 10, SNACK_SPACING_MIN = 60;
 /* The day's order of sessions (up to 6) */
@@ -1193,7 +1193,7 @@ const DAY_SLOTS = {
   strength: [['mini', 'Morning'], ['snack', 'Mid-morning'], ['snack', 'Midday'], ['main', 'Afternoon or evening'], ['snack', 'Night']],
   cond: [['mini', 'Morning'], ['snack', 'Mid-morning'], ['main', 'Midday'], ['snack', 'Afternoon'], ['mini', 'Evening'], ['snack', 'Night']],
   recovery: [['mini', 'Morning'], ['snack', 'Mid-morning'], ['main', 'Midday'], ['snack', 'Afternoon'], ['mini', 'Evening'], ['snack', 'Night']],
-  rest: [['mini', 'Morning'], ['snack', 'Mid-morning'], ['snack', 'Afternoon'], ['mini', 'Evening'], ['snack', 'Night']]
+  rest: [['snack', 'Morning'], ['snack', 'Afternoon'], ['snack', 'Evening']]
 };
 
 const RUN = [
@@ -1524,6 +1524,7 @@ function miniState(date) {
   else if (br && date >= br.start) block = 'Your plan is paused, so mini sessions are off.';
   else if (v === 'red') block = 'Your check-in says rest today, so skip the mini sessions.';
   else if (v === 'amber') max = Math.min(max, 1);
+  if (max === 0 && !block) block = 'off';
   const last = Math.max(0, ...times, d.mainAt || 0);
   return { done: times.length, max, block, amber: v === 'amber', nextAt: last ? last + MINI_GAP_H * 3600e3 : 0, mainAt: d.mainAt || 0 };
 }
@@ -1700,7 +1701,7 @@ function dayCard(date) {
   const counted = slots.filter(([k], i) => true).length, doneN = (pct >= 0.5 && slots.some(([k]) => k === 'main') ? 1 : 0) + Math.min(ms.done, mk) + Math.min(ss.done, sk);
   const list = (items, cls) => `<ol class="bul small">${items.map(i => `<li><button class="linkish" data-act="open-ex" data-ex="${i.id}" data-dose="${esc(i.dose)}">${esc(EX[i.id].name)}</button>: ${i.sets > 1 ? i.sets + ' × ' : ''}${esc(i.dose)}</li>`).join('')}</ol>`;
   return `<section class="card" aria-labelledby="dayT">
-    <div class="card-head nowrap"><div><div class="eyebrow">Up to ${counted} sessions today · spread through the day</div><h2 id="dayT">Your day</h2><p class="small muted">At most 3 loading sessions, at least ${MINI_GAP_H} hours apart (your main session plus easy minis), with short movement snacks in between. More than this doesn't add results.</p></div>${ring(counted ? doneN / counted : 0, `${doneN}/${counted}`)}</div>
+    <div class="card-head nowrap"><div><div class="eyebrow">Up to ${counted} sessions today · spread through the day</div><h2 id="dayT">Your day</h2>${ty === 'rest' ? '<p class="small muted">A rest day: no loading sessions today. The gentle movement snacks are optional.</p>' : `<p class="small muted">At most 3 loading sessions, at least ${MINI_GAP_H} hours apart (your main session plus easy minis), with short movement snacks in between. More than this doesn't add results.</p>`}</div>${ring(counted ? doneN / counted : 0, `${doneN}/${counted}`)}</div>
     ${ss.paused ? '<p class="small muted">Your plan is paused: only the gentle snacks are on.</p>' : ''}
     <ol class="slots">${rows}</ol>
     <div class="grid-2">
@@ -1768,7 +1769,7 @@ function viewToday() {
   <div class="today-grid">
     <div style="display:grid;gap:20px;min-width:0">
     <section class="card" aria-labelledby="sessT">
-      <div class="card-head nowrap"><div><div class="eyebrow">${future ? 'Coming up' : 'Session'} · ${meta}</div><h2 id="sessT">${esc(sessionName(type, ph))} day${type === 'strength' && P.strengthB ? ` · workout ${variantFor(date)}` : ''}</h2><p class="small muted">${nItems} exercises, done in this order from top to bottom. Tap a name for how to do it, and tap the boxes as you finish each set.${hasUni ? ' Single-leg work: left leg first, then the same reps on the right.' : ''}</p></div>${ring(pct, Math.round(pct * 100) + '%')}</div>
+      <div class="card-head nowrap"><div><div class="eyebrow">${future ? 'Coming up' : 'Session'}${nItems ? ' · ' + meta : ''}</div><h2 id="sessT">${esc(sessionName(type, ph))} day${type === 'strength' && P.strengthB ? ` · workout ${variantFor(date)}` : ''}</h2>${nItems ? `<p class="small muted">${nItems} exercises, done in this order from top to bottom. Tap a name for how to do it, and tap the boxes as you finish each set.${hasUni ? ' Single-leg work: left leg first, then the same reps on the right.' : ''}</p>` : ''}</div>${nItems ? ring(pct, Math.round(pct * 100) + '%') : ''}</div>
       ${changedNote}
       ${redNote}
       ${paused ? '' : `<div class="row" style="justify-content:flex-start"><button class="btn ghost sm" data-act="day-edit">${IC.edit}<span>Edit this day</span></button>${isTraining(type) ? `<button class="filter" data-act="express" aria-pressed="${!!d.express}" ${future ? 'disabled' : ''}>${d.express ? 'Express on: key exercises only' : 'Short on time? Switch to Express'}</button>` : ''}</div>`}
@@ -1875,7 +1876,7 @@ function viewPlan() {
         <li><span><b>Hard strength work stays at 3 times a week.</b> Muscles get stronger in the 1–2 days after hard sets. Doing them daily, or several times a day, cuts into that recovery and piles load on the meniscus and tendons. That is why mini sessions stay at about 7/10 effort and strength days get only one mini.</span></li>
         <li><span><b>Why the minis work.</b> After a knee injury the quadriceps is partly switched off by reflex; frequent easy activation helps switch it back on. Long isometric holds like the Spanish squat often ease knee pain for a while afterwards.</span></li>
         <li><span><b>Collagen timing.</b> In one study, 15 g of gelatin with vitamin C taken an hour before a short bout of exercise roughly doubled a blood marker of collagen production. If your orthopedist advised collagen, take it 30–60 minutes before a session.</span></li>
-        <li><span><b>Limits.</b> 5 sessions on strength days and 6 on other days. A check-in that says hold means one mini; rest means no minis (gentle snacks are still fine unless the knee gave way). If the knee is worse the next morning, drop the minis for a week.</span></li>
+        <li><span><b>Limits.</b> 5 sessions on strength days, 6 on run and recovery days, and only gentle snacks on a rest day you choose. A check-in that says hold means one mini; rest means no minis (gentle snacks are still fine unless the knee gave way). If the knee is worse the next morning, drop the minis for a week.</span></li>
       </ol>
     </section>
     <section class="card"><div><div class="eyebrow">Built on exercise science</div><h2>Why this order</h2></div>
@@ -2151,7 +2152,7 @@ const TYPE_INFO = ph => ({
   strength: ['Strength day', ph >= 3 ? 'Warm-up, a short jump block, then strength work' : 'Warm-up and strength work'],
   cond: [`${condLabel(ph)} day`, ph >= 6 ? 'Injury-prevention warm-up, then your sport or ride' : ph >= 4 ? 'Warm-up, balance, then running (and agility from Phase 5)' : 'Balance, core and easy cardio'],
   recovery: ['Recovery day', 'Easy walk and the full mobility routine'],
-  rest: ['Rest day', 'Nothing planned']
+  rest: ['Rest day', 'No training, only optional gentle movement snacks']
 });
 const typeLabel = (ty, ph) => TYPE_INFO(ph)[ty][0];
 function dayWarnings(date) {
