@@ -1106,6 +1106,7 @@ const PHASES = [
     cond: [['sl-balance-row', 3, '45 s / leg'], ['dead-bug', 3, '10 reps'], ['cardio', 1, '20–30 min easy']],
     mobility: [['heel-slide', 2, '10 reps'], ...MOB],
     key: ['spanish-squat', 'elev-ham-bridge', 'tke', 'band-walk'], keyCond: ['sl-balance-row', 'cardio'],
+    mini: [['tke', 2, '15 / leg'], ['spanish-squat', 3, '45 s hold at 45°, about 7/10 effort'], ['elev-ham-bridge', 2, '20 s hold at the top / leg'], ['slr', 2, '10 / leg']],
     criteria: ['Daily-life pain stays at 0–2/10 for a full week', 'No swelling the morning after sessions', 'Spanish squat 4 × 45 s with no knee pain', 'Balance with band rows for 45 s on each leg without touching down'] },
   { n: 2, name: 'Build', weeks: 'Weeks 4–6', range: [4, 6],
     goal: 'Weighted squats to 75–80°, slow braking on one leg, a heavy hinge for the hamstrings, and the start of moto-peg endurance. Week 6 is a lighter week.',
@@ -1114,6 +1115,7 @@ const PHASES = [
     cond: [['sl-balance-row', 3, '45 s / leg, on a pad'], ['star-reach', 3, '5 reaches each way / leg'], ['dead-bug', 3, '12 reps'], ['cardio', 1, '30 min, moderate']],
     mobility: MOB,
     key: ['box-squat', 'step-down', 'rdl', 'attack-hold'], keyCond: ['sl-balance-row', 'cardio'],
+    mini: [['sl-balance-row', 2, '45 s / leg'], ['spanish-squat', 3, '45 s hold at 60°, about 7/10 effort'], ['elev-ham-bridge', 2, '20 s hold at the top / leg'], ['calf-raise', 2, '15 reps']],
     criteria: ['10 slow single-leg sit-to-stands from a chair on each leg, knee in line', 'Step-downs 3 × 10 on each leg with a 4 s lower and no knee caving', 'Moto-peg hold 3 × 60 s without knee pain', '30 min bike or brisk walk with no pain during or after', 'No next-morning soreness above 2/10'] },
   { n: 3, name: 'Load', weeks: 'Weeks 7–10', range: [7, 10],
     goal: 'Heavier single-leg strength to 90°, eccentric hamstrings, and the first low landings at the start of strength days: snap-downs and drops from the bottom stair (about 40 landings). Strength days now alternate between workout A and B to keep sessions under an hour. Nordic curls start here at low volume, so the first-weeks soreness is over before running begins. Week 10 is a lighter week.',
@@ -1124,6 +1126,7 @@ const PHASES = [
     cond: [['cushion-catch', 3, '30 s / leg'], ['star-reach', 2, '5 each way / leg'], ['side-plank', 3, '30 s / side'], ['bike-intervals', 1, '8 × 30 s hard / 90 s easy']],
     mobility: MOB,
     key: ['goblet-squat', 'split-squat', 'sl-rdl', 'step-down'], keyCond: ['cushion-catch', 'bike-intervals'],
+    mini: [['cushion-catch', 2, '30 s / leg'], ['spanish-squat', 3, '45 s hold at 60°, about 7/10 effort'], ['elev-ham-bridge', 2, '30 s hold at the top / leg'], ['calf-raise', 2, '20 reps']],
     criteria: ['20 single-leg calf raises on each leg', 'Goblet squat 3 × 8 to 90° with no pain', 'Drop landings from the second stair (40 cm) quiet and pain-free for 2 weeks', '30 min brisk walk with no symptoms that day or the next morning'] },
   { n: 4, name: 'Impact', weeks: 'Weeks 11–13', range: [11, 13],
     goal: 'Hops, single-leg landings and side-to-side bounds at the start of strength days (about 100 landings, 3 times a week), and the walk–run program on the days in between. Week 13 is a lighter week.',
@@ -1134,6 +1137,7 @@ const PHASES = [
     cond: [['dyn-warmup', 1, '8 min'], ['cushion-catch', 3, '30 s / leg'], ['run-program', 1, 'Current stage'], ['dead-bug', 3, '12 reps']],
     mobility: MOB,
     key: ['goblet-squat', 'split-squat', 'nordic', 'sl-calf'], keyCond: ['dyn-warmup', 'run-program'],
+    mini: [['cushion-catch', 2, '30 s / leg'], ['spanish-squat', 3, '45 s hold at 60°, about 7/10 effort'], ['elev-ham-bridge', 2, '30 s hold at the top / leg'], ['calf-raise', 2, '20 reps']],
     criteria: ['20 min continuous easy jog with pain at 2/10 or less', 'No swelling or extra pain the morning after running', 'Drop landings from a sturdy chair (50 cm) soft and quiet', 'Single-leg hop and stick on each leg, quiet and controlled'] },
   { n: 5, name: 'Return', weeks: 'Weeks 14–16', range: [14, 16],
     goal: 'Higher drops, box jumps and continuous bounds on strength days; cutting, curved running and the last running stages on the days in between. Finish with return-to-sport tests, a confidence check and your orthopedist’s clearance.',
@@ -1144,6 +1148,7 @@ const PHASES = [
     cond: [['dyn-warmup', 1, '8 min'], ['figure-8', 3, 'laps each direction'], ['cut-drill', 4, '3 / side'], ['shuttle', 4, '10 m reps'], ['run-program', 1, 'Current stage']],
     mobility: MOB,
     key: ['goblet-squat', 'split-squat', 'nordic', 'attack-hold'], keyCond: ['dyn-warmup', 'cut-drill', 'run-program'],
+    mini: [['cushion-catch', 2, '30 s / leg'], ['spanish-squat', 3, '45 s hold at 60°, about 7/10 effort'], ['elev-ham-bridge', 2, '30 s hold at the top / leg'], ['calf-raise', 2, '20 reps']],
     criteria: ['Single hop and triple hop symmetry of 90% or more (Progress → Tests)', '25 single-leg calf raises on each leg', 'Moto-peg hold 3 × 90 s, and 2 ft (60 cm) drop landings feel confident', 'Full-speed cutting and stopping drills without pain or hesitation', 'Confidence check 75% or more (Progress → Confidence)', 'No swelling after 2 weeks of Phase 5 training', 'Orthopedist has cleared you, and the left-knee notch lesion has been reviewed'] },
   { n: 6, name: 'Maintain', weeks: 'Week 17 onward', range: [17, 9999], habits: true,
     goal: 'Keep the strength and landing skill for good: two strength sessions a week with a short jump block, sport or riding on two days, and the injury-prevention warm-up before every one of them.',
@@ -1155,9 +1160,13 @@ const PHASES = [
     cond: [['prevent-warmup', 1, '10 min'], ['sport', 1, 'Run, sport or ride, 30–60 min'], ['cushion-catch', 2, '30 s / leg']],
     mobility: MOB,
     key: ['goblet-squat', 'split-squat', 'nordic', 'sl-calf'], keyCond: ['prevent-warmup', 'sport'],
+    mini: [['cushion-catch', 2, '30 s / leg'], ['spanish-squat', 3, '45 s hold at 60°, about 7/10 effort'], ['elev-ham-bridge', 2, '30 s hold at the top / leg'], ['calf-raise', 2, '20 reps']],
     criteria: ['Two strength sessions every week', 'Injury-prevention warm-up before every sport session or ride', 'Monthly: confidence check and calf-raise test', 'After more than a month off, go back to Phase 4 for 2 weeks'] }
 ];
 const DELOAD_WEEKS = [6, 10, 13];
+/* Mini sessions: short, easy repeats of the key knee exercises, at least 6 h apart from any other session */
+const MINI_GAP_H = 6, MINI_REST = 30;
+const MINI_MAX = { strength: 1, cond: 2, recovery: 2, rest: 2 };
 
 const RUN = [
   { l: 'Stage 1', d: 'Walk 4 min / jog 1 min × 5 (25 min)', min: 25 },
@@ -1454,7 +1463,7 @@ function itemMinutes(i) {
   const hs = dose.match(/(\d+)(?:\s*[–-]\s*(\d+))?\s*s\b/);
   const cat = EX[i.id].cat, work = hs ? +(hs[2] || hs[1]) : (cat === 'Plyometric' || cat === 'Agility') ? 20 : 40;
   const per = (isUni(dose) || /each way/.test(dose)) ? 2 : 1;
-  return (i.sets * work * per + Math.max(0, i.sets - 1) * (restFor(i.id) || 15) + 30) / 60;
+  return (i.sets * work * per + Math.max(0, i.sets - 1) * (i.rest ?? (restFor(i.id) || 15)) + 30) / 60;
 }
 /* The day's list: the plan's session plus this day's edits (removed, added, reordered) */
 function defaultDose(id, ph) {
@@ -1474,6 +1483,23 @@ function itemsFor(date, all = false) {
   }
   return all ? items.map(i => ({ ...i, skipped: !!skip[i.id] })) : items.filter(i => !skip[i.id]);
 }
+function miniItems(date) {
+  const P = PHASES[phaseFor(date) - 1];
+  return (P.mini || []).map(a => ({ id: a[0], sets: a[1], dose: a[2], contacts: 0, rest: MINI_REST, block: 'Mini' }));
+}
+const fmtTime = ts => new Date(ts).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' });
+function miniState(date) {
+  const d = getDay(date), ty = typeFor(date), br = activeBreak(), v = d.checkedIn ? verdict(d).c : null;
+  const times = (d.minis || []).filter(Number.isFinite);
+  let max = MINI_MAX[ty] ?? 1, block = '';
+  if (S.settings.minisOn === false) block = 'off';
+  else if (br && date >= br.start) block = 'Your plan is paused, so mini sessions are off.';
+  else if (v === 'red') block = 'Your check-in says rest today, so skip the mini sessions.';
+  else if (v === 'amber') max = Math.min(max, 1);
+  const last = Math.max(0, ...times, d.mainAt || 0);
+  return { done: times.length, max, block, amber: v === 'amber', nextAt: last ? last + MINI_GAP_H * 3600e3 : 0, mainAt: d.mainAt || 0 };
+}
+function recordMini(date) { const d = getDay(date); setDay(date, { minis: [...(d.minis || []), Date.now()] }); }
 const dayEdited = d => !!((d.skip && Object.keys(d.skip).length) || (d.extra && d.extra.length) || (d.order && d.order.length));
 const sessionMinutes = items => items.length ? Math.max(5, Math.round(items.reduce((t, i) => t + itemMinutes(i), 0) / 5) * 5) : 0;
 const sessionLandings = items => items.reduce((t, i) => t + i.sets * (i.contacts || 0), 0);
@@ -1602,6 +1628,30 @@ function renderRail() {
 }
 
 /* ---------- Today ---------- */
+function miniCard(date) {
+  const ms = miniState(date); if (ms.block === 'off') return '';
+  const items = miniItems(date); if (!items.length) return '';
+  const t = today(), future = date > t, past = date < t, now = Date.now(), ty = typeFor(date), ph = phaseFor(date);
+  const mins = sessionMinutes(items), full = ms.done >= ms.max, wait = !past && !future && ms.nextAt > now;
+  const rows = items.map((i, k) => { const [tag, cls] = tagFor('Mini', i.id); return `<li class="ex-row"><div class="ex-main"><button class="ex-open" data-act="open-ex" data-ex="${i.id}" data-dose="${esc(i.dose)}"><span class="tagline"><span class="ex-n">${k + 1}</span><span class="tag ${cls}">${tag}</span></span><span class="t">${esc(EX[i.id].name)}</span><span class="d">${i.sets > 1 ? i.sets + ' sets · ' : ''}${esc(i.dose)} · ${MINI_REST} s rest</span></button></div></li>`; }).join('');
+  const sess = sessionName(ty, ph).toLowerCase();
+  const plan = ty === 'strength'
+    ? ['Morning: mini session', '30–60 min before your main session: collagen with vitamin C, if your orthopedist advised collagen', `Afternoon or evening, at least ${MINI_GAP_H} h after the mini: your strength session`]
+    : isTraining(ty) ? ['Morning: mini session', `Midday or early afternoon, ${MINI_GAP_H} h later: your ${sess} session`, `Evening, ${MINI_GAP_H} h after that: second mini session`]
+    : ['Morning: mini session', `Evening, at least ${MINI_GAP_H} h later: second mini session`, ty === 'recovery' ? 'Any time: the recovery walk and mobility (these don\u2019t count as a loading session)' : 'Nothing else needed on a rest day'];
+  let status = '';
+  if (ms.block) status = `<div class="notice bad"><b>No mini sessions today</b><span class="small">${esc(ms.block)}</span></div>`;
+  else if (full) status = `<p class="small" style="color:var(--good)"><b>${ms.done} of ${ms.max} done.</b> That\u2019s the useful limit for today; more wouldn\u2019t add anything.</p>`;
+  else if (wait) status = `<p class="small"><b>Next mini from ${fmtTime(ms.nextAt)}</b>, ${MINI_GAP_H} hours after your last session, so the tissues have reset and respond fully again.</p>`;
+  else if (!future && !past) status = `<p class="small"><b>Ready now.</b>${isTraining(ty) && !ms.mainAt && ms.done === 0 ? ` If you do it now, start your ${sess} session ${MINI_GAP_H} hours later.` : ''}${ms.amber ? ' Your check-in says hold, so keep it to one easy mini today.' : ''}</p>`;
+  return `<section class="card" aria-labelledby="miniT">
+    <div class="card-head nowrap"><div><div class="eyebrow">Extra · about ${mins} min each · up to ${ms.max} today</div><h2 id="miniT">Mini sessions</h2><p class="small muted">Short, easy repeats of your key knee exercises (the ones you said you'll do as often as possible). Spread through the day, they keep the quads switched on and keep the tendons and ligaments strengthening.</p></div>${ring(ms.max ? ms.done / ms.max : 0, `${ms.done}/${ms.max}`)}</div>
+    <ol class="ex-list ordered">${rows}</ol>
+    ${status}
+    ${!ms.block && !future && !past ? `<div class="row" style="justify-content:flex-start"><button class="btn" data-act="mini-start" ${full || wait ? 'disabled' : ''}>Start mini session</button><button class="btn ghost sm" data-act="mini-done" ${full ? 'disabled' : ''}>I did one without the guide</button>${ms.done ? '<button class="btn ghost sm" data-act="mini-undo">Undo last</button>' : ''}</div>` : ''}
+    ${!ms.block ? `<div class="mini"><b>Today\u2019s timing</b><ol class="bul small">${plan.map(p => `<li>${esc(p)}</li>`).join('')}</ol></div>` : ''}
+  </section>`;
+}
 function coachCard(items) {
   if (!items.length) return '';
   return `<section class="card coach" aria-labelledby="coachT"><div><div class="eyebrow">Coach</div><h2 id="coachT">For today</h2></div>
@@ -1668,6 +1718,7 @@ function viewToday() {
       ${rows}
       ${future || !items.length ? '' : `<div class="row"><button class="btn ghost sm" data-act="all-done">Mark everything done</button><button class="btn ghost sm" data-act="clear-done">Clear ticks</button></div>`}
     </section>
+    ${miniCard(date)}
     </div>
     <div style="display:grid;gap:20px;min-width:0">
       ${coachCard(tips)}
@@ -1757,6 +1808,33 @@ function viewPlan() {
     </div>
     <p class="small muted">Today always shows the planned session for the day, in order, with a tag on each exercise. Tap "Edit this day" to change one day, or "Change my week" to move sessions to different weekdays. Pause the plan in Settings for travel, illness or a flare-up.</p>
   </section>
+  <div class="grid-2">
+    <section class="card"><div><div class="eyebrow">More often, not harder</div><h2>Why mini sessions work</h2></div>
+      <ol class="rules">
+        <li><span><b>Switch the quads back on.</b> After a knee injury, the quadriceps is partly switched off by reflex (arthrogenic muscle inhibition). Frequent, easy activation is one of the most effective ways to reverse it, which is why terminal knee extensions and straight leg raises are repeated through the day in early rehab.</span></li>
+        <li><span><b>Isometric holds calm the knee.</b> Long holds like the Spanish squat often reduce knee pain for a while afterwards, and load the quads hard without the shin sliding forward against the ACL.</span></li>
+        <li><span><b>Six hours apart.</b> In studies of tendon and ligament cells, the strengthening signal from loading is used up within about 10 minutes and takes around 6 hours to reset. Two or three short bouts spread over the day give a bigger total signal than one long one; more than that adds nothing.</span></li>
+        <li><span><b>Easy, never to failure.</b> Strength comes from hard sets a few times a week with recovery in between; that is your main session. Minis stay at about 7/10 effort so they add practice and tissue signal without eating into that recovery.</span></li>
+        <li><span><b>Collagen timing.</b> In one study, 15 g of gelatin with vitamin C taken an hour before a short bout of exercise roughly doubled a blood marker of collagen production. If your orthopedist advised collagen, take it 30–60 minutes before a session.</span></li>
+        <li><span><b>Limits.</b> One mini on strength days (the main session already loads these muscles hard), two on other days, none after a check-in that says rest. If the knee is worse the next morning, drop to one a day for a week.</span></li>
+      </ol>
+    </section>
+    <section class="card"><div><div class="eyebrow">Built on exercise science</div><h2>Why this order</h2></div>
+      <ol class="rules">
+        <li><span><b>Warm-up first.</b> Warmer muscles contract faster and react quicker, which protects the knee.</span></li>
+        <li><span><b>Jumps while fresh.</b> Tired legs land stiffer, with the knee caving in, which is the classic ACL injury pattern. Jumps always come before strength work, never after.</span></li>
+        <li><span><b>Jumps from easiest to hardest.</b> Lowest landing force first, two legs before one, forward before sideways.</span></li>
+        <li><span><b>Big lifts before small ones.</b> Exercises done early in a session get more reps at better quality, so the most important multi-joint lifts (squats, deadlifts) come first.</span></li>
+        <li><span><b>Control drills before fatigue.</b> Step-downs train knee alignment, which is easiest to learn before you are tired.</span></li>
+        <li><span><b>Hamstring eccentrics after jumps.</b> Nordics temporarily weaken the hamstrings that protect the ACL on landing, so they never come before a jump block.</span></li>
+        <li><span><b>Long holds, calves and core last.</b> Endurance work tires the muscles, so it goes where it can't spoil the technique of anything after it.</span></li>
+        <li><span><b>Static stretches at the end.</b> Long static stretches before power work reduce jump performance; after training they are fine.</span></li>
+        <li><span><b>Run days.</b> Balance before the run while fresh; fast agility work before the steady run.</span></li>
+        <li><span><b>Minis.</b> Activation first, then the main quad hold, then the hamstrings, then the lighter single-joint or balance work.</span></li>
+      </ol>
+      <p class="small muted">Sources this draws on: Rice & McNair 2010 (quadriceps inhibition); Rio et al. 2015 (isometric holds and knee pain); Baar 2017 and Shaw et al. 2017 (short loading bouts 6 h apart, collagen with vitamin C); Simão et al. 2012 (exercise order); Benjaminse et al. 2019 (fatigue and landing); Behm et al. 2016 (static stretching and power).</p>
+    </section>
+  </div>
   <div class="grid-2">
     <section class="card"><div><div class="eyebrow">The 0–10 rule</div><h2>How much pain is OK?</h2></div>
       <div class="verdict green"><span class="light"></span><div><b>0–2: safe</b><span class="small">Carry on and progress as planned.</span></div></div>
@@ -1964,6 +2042,7 @@ function viewSettings() {
       <div style="display:grid;gap:6px"><label class="field-label" for="phaseSel">Current phase</label><select id="phaseSel">${PHASES.map(p => `<option value="${p.n}" ${p.n === S.settings.phase ? 'selected' : ''}>Phase ${p.n}: ${p.name} (${p.weeks})</option>`).join('')}</select></div>
     </div>
     <p class="small muted">Normally you move phases from Progress once the criteria are met. Use this if your physiotherapist or orthopedist puts you at a different stage.</p>
+    <label class="toggle" for="minisOn"><span><b>Mini sessions</b><br><span class="small muted">Short, easy repeats of your key knee exercises, up to 2 a day, at least ${MINI_GAP_H} hours apart.</span></span><input type="checkbox" id="minisOn" ${S.settings.minisOn !== false ? 'checked' : ''}></label>
     <label class="toggle" for="autoRest"><span><b>Start the rest timer automatically</b><br><span class="small muted">When you tick a set, the timer counts your rest (60 s for strength and jumps, 30 s for balance and core).</span></span><input type="checkbox" id="autoRest" ${S.settings.autoRest !== false ? 'checked' : ''}></label>
   </section>
   ${weekCard()}
@@ -2140,11 +2219,13 @@ async function startTimer(s, label = '') {
 function stopTimer() { clearInterval(tm.id); tm.end = 0; try { tm.lock && tm.lock.release(); } catch (e) {} tm.lock = null; renderTimer(); }
 
 /* ---------- Guided workout mode ---------- */
-const guide = { open: false, date: null, idx: 0, finished: false, lock: null };
-function guideItems() { return itemsFor(guide.date); }
-async function openGuide() {
-  guide.open = true; guide.date = ui.date; guide.finished = false;
-  const items = guideItems(), done = getDay(guide.date).done || {};
+const guide = { open: false, date: null, idx: 0, finished: false, lock: null, mode: 'main', miniDone: {}, recorded: false };
+function guideItems() { return guide.mode === 'mini' ? miniItems(guide.date) : itemsFor(guide.date); }
+const doneMap = () => guide.mode === 'mini' ? guide.miniDone : (getDay(guide.date).done || {});
+async function openGuide(mode = 'main') {
+  guide.open = true; guide.date = ui.date; guide.finished = false; guide.mode = mode; guide.miniDone = {}; guide.recorded = false;
+  if (mode === 'main' && guide.date === today() && isTraining(typeFor(guide.date)) && !getDay(guide.date).mainAt) setDay(guide.date, { mainAt: Date.now() });
+  const items = guideItems(), done = doneMap();
   const first = items.findIndex(i => (done[i.id] || 0) < i.sets);
   guide.idx = first < 0 ? 0 : first;
   try { if ('wakeLock' in navigator) guide.lock = await navigator.wakeLock.request('screen'); } catch (e) {}
@@ -2164,7 +2245,15 @@ function guideClock() {
 }
 function renderGuide() {
   if (!guide.open) return;
-  const el = $('#guide'), items = guideItems(), n = items.length, d = getDay(guide.date);
+  const el = $('#guide'), items = guideItems(), n = items.length, d = getDay(guide.date), dm = doneMap();
+  if (guide.mode === 'mini' && (guide.finished || !n)) {
+    const ms = miniState(guide.date), more = ms.done < ms.max;
+    el.innerHTML = `<div class="g-top"><span class="eyebrow">Mini session</span><button class="icon-btn" data-act="guide-close" aria-label="Close">${IC.close}</button></div>
+      <div class="g-body g-finish"><h1 class="g-name">${guide.recorded ? 'Mini session done' : 'Mini session ended'}</h1>
+      <p class="muted">${guide.recorded ? (more ? `Next one from ${fmtTime(ms.nextAt)}, at least ${MINI_GAP_H} hours from now.` : 'That\u2019s all the mini sessions for today. More wouldn\u2019t add anything.') : 'Less than half the sets were done, so this one wasn\u2019t counted.'}${guide.recorded && isTraining(typeFor(guide.date)) && !ms.mainAt ? ` Do your main session after ${fmtTime(ms.nextAt)}.` : ''}</p>
+      <div class="row" style="justify-content:center"><button class="btn" data-act="guide-close">Done</button></div></div>`;
+    return;
+  }
   if (guide.finished || !n) {
     const pct = Math.round(dayPct(guide.date) * 100);
     el.innerHTML = `<div class="g-top"><span class="eyebrow">Guided session</span><button class="icon-btn" data-act="guide-close" aria-label="Close">${IC.close}</button></div>
@@ -2176,14 +2265,14 @@ function renderGuide() {
     return;
   }
   guide.idx = Math.min(guide.idx, n - 1);
-  const i = items[guide.idx], e = EX[i.id], done = Math.min((d.done || {})[i.id] || 0, i.sets), next = items[guide.idx + 1];
+  const i = items[guide.idx], e = EX[i.id], done = Math.min(dm[i.id] || 0, i.sets), next = items[guide.idx + 1];
   const holds = holdSecs(i.dose), left = isUni(i.dose) && e.cat !== 'Mobility';
   const ll = LOADED.has(i.id) ? lastLoad(i.id, guide.date) : null, up = LOADED.has(i.id) ? readyToAdd(i.id, guide.date) : null;
-  const totalDone = items.reduce((t, x) => t + Math.min((d.done || {})[x.id] || 0, x.sets), 0), totalSets = items.reduce((t, x) => t + x.sets, 0);
+  const totalDone = items.reduce((t, x) => t + Math.min(dm[x.id] || 0, x.sets), 0), totalSets = items.reduce((t, x) => t + x.sets, 0);
   el.innerHTML = `
-    <div class="g-top"><span class="num small">${guide.idx + 1} / ${n}</span><div class="g-prog" role="progressbar" aria-valuemin="0" aria-valuemax="${totalSets}" aria-valuenow="${totalDone}"><span style="width:${totalSets ? totalDone / totalSets * 100 : 0}%"></span></div><button class="icon-btn" data-act="guide-close" aria-label="Close guided session">${IC.close}</button></div>
+    <div class="g-top"><span class="num small">${guide.mode === 'mini' ? 'Mini · ' : ''}${guide.idx + 1} / ${n}</span><div class="g-prog" role="progressbar" aria-valuemin="0" aria-valuemax="${totalSets}" aria-valuenow="${totalDone}"><span style="width:${totalSets ? totalDone / totalSets * 100 : 0}%"></span></div><button class="icon-btn" data-act="guide-close" aria-label="Close guided session">${IC.close}</button></div>
     <div class="g-body">
-      <div><span class="tag ${tagFor(i.block, i.id)[1]}">${tagFor(i.block, i.id)[0]}</span></div>
+      <div><span class="tag ${tagFor(i.block, i.id)[1]}">${tagFor(i.block, i.id)[0]}</span>${guide.mode === 'mini' ? ' <span class="chip">Easy: about 7/10 effort, never to failure</span>' : ''}</div>
       <h1 class="g-name">${esc(e.name)}</h1>
       <div class="g-dose">${i.sets > 1 ? i.sets + ' sets · ' : ''}${esc(i.dose)}</div>
       <div class="chips" style="justify-content:center">${left ? '<span class="chip accent">Left leg first, then match on the right</span>' : ''}${up ? `<span class="chip good">Try ${up.to} kg today</span>` : ll ? `<span class="chip">Last time ${ll.kg} kg</span>` : ''}${(d.flags || {})[i.id] ? '<span class="chip warn">Bothered you before: use the easier version</span>' : ''}</div>
@@ -2196,15 +2285,20 @@ function renderGuide() {
     ${next ? `<div class="g-next"><span class="eyebrow">Next up</span><b>${esc(EX[next.id].name)}</b><span class="small muted">${next.sets > 1 ? next.sets + ' sets · ' : ''}${esc(next.dose)}</span></div>` : ''}`;
 }
 function guideAdvance() {
-  const n = guideItems().length;
-  if (guide.idx < n - 1) guide.idx++; else guide.finished = true;
+  const items = guideItems(), n = items.length;
+  if (guide.idx < n - 1) { guide.idx++; return; }
+  guide.finished = true;
+  if (guide.mode === 'mini' && !guide.recorded) {
+    const got = items.reduce((t, x) => t + Math.min(guide.miniDone[x.id] || 0, x.sets), 0), tot = items.reduce((t, x) => t + x.sets, 0);
+    if (tot && got / tot >= 0.5) { recordMini(guide.date); guide.recorded = true; }
+  }
 }
 function guideDone() {
   const items = guideItems(), i = items[guide.idx]; if (!i) return;
-  const d = getDay(guide.date), done = { ...(d.done || {}) }, cur = Math.min(done[i.id] || 0, i.sets);
+  const mini = guide.mode === 'mini', done = mini ? guide.miniDone : { ...(getDay(guide.date).done || {}) }, cur = Math.min(done[i.id] || 0, i.sets);
   if (cur >= i.sets) { guideAdvance(); renderGuide(); return; }
-  done[i.id] = cur + 1; setDay(guide.date, { done });
-  const rest = restFor(i.id), auto = S.settings.autoRest !== false;
+  done[i.id] = cur + 1; if (!mini) setDay(guide.date, { done });
+  const rest = i.rest ?? restFor(i.id), auto = S.settings.autoRest !== false;
   if (done[i.id] >= i.sets) { guideAdvance(); if (auto && rest && !guide.finished) startTimer(rest, 'Rest'); }
   else if (auto && rest) startTimer(rest, 'Rest');
   if (guide.finished) { stopTimer(); beep(2); }
@@ -2236,14 +2330,15 @@ function reportData(weeks) {
   const cf = S.settings.confidence || [];
   const conf = cf.length ? { date: cf[cf.length - 1].date, score: Math.round(CONF.reduce((s, q) => s + (+cf[cf.length - 1].v[q.k] || 0), 0) / CONF.length * 10) } : null;
   const breaks = (S.settings.breaks || []).filter(b => (b.end || t) >= from);
-  return { from, t, rows, events, notes, flags, loads, tests, conf, breaks };
+  const minis = days.reduce((n, x) => n + (getDay(x).minis || []).length, 0);
+  return { from, t, rows, events, notes, flags, loads, tests, conf, breaks, minis };
 }
 const testStr = (x, v) => !v ? '–' : v.B != null ? `${v.B} ${x.unit}` : `L ${v.L ?? '–'} / R ${v.R ?? '–'} ${x.unit}${(+v.L && +v.R) ? ` (${Math.round(Math.min(v.L, v.R) / Math.max(v.L, v.R) * 100)}%)` : ''}`;
 function reportText(weeks) {
   const r = reportData(weeks), P = PHASES[S.settings.phase - 1], L = [];
   L.push(`KNEE REHAB SUMMARY · ${fmtShort(r.from)} to ${fmtShort(r.t)} (${weeks} weeks)`);
   L.push('Diagnosis (MRI): both knees grade II tear, posterior horn of medial meniscus; partial ACL tear (left), low-grade ACL sprain/partial tear (right). Left knee: grade I signal posterior horn lateral meniscus; 1.7 × 1.4 × 2.3 cm lesion in the intercondylar notch, likely localised nodular synovitis.');
-  L.push(`Home program: started ${fmtShort(startDate())}, now week ${weekOf(r.t)}, Phase ${P.n} (${P.name}). Walk–run: ${RUN[runStage()].l}. Drop landings: ${S.settings.phase >= 3 ? DROP[dropStage()].l : 'not started'}.`);
+  L.push(`Home program: started ${fmtShort(startDate())}, now week ${weekOf(r.t)}, Phase ${P.n} (${P.name}). Walk–run: ${RUN[runStage()].l}. Drop landings: ${S.settings.phase >= 3 ? DROP[dropStage()].l : 'not started'}. Extra mini sessions in this period: ${r.minis}.`);
   L.push('', 'WEEKLY SYMPTOMS (pain 0–10, average / max)');
   r.rows.forEach(w => L.push(`${fmtShort(w.ws)}–${fmtShort(w.we)}: Left ${w.avgL}/${w.maxL}, Right ${w.avgR}/${w.maxR}; swelling days L ${w.swellL}, R ${w.swellR}; sessions ${w.sessions}/${w.planned}; check-ins ${w.n}`));
   L.push('', 'RED-FLAG DAYS');
@@ -2349,7 +2444,7 @@ document.addEventListener('click', async ev => {
       const id = a.dataset.ex, i = +a.dataset.i, sets = +a.dataset.sets || 1, d = getDay(date), done = { ...(d.done || {}) };
       const before = done[id] || 0;
       done[id] = before > i ? i : i + 1;
-      setDay(date, { done }); render();
+      setDay(date, { done, ...(date === today() && isTraining(typeFor(date)) && !d.mainAt && done[id] > before ? { mainAt: Date.now() } : {}) }); render();
       if (dayPct(date) >= 1) toast('Session complete. Nice work.');
       else if (done[id] > before && done[id] < sets && S.settings.autoRest !== false && restFor(id)) startTimer(restFor(id), 'Rest');
       break;
@@ -2424,6 +2519,9 @@ document.addEventListener('click', async ev => {
     }
     case 'copy-json': { const ta = $('#jsonOut'); try { await navigator.clipboard.writeText(ta.value); toast('Copied'); } catch (e) { ta.select(); toast('Selected. Use Copy from the menu'); } break; }
     case 'guide-start': openGuide(); break;
+    case 'mini-start': openGuide('mini'); break;
+    case 'mini-done': recordMini(date); render(); toast('Mini session logged'); break;
+    case 'mini-undo': { const m = [...(getDay(date).minis || [])]; m.pop(); setDay(date, { minis: m }); render(); toast('Last mini session removed'); break; }
     case 'guide-close': closeGuide(); break;
     case 'g-done': guideDone(); break;
     case 'g-prev': guide.idx = Math.max(0, guide.idx - 1); guide.finished = false; renderGuide(); break;
@@ -2500,6 +2598,7 @@ document.addEventListener('change', ev => {
   }
   else if (el.id === 'remTime' && el.value) setSettings({ remindTime: el.value });
   else if (el.id === 'remSun') setSettings({ remindSun: el.checked });
+  else if (el.id === 'minisOn') { setSettings({ minisOn: el.checked }); toast(el.checked ? 'Mini sessions on' : 'Mini sessions off'); }
   else if (el.dataset.kg) {
     const load = { ...(getDay(ui.date).load || {}) }, v = parseFloat(el.value);
     if (el.value === '' || isNaN(v)) delete load[el.dataset.kg]; else load[el.dataset.kg] = Math.max(0, Math.min(500, v));
